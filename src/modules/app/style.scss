@@ -1,0 +1,293 @@
+@use "sass:map";
+
+/* ----- icontainer */
+.icontainer {
+    box-sizing: border-box;
+    position: relative;
+    background: white;
+    border-radius: 8px; 
+
+    &__ {
+        &header {
+            border-radius: 8px 8px 0 0; 
+            padding: 10px 10px 0;
+        }
+        &content {
+            padding: 10px;
+        }
+        &footer {
+            padding: 0 10px 10px;
+            border-radius: 0 0 8px 8px; 
+        }
+    }
+    &-- {
+        &bg_ {
+            &glass {
+                background: rgba(255, 255, 255, 0.25);
+                background-blend-mode: luminosity;
+                backdrop-filter: blur(40px);
+            }
+        }
+        &size_ {
+            &small {
+                border-radius: 4px;
+
+                .icontainer__ {
+                    &header {
+                        border-radius: 4px 4px 0 0; 
+                        padding: 5px 5px 0;
+                    }
+                    &content {
+                        padding: 5px;
+                    }
+                    &footer {
+                        padding: 0 5px 5px;
+                        border-radius: 0 0 4px 4px; 
+                    }
+                }
+            }
+            &big {
+                border-radius: 20px;
+
+                .icontainer__ {
+                    &header {
+                        border-radius: 20px 20px 0 0; 
+                        padding: 22px 22px 0;
+                    }
+                    &content {
+                        padding: 22px;
+                    }
+                    &footer {
+                        border-radius: 0 0 20px 20px; 
+                        padding: 0 22px 22px;
+                    }
+                }
+            }
+        }
+        &dropshadow {
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);    
+        }
+        &bordered {
+            border: 1px solid #eee;
+        }
+    }
+}
+/* icontainer ----- */
+
+/* ----- link */
+.link {
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    border-bottom: solid 1px rgba(0, 0, 0, 0.4);
+    padding: 0 1px;
+
+    &:hover {
+        border-bottom-color: transparent !important;
+    }
+}
+/* link ----- */
+
+/* ----- text */
+.text {
+    font-size: 13px;
+}
+/* text ----- */
+
+/* ----- notification */
+.notification {
+    font-size: 12px;
+
+    &__ {
+        &icon {            
+        }
+        &text {            
+        }
+    }
+    &-- {
+        &lvl_ {
+            &error {
+                color: red;
+            }
+        }
+    }
+}
+/* notification ----- */
+
+/* ----- form */
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    &__ {
+        &fieldBox {
+            
+        }
+        &fieldLabelWrap {
+            padding-bottom: 5px;
+        }
+        &fieldLabel {
+            font-size: 13px;
+        }
+        &fieldWrap {
+            padding-bottom: 15px;
+        }
+        &field {
+            .inputText__input {
+                padding: 2px 8px;
+                height: 32px;
+            }            
+        }
+        &fieldNotification {
+            padding: 5px 0 0 2px;
+        }
+        &buttonsBox {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-top: 20px;
+        }
+        &submitButton {            
+        }
+        &altSubmitLink {
+            display: inline-block;
+            margin: 10px auto;
+        }
+    }
+    &-- {
+        &layout_ {
+            &rows {
+            }
+            &inline {
+            }
+        }
+    }
+}
+.notification {
+    font-size: 14px;
+}
+/* form ----- */
+
+/* ----- app */
+@import './vars';
+@import './mixins';
+
+@each $name, $weight in $font-weights {
+    @include font-face($font-family, '../../../static/fonts/SFProDisplay/SFProDisplay-#{$name}', $weight, normal, eot woff2 woff ttf);
+}
+
+._surApp {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    font: map.get($font-weights, 'Regular') normal 11px $font-family;
+    color: $gray-90;
+
+    &__
+    {
+        &background {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+
+            &-- {
+                &bg_ {
+                    &color {
+                        background: $gray-light;
+                    }
+                    &image {
+                        background: $gray-light url(../../../static/images/sur_bg.svg) center/cover no-repeat;
+                    }
+                    &animation {
+                        background: $gray-light;
+                    }
+                }
+            }
+        }
+        &workarea {
+            margin: auto;
+            z-index: 1;
+        }
+    }  
+    
+    $caption-sizes: ('h1': 26px, 'h2': 22px, 'h3': 14px, 'h4': 13px, 'h5': 12px, 'h6': 11px);
+    .caption__headline {   
+        @include gen-sizes('&--size_', 'font-size', $caption-sizes); 
+    }
+
+    .link {
+        color: $primary-color;
+        border-bottom-color: rgba($primary-color, 0.4);
+
+        &-- {
+            &size_ {
+                &big {
+                    font-size: 16px;
+                    line-height: 15px;
+                    font-weight: map.get($font-weights, 'Light');
+                }
+            }
+        }
+    }
+
+    .button {
+        &-- {
+            &importance_ {
+                &primary {
+                    background: $primary-color;
+                }
+                &seconadary {
+                    background: $secondary-color;
+                }
+            }
+            &size_ {
+                &big {
+                    font-size: 16px;
+                    font-weight: map.get($font-weights, 'Light');
+                }
+            }
+        }
+    }
+
+    .notification--lvl_ {
+        &error {
+            color: $red;            
+        }
+    }
+    .icontainer {
+        &--bg_ {
+            &glass {
+                .caption,    
+                .form__fieldLabel,
+                .notification { 
+                    opacity: 0.75;
+                }
+                .link {
+                    color: white; 
+                    opacity: 0.75;
+                    border-bottom-color: rgba(white, 0.5);
+                }
+                .notification--lvl_ {
+                    &error {
+                        color: white; 
+                        opacity: 0.75;            
+                    }
+                }
+            }
+            &grayLight {
+                background: $gray-light;
+            }
+        }
+    }
+
+    ._errorPageLayout__content {
+        font-weight: map.get($font-weights, 'Thin');
+    }
+}
+
+
+/* app ----- */

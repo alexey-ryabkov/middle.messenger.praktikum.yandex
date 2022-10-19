@@ -1,0 +1,40 @@
+.inputText {
+    display: inline-block;
+    width: 100%;
+
+    &__ {
+        &input {
+            box-sizing: border-box;
+            padding: 2px 4px;
+            height: 28px;
+            width: 100%;
+            max-width: 600px;
+            min-width: 20px;
+            background: white;
+            border: 0.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+
+            &:focus {
+                border: 3px solid rgba(0, 103, 244, 0.25);
+                border-radius: 7px;
+                outline:none;
+            }
+            &-- {
+                &textarea {
+                    height: auto;
+                }
+            }
+        }
+        &icon {
+            &-- {
+                &icn_ {
+                    &search {
+                        
+                    }
+                }
+            }
+        }
+        &clearBtn {            
+        }
+    }
+}

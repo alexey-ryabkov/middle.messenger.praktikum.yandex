@@ -12,7 +12,6 @@ export default class Button extends _Module
     {
         props.label = String(props.label) || 'кнопка';
 
-        props.isLink = !!props.isLink;
         if (props.isLink && !props.href)
         {
             props.href = '#';

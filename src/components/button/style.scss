@@ -1,3 +1,5 @@
+$primary-color: #232526;
+
 .button {
     text-decoration: none;
     text-align: center;
@@ -31,7 +33,7 @@
             }
             &seconadary {
                 background: gray-light;
-                color: #232526;
+                color: $primary-color;
             }
         }
         &size_ {

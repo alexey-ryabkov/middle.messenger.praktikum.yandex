@@ -1,4 +1,4 @@
-$primary-color: #232526;
+$secondary-color: lightgray;
 
 .button {
     text-decoration: none;
@@ -32,8 +32,8 @@ $primary-color: #232526;
                 color: white;
             }
             &seconadary {
-                background: gray-light;
-                color: $primary-color;
+                background: $secondary-color;
+                color: black;
             }
         }
         &size_ {

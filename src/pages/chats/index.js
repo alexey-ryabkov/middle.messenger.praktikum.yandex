@@ -2,7 +2,6 @@ import Templator from '../../models/templator';
 import Page from '../../models/page';
 import chatsLayout from '../../layouts/chats';
 import tpl from './tpl.hbs';
-import './style.scss';
 
 const layoutAreas = {
     containerCssClass: '_pageChats__content',

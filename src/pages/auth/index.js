@@ -4,7 +4,6 @@ import signFormLayout from '../../layouts/sign_form';
 import '../../components/button';
 import '../../components/input-text';
 import tpl from './tpl.hbs';
-import './style.scss';
 
 const layoutAreas = {
     containerCssClass: '_pageAuth__content',

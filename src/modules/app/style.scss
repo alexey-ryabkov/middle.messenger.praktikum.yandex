@@ -1,6 +1,5 @@
 @use "sass:map";
 
-/* ----- icontainer */
 .icontainer {
     box-sizing: border-box;
     position: relative;
@@ -72,9 +71,7 @@
         }
     }
 }
-/* icontainer ----- */
 
-/* ----- link */
 .link {
     text-decoration: none;
     color: rgb(0, 0, 0);
@@ -85,15 +82,11 @@
         border-bottom-color: transparent !important;
     }
 }
-/* link ----- */
 
-/* ----- text */
 .text {
     font-size: 13px;
 }
-/* text ----- */
 
-/* ----- notification */
 .notification {
     font-size: 12px;
 
@@ -111,9 +104,7 @@
         }
     }
 }
-/* notification ----- */
 
-/* ----- form */
 .form {
     display: flex;
     flex-direction: column;
@@ -166,9 +157,7 @@
 .notification {
     font-size: 14px;
 }
-/* form ----- */
 
-/* ----- app */
 @import './vars';
 @import './mixins';
 
@@ -288,6 +277,3 @@
         font-weight: map.get($font-weights, 'Thin');
     }
 }
-
-
-/* app ----- */

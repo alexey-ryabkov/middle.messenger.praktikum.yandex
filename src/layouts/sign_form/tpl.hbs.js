@@ -12,7 +12,3 @@ export default `
     </div>
 </div>    
 `.trim();
-//  <h1 class="caption _signFormLayout__caption">
-// <span class="caption__headline caption__headline--size_h1">{{areas.formTitle}}</span>
-// </h1>
-// areas.formTitle

@@ -97,12 +97,6 @@
 .notification {
     font-size: 12px;
 
-    &__ {
-        &icon {            
-        }
-        &text {            
-        }
-    }
     &-- {
         &lvl_ {
             &error {
@@ -118,9 +112,6 @@
     align-items: flex-start;
 
     &__ {
-        &fieldBox {
-            
-        }
         &fieldLabelWrap {
             padding-bottom: 5px;
         }
@@ -150,14 +141,6 @@
         &altSubmitLink {
             display: inline-block;
             margin: 10px auto;
-        }
-    }
-    &-- {
-        &layout_ {
-            &rows {
-            }
-            &inline {
-            }
         }
     }
 }

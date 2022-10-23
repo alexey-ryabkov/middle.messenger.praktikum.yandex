@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs');
 
 const DEFAULT_PAGE = '/error404/';
-const PORT = 3000;
+const DEFAULT_PORT = 3000;
 
 const app = express();
 
@@ -15,7 +15,8 @@ app.use('/', function(req, res)
     res.redirect(DEFAULT_PAGE);
 });
 
-app.listen(PORT, () => 
+const appPort = process.env.PORT || DEFAULT_PORT;
+app.listen(appPort, () => 
 {
-    console.log(`Сервер для ${__dirname} запущен на localhost:${PORT}!`);
+    console.log(`Сервер для ${__dirname} запущен на localhost:${appPort}!`);
 });

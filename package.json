@@ -5,8 +5,7 @@
   "scripts": {
     "start": "parcel build ./src/index.html && node ./server.js",
     "dev": "parcel ./src/index.html --no-cache",
-    "build": "parcel build ./src/index.html",
-    "build4netlify": "parcel build ./src/index.html && parcel build ./src/index.html --dist-dir ./dist/auth/ --public-url ./ && parcel build ./src/index.html --dist-dir ./dist/reg/ --public-url ./ && parcel build ./src/index.html --dist-dir ./dist/chats/ --public-url ./ && parcel build ./src/index.html --dist-dir ./dist/error404/ --public-url ./ && parcel build ./src/index.html --dist-dir ./dist/error500/ --public-url ./"
+    "build": "parcel build ./src/index.html"
   },
   "author": "Alexey Ryabkov",
   "license": "ISC",

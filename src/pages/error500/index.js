@@ -6,6 +6,6 @@ const layoutAreas = {
     containerCssClass: '_pageError500__content',
     errorCode: '500',
     errorDesc: 'Кажется, что-то сломалось...',
-    chatsPageUrl: '/chats/'
+    chatsPageUrl: '/?page=chats'
 }
 export default new Page(errorPageLayout, layoutAreas, '_pageError500', 'Ошибка 500');

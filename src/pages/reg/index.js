@@ -24,7 +24,7 @@ const fields = Object.fromEntries(Object.entries({
 const button = new Button({
     label: 'Зарегистрироваться',
     isLink: true,
-    href: '/chats/',
+    href: '/?page=chats',
     cssClass: 'form__submitButton',
     importance: 'primary',
     size: 'big',
@@ -37,7 +37,7 @@ const layoutAreas = {
     form: new Templator(tpl).compile({
         fields,
         button,        
-        authPageUrl: '/auth/',
+        authPageUrl: '/?page=auth',
     })
 }
 export default new Page(layout, layoutAreas, '_pageReg', 'Регистрация');

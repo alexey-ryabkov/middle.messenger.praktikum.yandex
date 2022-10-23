@@ -9,7 +9,7 @@ const layoutAreas = {
     containerCssClass: '_pageAuth__content',
     formTitle: 'Авторизация',
     form: new Templator(tpl).compile({
-        regPageUrl: '/reg/',
+        regPageUrl: '/?page=reg',
         fields: {
             'Логин': {
                 name: 'login',
@@ -25,7 +25,7 @@ const layoutAreas = {
         button: {
             label: 'Войти',
             isLink: true,
-            href: '/chats/',
+            href: '/?page=chats',
             cssClass: 'form__submitButton button--importance_primary button--size_big button--width_full'
         }
     })

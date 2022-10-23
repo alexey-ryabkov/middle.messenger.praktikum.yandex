@@ -1,5 +1,12 @@
 @use "sass:map";
 
+@import './vars';
+@import './mixins';
+
+@each $name, $weight in $font-weights {
+    @include font-face($font-family, '../../../static/fonts/SFProDisplay/SFProDisplay-#{$name}', $weight, normal, eot woff2 woff ttf);
+}
+
 .icontainer {
     box-sizing: border-box;
     position: relative;
@@ -156,13 +163,6 @@
 }
 .notification {
     font-size: 14px;
-}
-
-@import './vars';
-@import './mixins';
-
-@each $name, $weight in $font-weights {
-    @include font-face($font-family, '../../../static/fonts/SFProDisplay/SFProDisplay-#{$name}', $weight, normal, eot woff2 woff ttf);
 }
 
 ._surApp {

@@ -1,0 +1,28 @@
+.inputText {
+    display: inline-block;
+    width: 100%;
+
+    &__ {
+        &input {
+            box-sizing: border-box;
+            padding: 2px 4px;
+            height: 28px;
+            width: 100%;
+            max-width: 600px;
+            min-width: 20px;
+            background: white;
+            border: 0.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+
+            &:focus {
+                border-radius: 7px;
+                outline: 3px solid rgba(0, 0, 0, 0.25);
+            }
+            &-- {
+                &textarea {
+                    height: auto;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "esnext",
+        "moduleResolution": "node",
+        "target": "ES5",
+        "sourceMap": true,
+        "allowSyntheticDefaultImports": true,
+        "noImplicitAny": false,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strictNullChecks": false
+    },
+    "exclude": [
+        "node_modules"
+    ] 
+}

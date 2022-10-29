@@ -9,8 +9,13 @@ export type Plural<T> = Array<T> | ArrayLike<T>;
 export type SingleOrPlural<T> = T | Plural<T>;
 
 
+
 export type EventHandler = (event : Event) => void; 
 export type EventLsnr = { name : string, handler : EventHandler };
+
+export type Handler = (...args) => void; 
+export type CEventLsnr = { event : string, handler : Handler };
+
 
 export interface Compilable // @todo все таки вызывают то другой метод...
 {

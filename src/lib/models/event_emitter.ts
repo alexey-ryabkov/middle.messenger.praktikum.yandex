@@ -1,39 +1,65 @@
 
-type Event = 
-{
-    name: string,
-    actions: (()=>{})[]
-}
-
+import {SingleOrPlural, Handler, CEventLsnr} from '../models/types';
+import {plural2Arr} from '../utils';
 
 export default abstract class EventEmitter
 {
-    constructor() {
-        this.listeners = {};
-    }
+    protected abstract _availEvents : string[];    
+    protected _listeners : Record< string, Set< Handler >>;
 
-    on (event, callback) 
+    constructor() 
     {
-        if (!(event in this.listeners))
-        {
-            this.listeners[event] = [];
-        }
-        this.listeners[event].push(callback);
+        this._listeners = {};
     }
-    off (event, callback) 
+    get availEvents ()
     {
-        if (event in this.listeners) 
-        {
-            this.listeners[event] = this.listeners[event].filter(listener => listener !== callback);
-        }
+        return this._availEvents;
     }
-    protected emit (event, ...args) 
+    on (lsnrs : SingleOrPlural< CEventLsnr >) 
+    // @todo on / off / emit можно сделать через миксин
+    // различать DOMEvents и CustomEvents 
     {
-        if (event in this.listeners) 
+        plural2Arr(lsnrs).forEach(lsnr => 
         {
-            this.listeners[event].forEach(listener => listener(...args));
+            this._listeners[lsnr.name].add(lsnr.handler);
+        });
+    }
+    off (lsnrs : SingleOrPlural< CEventLsnr >) 
+    {
+        plural2Arr(lsnrs).forEach(lsnr => 
+        {
+            this._listeners[lsnr.name].delete(lsnr.handler);
+        });
+    }
+    protected emit (eventName : string, ...args) 
+    {
+        if (eventName in this.availEvents) 
+        {
+            this._listeners[eventName].forEach(handler => handler(...args));
         }
         else
-            throw `Error: Нет события: ${event}`;
+            throw `Error: no event with name ${eventName}`;
     }
 }
+
+// const CustomEventsHelperMixin = 
+// {
+//     on (lsnrs : SingleOrPlural< CEventLsnr >) 
+//     {
+//         plural2Arr(lsnrs).forEach(lsnr => 
+//         {
+//             this._listeners[lsnr.name].add(lsnr.handler);
+//         });
+//     },
+//     off (lsnrs : SingleOrPlural< CEventLsnr >) 
+//     {
+//         plural2Arr(lsnrs).forEach(lsnr => 
+//         {
+//             this._listeners[lsnr.name].delete(lsnr.handler);
+//         });
+//     },
+//     emit (eventName : string, ...args) 
+//     {
+//         this._listeners[eventName].forEach(handler => handler(...args));
+//     }
+// }

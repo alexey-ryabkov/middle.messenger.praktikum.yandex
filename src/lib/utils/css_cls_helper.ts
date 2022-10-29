@@ -23,7 +23,7 @@ export interface HTMLElementCssCls
     delCssCls : (cls : CssCls) => void,
     clearCssCls : () => void
 }
-const CssClsHelperMixin : HTMLElementCssCls = 
+const CssClsHelperMixin = 
 {
     getCssClsArr () : string[] 
     {

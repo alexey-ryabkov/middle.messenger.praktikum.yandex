@@ -1,32 +1,48 @@
+import {App, AppContainer} from '@models/types';
+import {BlockProps, BlockEvents} from '@models/block';
 import {BemCompParams} from '@models/bem_block';
-import App from '@app';
-import SimpleBlock from '@models/simple_block';
-import {CompProps} from '@models/dom_component';
+import ComponentBlock from '@models/component_block';
+import {plural2Arr} from '@lib-utils-kit';
 
-const app = App.instance;
+export type LayoutProps = BlockProps & {areas? : Record< string, ComponentBlock >};
 
-export type LayoutProps = CompProps & {areas? : Record< string, SimpleBlock >};
-
-export default abstract class Layout extends SimpleBlock
+export default abstract class Layout extends ComponentBlock
 {
-    constructor (params : BemCompParams)
+    protected _container : AppContainer;
+    protected _events : BlockEvents;
+    
+    constructor (app : App, params : BemCompParams)
     {
-        params.node = document.body;        
+        params.node = app.root; 
         super(params);
+
+        this._container = app.container;
+
+        if (params.events)
+        {
+            this._events = params.events;
+        }
     }
-    set areas (areas : Record< string, SimpleBlock | string >) // layout areas, for example {content: ..., sidebar: ...}
+    set areas (areas : Record< string, ComponentBlock | string >) // layout areas, for example {content: ..., sidebar: ...}
     {
         this.setProps({areas}); 
     }
-    protected _render() 
-    // TODO если модель запрашивает App, то она не может быть в lib... либо app должен быть в моделях... а от него наследоваться SurApp 
-    // мб передавать в конструкторе container? который выаолняет определенный интерфейс
-    // подумать с т.з. переноссимости 
+    unmount ()
     {
-        // console.log('in Layout _render', this._props);
-
-        app.container.workarea.innerHTML = '';
-        app.container.workarea.appendChild(this.render());
+        if (this._events)
+        {
+            plural2Arr(this._events).forEach(lsnr => 
+            {
+                this.element.removeEvntLsnrs(lsnr);
+            })
+        } 
+        this._container.workarea.innerHTML = '';
+        this._container.bemClear([this.bemName]);
+    }
+    protected _render() 
+    {
+        this._container.workarea.innerHTML = '';
+        this._container.workarea.appendChild(this.render());
 
         this._processElems();
         this._processElemCssCls();

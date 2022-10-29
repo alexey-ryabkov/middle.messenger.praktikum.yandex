@@ -1,7 +1,7 @@
 import { v4 as makeUUID } from 'uuid';
 import EventEmitter from '@models/event_emitter';
 import EventBus from '@models/event_bus';
-import SimpleProps from '@models/simple_props';
+import DefaultBlockProps from '@models/def_block_props';
 import {Nullable, SingleOrPlural, EventLsnr, CompilableTemplate} from '@models/types';
 import CssClsHelperMixin, {CssCls, HTMLElementCssCls} from '@lib-utils/css_cls_helper';
 import EventsHelperMixin, {HTMLElementEvnts} from '@lib-utils/events_helper';
@@ -15,47 +15,47 @@ export function makeHTMLElementExt (element : Element) : HTMLElementExt
     return element as HTMLElementExt; 
 }
 
-export type CompKey = number | string;
-export type CompElement = HTMLElement | DocumentFragment | string;
-export type CompProps = {
+export type BlockKey = number | string;
+export type BlockElement = HTMLElement | DocumentFragment | string;
+export type BlockProps = {
     [key : string]: any,
-    key?: CompKey
+    key?: BlockKey
 }; 
-export type CompAttrs = Record< string, string | number | boolean >;
-export type CompEvents = SingleOrPlural< EventLsnr >;
-export type CompParams = 
-{
-    node? : CompElement,    
-    props? : CompProps, 
-    attrs? :  CompAttrs,  
+export type BlockAttrs = Record< string, string | number | boolean >;
+export type BlockEvents = SingleOrPlural< EventLsnr >;
+export type BlockParams = 
+{ 
+    node? : BlockElement,    
+    props? : BlockProps, 
+    attrs? :  BlockAttrs,  
     cssCls? : CssCls,    
-    events? : CompEvents,
+    events? : BlockEvents,
     settings? : Record< string, any >
 }
-export interface ComponentPropsEngine
+export interface BlockPropsEngine
 {
-    component : DomComponent;
-    propsSubComponents : Record< string, DomComponent >;
+    component : Block;
+    subComponents : Iterable< Block >;
     processProps () : void;
     compileWithProps (template : CompilableTemplate) : DocumentFragment;
 }
 
-export default abstract class DomComponent extends EventEmitter
+export default abstract class Block extends EventEmitter
 {
     static readonly ID_ATTR = 'data-block_id';
     
     protected _id : string = ''; 
-    protected _key : Nullable< CompKey > = null; 
+    protected _key : Nullable< BlockKey > = null; 
     protected _element : HTMLElementExt; 
-    protected _props : CompProps = {};
+    protected _props : BlockProps = {};
     protected _meta : Record< string, any > = {};
     protected _lifecircle : EventBus;
     protected _availEvents = [];
-    protected _propsEngine : ComponentPropsEngine;
+    protected _propsEngine : BlockPropsEngine;
 
     protected _flags = {
         inSetPropsCall: false,
-        nextEvntEmmited: false,
+        isPropsGotSet: false,
     };
     protected static _LIFE_EVENTS = {
         INIT: 'init',
@@ -63,27 +63,27 @@ export default abstract class DomComponent extends EventEmitter
         FLOW_CDU: 'flow:component-did-update',
         FLOW_RENDER: 'flow:render'
     };
-    constructor (params : CompParams) 
+    constructor (params : BlockParams) 
     {
         super();
 
-        const {props} = params;
+        const {props = {}} = params;
         this._processParams(params);
 
         let id = makeUUID();
-        this._key = props.key; // TODO при reinit ? 
+        this._key = props?.key; 
+        // TODO при reinit ? 
 
         this._props = this._makePropsProxy(props);
-        // this._props = props;
-        this._propsEngine = new SimpleProps(this);
-        this._propsEngine.processProps();
+        this._propsEngine = new DefaultBlockProps(this);     
+        this._processProps();   
 
         this._lifecircle = new EventBus();
         this._regLifeEvents();
         
         if (this._meta.node instanceof HTMLElement)
         {
-            const nodeId = this._meta.node.getAttribute(DomComponent.ID_ATTR); // @todo а этим процессор занимается... получается логику раздвоили 
+            const nodeId = this._meta.node.getAttribute(Block.ID_ATTR); // @todo а этим процессор занимается... получается логику раздвоили 
             if (nodeId)
             {
                 id = nodeId;
@@ -93,18 +93,14 @@ export default abstract class DomComponent extends EventEmitter
         else
         {  
             this._id = id;
-            this._lifecircle.emit(DomComponent._LIFE_EVENTS.INIT); // for node of HTMLElement it`s need to init component manually by mount method, otherwise go to init 
+            this._lifecircle.emit(Block._LIFE_EVENTS.INIT); // for node of HTMLElement it`s need to init component manually by mount method, otherwise go to init 
         }
     }
     get id ()  
     {
         return this._id;
     }    
-    get content () // semantic alias
-    {
-        return this.element;
-    }
-    protected get element ()
+    get element ()
     {
         return this._element;
     }
@@ -119,30 +115,40 @@ export default abstract class DomComponent extends EventEmitter
 
         if (node instanceof HTMLElement)
         {
-            this._lifecircle.emit(DomComponent._LIFE_EVENTS.INIT);
+            this._lifecircle.emit(Block._LIFE_EVENTS.INIT);
         }
         return this;
     }
-    setProps (nextProps : CompProps)
+    setProps (nextProps : BlockProps)
     {
         if (!this.element || !nextProps) 
         {
             return;
         }
         this._flags.inSetPropsCall = true;
-        this._flags.nextEvntEmmited = false;
+        this._flags.isPropsGotSet = false;
+
+        const oldProps = {...this._props};
 
         Object.assign(this._props, nextProps);
+        this._processProps(); // @todo по идее после этого нужно вызывать 
+
+        if (this._flags.isPropsGotSet) 
+        {
+            this._lifecircle.emit(Block._LIFE_EVENTS.FLOW_CDU, oldProps, this._props);
+            // this._flags.nextEvntEmmited = true;
+        }
+
         this._flags.inSetPropsCall = false;
     }
-    setAttrs (attrs : CompAttrs)
+    setAttrs (attrs : BlockAttrs)
     {
         Object.entries(attrs).forEach(([name, value]) => 
         {
             this.element.setAttribute(name, String(value));
         });
     }    
-    dispatchComponentDidMount = () => this._lifecircle.emit(DomComponent._LIFE_EVENTS.FLOW_CDM);
+    dispatchComponentDidMount = () => this._lifecircle.emit(Block._LIFE_EVENTS.FLOW_CDM);
 
     compile = (template : CompilableTemplate) => this._propsEngine.compileWithProps(template);   
 
@@ -152,25 +158,32 @@ export default abstract class DomComponent extends EventEmitter
     init () 
     {
         this._initElement();
+
         this._processAttrs();
         this._processCssCls();
         this._processDomEvents();
 
-        this._lifecircle.emit(DomComponent._LIFE_EVENTS.FLOW_RENDER);
+        this._lifecircle.emit(Block._LIFE_EVENTS.FLOW_RENDER);
     }      
-    componentDidMount (oldProps) 
+    componentDidMount () 
     {}
     componentDidUpdate (oldProps, newProps) 
     {
-        return true; 
+        let didUpd = !this._key;
+        if (newProps?.key && newProps.key !== this._key)
+        {
+            this._key = newProps.key;
+            didUpd = true;
+        }
+        return didUpd; 
     }
     abstract render () : DocumentFragment | HTMLElement;
 
-    protected _processParams (params : CompParams)
+    protected _processParams (params : BlockParams)
     {
         this._meta = this._params4meta(params); 
     }
-    protected _params4meta (params : CompParams)
+    protected _params4meta (params : BlockParams)
     {
         const {node = 'div', attrs = {}, cssCls = '', events = []} = params; 
         return {node, attrs, cssCls, events};
@@ -181,20 +194,14 @@ export default abstract class DomComponent extends EventEmitter
         {
             set: (target, prop, value) =>
             {
-                // console.log(prop, value);
                 if (!this._flags.inSetPropsCall)
                 {
                     throw new Error('No access');
                 }
-                // console.log('!!');
-                const oldProps = {...target};
+                
                 target[prop] = value;
 
-                if (!this._flags.nextEvntEmmited)
-                {
-                    this._lifecircle.emit(DomComponent._LIFE_EVENTS.FLOW_CDU, oldProps, target);
-                    this._flags.nextEvntEmmited = true;
-                }
+                this._flags.isPropsGotSet = true;
                 return true;
             },
             deleteProperty ()
@@ -205,17 +212,19 @@ export default abstract class DomComponent extends EventEmitter
     }
     protected _regLifeEvents () 
     {
-        this._lifecircle.on(DomComponent._LIFE_EVENTS.INIT, this.init.bind(this));
-        this._lifecircle.on(DomComponent._LIFE_EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
-        this._lifecircle.on(DomComponent._LIFE_EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
-        this._lifecircle.on(DomComponent._LIFE_EVENTS.FLOW_RENDER, this._render.bind(this));
+        this._lifecircle.on(Block._LIFE_EVENTS.INIT, this.init.bind(this));
+        this._lifecircle.on(Block._LIFE_EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
+        this._lifecircle.on(Block._LIFE_EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
+        this._lifecircle.on(Block._LIFE_EVENTS.FLOW_RENDER, this._render.bind(this));
     }    
     protected _initElement () 
     {
         const {node} = this._meta; 
 
         const element = typeof node == 'string' ? document.createElement(node) : node; 
-        element.setAttribute(DomComponent.ID_ATTR, this._id);
+        element.setAttribute(Block.ID_ATTR, this._id);
+
+        this._element = makeHTMLElementExt(element);
     }
     protected _processAttrs ()
     {
@@ -237,13 +246,13 @@ export default abstract class DomComponent extends EventEmitter
 
     protected _componentDidMount () 
     {
-        this.componentDidMount(this._props);
+        this.componentDidMount();
     }
     protected _componentDidUpdate(oldProps, newProps) 
     {
         if (this.componentDidUpdate(oldProps, newProps))
         {
-            this._lifecircle.emit(DomComponent._LIFE_EVENTS.FLOW_RENDER);
+            this._lifecircle.emit(Block._LIFE_EVENTS.FLOW_RENDER);
         }
     }
     protected _render() 

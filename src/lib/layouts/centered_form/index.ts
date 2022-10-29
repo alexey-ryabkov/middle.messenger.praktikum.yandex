@@ -1,6 +1,6 @@
 import Templator from '@models/templator';
 import Layout, {LayoutProps} from '@models/layout';
-import Caption from '@lib-components/caption';
+import Caption, {CaptionSize} from '@lib-components/caption';
 import tpl from './tpl.hbs';
 import './style.scss';
 
@@ -12,16 +12,14 @@ export type CenteredFormLayoutProps = LayoutProps &
 };
 export default class CenteredFormLayout extends Layout
 {
-    constructor (props : CenteredFormLayoutProps)
+    constructor (app, props : CenteredFormLayoutProps)
     {
-        const caption = new Caption({caption: props.title});
+        const caption = new Caption({ caption: props.title, size: CaptionSize.h1 });
 
-        caption.mix(['_centeredMsgLayout', 'caption']);
-        // caption__headline--size_h1
-
+        caption.bemMix(['_centeredFormLayout', 'caption']);
         props.caption = caption;
 
-        super({ props, bem: {name: '_centeredMsgLayout'} });
+        super(app, { props, bem: {name: '_centeredFormLayout'} });
     } 
     protected get _template () 
     {

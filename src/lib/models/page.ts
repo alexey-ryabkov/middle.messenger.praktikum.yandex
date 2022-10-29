@@ -1,6 +1,4 @@
-// import Container from '@models/container';
 import Layout from '@models/layout';
-// import SimpleBlock from '@models/simple_block';
 
 export default abstract class Page 
 {   
@@ -32,11 +30,16 @@ export default abstract class Page
         this._processPageLayout();
         return this;
     }
+    unmount ()
+    {
+        this._layout.unmount();
+        this._layout.bemClear([this._blockName]); 
+    }
     protected abstract get _layout () : Layout; 
 
     protected _processPageLayout ()
     {
-        this._layout.mix([this._blockName]);
+        this._layout.bemMix([this._blockName]);
     } 
     static nameFromUrl (url : string)
     {

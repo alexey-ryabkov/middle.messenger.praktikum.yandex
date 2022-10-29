@@ -14,17 +14,17 @@ export type CenteredMsgLayoutProps = LayoutProps &
 };
 export default class CenteredMsgLayout extends Layout
 {
-    constructor (props : CenteredMsgLayoutProps)
+    constructor (app, props : CenteredMsgLayoutProps)
     {
         const caption = new Caption({caption: props.title});
 
         caption.setAttrs({'bem-element': 'caption'}); 
         // TODO если переделать шаблоны на это, то микс не понадобиться
-        caption.mix(['_centeredMsgLayout', 'caption']);
+        caption.bemMix(['_centeredMsgLayout', 'caption']);
 
         props.caption = caption;
 
-        super({ props, bem: {name: '_centeredMsgLayout'} });
+        super(app, { props, bem: {name: '_centeredMsgLayout'} });
     } 
     protected get _template () 
     {

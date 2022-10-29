@@ -1,11 +1,8 @@
-import DomComponent, {CompParams, HTMLElementExt, makeHTMLElementExt} from '@models/dom_component';
+import Block, {BlockParams, HTMLElementExt, makeHTMLElementExt} from '@models/block';
 import {CssCls} from '@lib-utils/css_cls_helper';
-import {SingleOrPlural, EventLsnr} from '@models/types';
+import {SingleOrPlural, EventLsnr, BemModDef, BemBlockDef, BemElemDef, BemItemDef, BemEntity} from '@models/types';
 
-export type BemModDef = [string, string?];
-export type BemBlockDef = [string, BemModDef[]?];
-export type BemElemDef = [string, string, BemModDef[]?];
-export type BemItemDef = BemBlockDef | BemElemDef;
+
 
 export function isItemElem (item : BemItemDef) : item is BemElemDef
 {
@@ -30,9 +27,9 @@ export type BemParams = {
         elems? : Record< string, CssCls >
     }
 };
-export type BemCompParams = CompParams & { bem : BemParams };
+export type BemCompParams = BlockParams & { bem : BemParams };
 
-export default abstract class BemBlock extends DomComponent
+export default abstract class BemBlock extends Block implements BemEntity
 {
     static readonly ELEM_NAME_ATTR = 'bem-element';
     static readonly ELEMENT_SEPARATOR = '__';
@@ -46,26 +43,22 @@ export default abstract class BemBlock extends DomComponent
     {   
         super(params);
     }
-    get name ()
+    get bemName ()
     {
         return this._name;
-    }
-    get block () // semantic alias
-    {
-        return this.element;
     }
     get elems ()
     {
         return this._elems; 
         // TODO мб миксить в HTMLElementExt чтобы элемент отдавал свои бем-сущности?
     }
-
-    setMods (mods : BemModDef[])
+ 
+    setBemMods (mods : BemModDef[])
     {
         const cls = BemBlock.getModsCls(this._name, mods);
-        this.block.addCssCls(cls);
+        this.element.addCssCls(cls);
     }
-    setElemMods (name : string, mods : BemModDef[])
+    setElemBemMods (name : string, mods : BemModDef[])
     {
         if (name in this.elems)
         {
@@ -73,26 +66,39 @@ export default abstract class BemBlock extends DomComponent
             this.elems[name].addCssCls(cls);
         }
     }
-    mix (itemDef : BemItemDef) : BemBlock
+    bemMix (itemDef : BemItemDef)
     {
-        const cls = isItemElem(itemDef)
-                ? BemBlock.getElemCls(itemDef)
-                : BemBlock.getBlockCls(itemDef);
-
-        this.block.addCssCls(cls);
-        return this;
+        this.element.addCssCls( BemBlock.getMixCls(itemDef) );
     }
-    mixElem (name : string, itemDef : BemItemDef) : BemBlock
+    elemBemMix (name : string, itemDef : BemItemDef)
     {
         if (name in this.elems)
         {
-            const cls = isItemElem(itemDef)
-                ? BemBlock.getElemCls(itemDef)
-                : BemBlock.getBlockCls(itemDef);
-
-            this.elems[name].addCssCls(cls);
+            this.elems[name].addCssCls( BemBlock.getMixCls(itemDef) );
         }
-        return this;
+    }
+    bemClear (itemDef : BemItemDef)
+    {
+        this.element.getCssClsArr().forEach(cls => 
+        {
+            if (cls.startsWith(itemDef[0]))
+            {
+                this.element.delCssCls(cls);
+            }
+        });
+    }
+    elemBemClear (name : string, itemDef : BemItemDef)
+    {
+        if (name in this.elems)
+        {
+            this.elems[name].getCssClsArr().forEach(cls => 
+            {
+                if (cls.startsWith(itemDef[0]))
+                {
+                    this.element.delCssCls(cls);
+                }
+            });
+        }
     }
 
     protected _processParams (params : BemCompParams)
@@ -109,24 +115,24 @@ export default abstract class BemBlock extends DomComponent
     {
         const {name, mods, mix, cssCls} = this._meta.bem;
 
-        console.log(this.block, this._element);
+        // console.log(this.element, this._element);
 
-        this.block.addCssCls(name);
+        this.element.addCssCls(name);
 
         if (cssCls?.block) // bem's block css classes override component's css classes
         {
-            this.block.addCssCls(cssCls.block);
+            this.element.addCssCls(cssCls.block);
         }
         else
             super._processCssCls();
 
         if (mods?.block)
         {
-            this.setMods(mods.block);
+            this.setBemMods(mods.block);
         } 
         if (mix?.block)
         {
-            (mix.block as BemElemDef[]).forEach( item => this.mix(item) );
+            (mix.block as BemElemDef[]).forEach( item => this.bemMix(item) );
         }
     } 
     protected _processDomEvents ()
@@ -135,7 +141,7 @@ export default abstract class BemBlock extends DomComponent
 
         if (events?.block) // bem's block events override component's events
         {
-            this.block.addEvntLsnrs(events.block);
+            this.element.addEvntLsnrs(events.block);
         }
         else
             super._processDomEvents();
@@ -143,7 +149,7 @@ export default abstract class BemBlock extends DomComponent
     protected _processElems ()
     {
         // will check element binding in both ways: by css-class and by bem-element attribute. each of binding type can be handy in different situations
-        this.block.querySelectorAll(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`).forEach(element => 
+        this.element.querySelectorAll(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`).forEach(element => 
         {
             const elem : HTMLElementExt = makeHTMLElementExt(element);
 
@@ -158,7 +164,7 @@ export default abstract class BemBlock extends DomComponent
                 }
             });
         });
-        // this.block.querySelectorAll(`[${BemBlock.ELEM_NAME_ATTR}]`).forEach(element => 
+        // this.element.querySelectorAll(`[${BemBlock.ELEM_NAME_ATTR}]`).forEach(element => 
         // {
         //     const elemName = element.getAttribute(BemBlock.ELEM_NAME_ATTR);            
 
@@ -193,7 +199,7 @@ export default abstract class BemBlock extends DomComponent
             {
                 if (name in this.elems)
                 {
-                    this.setElemMods(name, mods);
+                    this.setElemBemMods(name, mods);
                 }
             });
         }      
@@ -203,7 +209,7 @@ export default abstract class BemBlock extends DomComponent
             {
                 if (name in this.elems)
                 {
-                    items.forEach(item => this.mixElem(name, item));
+                    items.forEach(item => this.elemBemMix(name, item));
                 }
             });
         }
@@ -232,6 +238,12 @@ export default abstract class BemBlock extends DomComponent
         this._processElemsDomEvents();
     }
 
+    static getMixCls (itemDef : BemItemDef) : string[]
+    {
+        return isItemElem(itemDef)
+                    ? BemBlock.getElemCls(itemDef)
+                    : BemBlock.getBlockCls(itemDef);
+    }
     static getBlockCls (clsDef : BemBlockDef) : string[]
     {
         const blockCls = clsDef[0];
@@ -271,7 +283,4 @@ export default abstract class BemBlock extends DomComponent
                 ? `${itemCls}${BemBlock.MODIFIER_SEPARATOR}${clsDef[0]}${BemBlock.MODIFIER_VAL_SEPARATOR}${clsDef[1]}`
                 : `${itemCls}${BemBlock.MODIFIER_SEPARATOR}${clsDef[0]}`;
     }
-    // static parseCls (cls : CssCls) : BemItemDef
-    // {        
-    // }
 }

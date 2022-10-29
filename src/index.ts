@@ -1,15 +1,14 @@
 //require('module-alias/register');
-import App from './app';
+import SurApp from './app';
 import Page from '@models/page';
 import pages from './app/pages';
 
-const app = App.instance;
+const app = SurApp.instance;
 
 // dummy page routing
 
 const url = location.href;
 const getPage = (pageName : string, defPage : Page = pages['auth']) : Page => pageName in pages ? pages[pageName] : defPage; 
-// TODO заменить defPage на auth 
 const go2page = (pageName : string) => location.replace(Page.url(pageName));
 const renderPage = (page : Page) => { app.page = page };
 
@@ -33,6 +32,6 @@ document.body.addEventListener('click', event =>
     // TODO ссылкам, которые могут вызывать рутинг надо специальный атрибут добавить 
     {
         event.preventDefault();
-        renderPage( getPage( Page.nameFromUrl(element.getAttribute('href')), pages['auth'] ) );
+        renderPage( getPage( Page.nameFromUrl(element.getAttribute('href')), pages['error404'] ) );
     }
 });

@@ -1,12 +1,12 @@
 import Templator from '@models/templator';
-import SimpleBlock from '@models/simple_block';
-import {CompProps, CompEvents} from '@models/dom_component';
+import ComponentBlock from '@models/component_block';
+import {BlockProps, BlockEvents} from '@models/block';
 import tpl from './tpl.hbs';
 import './style.scss';
 
 const template = new Templator(tpl);
 
-export type ButtonProps = CompProps & //
+export type ButtonProps = BlockProps & //
 {
     label : string,
     isLink? : boolean,
@@ -16,9 +16,9 @@ export type ButtonProps = CompProps & //
     size? : 'big',
     width? : 'full',
 };
-export default class Button extends SimpleBlock 
+export default class Button extends ComponentBlock 
 {
-    constructor (props : ButtonProps, events? : CompEvents)
+    constructor (props : ButtonProps, events? : BlockEvents)
     {
         const attrs : { href? : string, name? : string} = {};
         const bem = { name: 'button', mods: {block: []} };

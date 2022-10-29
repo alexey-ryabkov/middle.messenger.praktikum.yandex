@@ -1,16 +1,17 @@
+import {AppContainer} from '@models/types';
 import Templator from '@models/templator';
-import SimpleBlock from '@models/simple_block';
+import ComponentBlock from '@models/component_block';
 import tpl from './tpl.hbs';
 import './style.scss';
 
 const template = new Templator(tpl);
 
-export default class MainContainer extends SimpleBlock 
+export default class MainContainer extends ComponentBlock implements AppContainer
 {
-    constructor (pageHolder : HTMLElement | string) 
+    constructor (root : HTMLElement, pageHolder : HTMLElement | string) 
     {   
         super({
-            node: document.body, 
+            node: root, 
             props: {                
                 page: pageHolder,
             },

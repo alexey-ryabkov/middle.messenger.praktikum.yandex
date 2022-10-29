@@ -6,9 +6,8 @@ import {buildFormFields} from '@lib-components/input-text';
 import CenteredFormLayout from '@lib-layouts/centered_form';
 import tpl from './tpl.hbs';
 
-
 const blockName = '_pageAuth';
-const layout = new CenteredFormLayout(SurApp.instance, { title: 'Авторизация' });
+const layout = new CenteredFormLayout(SurApp.instance, { title: 'Регистрация' });
 
 const page = new class extends Page
 {
@@ -16,34 +15,32 @@ const page = new class extends Page
     {
         super._processPageLayout(); 
 
-        // TODO и тут можно сделать валидацию, прикручивая events к полям  
         const fields = buildFormFields({ 
+            'Почта': 'email',
             'Логин': 'login',
+            'Имя': 'first_name',
+            'Фамилия': 'second_name',
+            'Телефон': 'phone',
             'Пароль': 'password',
+            'Пароль (еще раз)': 'password_confirm'
         }); 
 
         const button = new Button(
         {
-            label: 'Войти',
+            label: 'Зарегистрироваться',
             isLink: true,
             href: Page.url('chats'),
             importance: 'primary',
             size: 'big',
             width: 'full' 
 
-        }, ['click', event => 
-        {
-            event.preventDefault();
-            console.log('you pushed it!');
-        }]);
+        });
         button.bemMix(['form', 'submitButton']); 
-        // TODO тут вставка в шаблон, а не блок, поэтому вставляться должнопо другому... 
-        // TODO при такой установке обработчик естесствено работать не будет... 
 
         const form = new Templator(tpl).compile({
             fields,
             button,
-            regUrl: Page.url('reg')
+            authUrl: Page.url('auth')
         });
 
         this._layout.areas = {form};
@@ -53,6 +50,6 @@ const page = new class extends Page
     {
         return layout;
     }
-} ('auth', 'Авторизация', blockName);
+} ('reg', 'Регистрация', blockName);
 
 export default page;

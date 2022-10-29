@@ -1,7 +1,8 @@
+import SurApp from '@app';
 import Page from '@models/page';
 import CenteredMsgLayout from '@lib-layouts/centered_msg';
 
-const layout = new CenteredMsgLayout(
+const layout = new CenteredMsgLayout(SurApp.instance, 
 {    
     title: '500',
     msg: 'Кажется, что-то сломалось...',  

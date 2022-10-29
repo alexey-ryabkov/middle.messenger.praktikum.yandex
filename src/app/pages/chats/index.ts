@@ -1,48 +1,67 @@
+import SurApp from '@app';
 import Templator from '@models/templator';
 import Page from '@models/page';
-import Container from '@models/Container';
-import leftcolWindow from '../../../lib/layouts/leftcol_window';
-import UserProfile from '../../modules/user_profile';
-import Chats from '../../modules/chats_list';
-import ChatProfile from '../../modules/chat_profile';
-import Messages from '../../modules/messages';
+import LeftcolWindowLayout from '@lib-layouts/leftcol_window';
+
+import UserProfile from '@app-modules/user_profile';
+import Chats from '@app-modules/chats_list';
+import ChatProfile from '@app-modules/chat_profile';
+import Messages from '@app-modules/messages';
+
 import leftcolTpl from './leftcol.hbs';
 import workareaTpl from './workarea.hbs';
-/*
-порядок подключения
--общие компоненты
--общие модули
--контейнер приложения
--компоненты приложения
--модули приложения
--шаблон
--страница
-*/
 
-// const app = App.instance;
+const blockName = '_pageChat';
+const layout = new LeftcolWindowLayout(SurApp.instance);
+
+const page = new class extends Page
+{
+    protected _processPageLayout ()
+    {
+        super._processPageLayout(); 
+
+        const leftcol = new Templator(leftcolTpl).compile({
+            userProfile: new UserProfile(),
+            chats: new Chats()
+        });
+        const workarea = new Templator(workareaTpl).compile({
+            chatProfile: new ChatProfile(),
+            message: new Messages()
+        });
+
+        this._layout.areas = {leftcol, workarea};
+        this._layout.elemBemMix('content', [blockName, 'content']); 
+    }
+    protected get _layout () 
+    {
+        return layout;
+    }
+} ('chats', 'Чаты', blockName);
+
+export default page;
 
 // TODO здесь нужен также евент-бас для связи использования меню 
 
-const userProfile = new UserProfile(); 
-const chats = new Chats();
-const chatProfile = new ChatProfile();
-const messages = new Messages();
+// const userProfile = new UserProfile(); 
+// const chats = new Chats();
+// const chatProfile = new ChatProfile();
+// const messages = new Messages();
 
 // const leftcolTemplate = new Templator(leftcolTpl);
-const leftcol = new Container(new Templator(leftcolTpl), 
-{
-    userProfile,
-    chats
-});
+// const leftcol = new Container(new Templator(leftcolTpl), 
+// {
+//     userProfile,
+//     chats
+// });
 // const workareaTemplate = new Templator(workareaTpl);
-const workarea = new Container(new Templator(workareaTpl), 
-{
-    chatProfile,
-    messages
-});
+// const workarea = new Container(new Templator(workareaTpl), 
+// {
+//     chatProfile,
+//     messages
+// });
 
-export default new Page(leftcolWindow, { leftcol, workarea }, '_pageChats', 'Чат'); // TODO изменение заголовка в зависимости от открытого чата 
-
+// export default new Page(leftcolWindow, { leftcol, workarea }, '_pageChats', 'Чат'); 
+// TODO изменение заголовка в зависимости от открытого чата 
 
 // ProfileArea(
 // {
@@ -75,8 +94,6 @@ export default new Page(leftcolWindow, { leftcol, workarea }, '_pageChats', 'Ч�
         
 //     }
 // });
-
-
 
 // chat.profile
 

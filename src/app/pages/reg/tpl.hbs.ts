@@ -10,6 +10,6 @@ export default `
 <div class="form__buttonsBox">
     <!-- Пока кнопка сделана ссылкой для навигации -->
     {{{button}}}
-    <a href="{{authPageUrl}}" class="form__altSubmitLink link link--size_big">войти</a>
+    <a href="{{authUrl}}" class="form__altSubmitLink link link--size_big">войти</a>
 </div>
 `.trim();

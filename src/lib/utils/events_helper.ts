@@ -15,7 +15,7 @@ const EventsHelperMixin =
     {       
         plural2Arr(lsnrs).forEach(lsnr => 
         {
-            this.addEventListener(lsnr.name, lsnr.handler);
+            this.addEventListener(lsnr[0], lsnr[1]);
             this._evntsCache.add(lsnr);
         });        
     },
@@ -23,7 +23,7 @@ const EventsHelperMixin =
     {
         plural2Arr(lsnrs).forEach(lsnr => 
         {
-            this.removeEventListener(lsnr.name, lsnr.handler);
+            this.removeEventListener(lsnr[0], lsnr[1]);
             this._evntsCache.delete(lsnr);
         });  
     },
@@ -31,9 +31,9 @@ const EventsHelperMixin =
     {
         this._evntsCache.forEach(lsnr => 
         {
-            if (name == lsnr.name)
+            if (name == lsnr[0])
             {
-                this.removeEventListener(name, lsnr.handler);
+                this.removeEventListener(name, lsnr[1]);
             }
         });
     },
@@ -41,7 +41,7 @@ const EventsHelperMixin =
     {
         this._evntsCache.forEach(lsnr => 
         {
-            this.removeEventListener(lsnr.name, lsnr.handler);
+            this.removeEventListener(lsnr[0], lsnr[1]);
         });
         this._evntsCache.clear();
     }

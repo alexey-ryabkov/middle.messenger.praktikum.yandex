@@ -1,12 +1,16 @@
 import Templator from '@models/templator';
-import SimpleBlock from '@models/simple_block';
+import ComponentBlock from '@models/component_block';
 import tpl from './tpl.hbs';
 
-export default class Messages extends SimpleBlock
+export default class Messages extends ComponentBlock
 {
-    _template = new Templator(tpl);
     constructor ()
     {
-        super({bem:{name:'name'}});
+        super({bem:{name:'_messages'}});
+    }
+
+    protected get _template () 
+    {
+        return new Templator(tpl);
     }
 }

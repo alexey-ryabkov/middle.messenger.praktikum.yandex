@@ -1,12 +1,15 @@
 import Templator from '@models/templator';
-import SimpleBlock from '@models/simple_block';
+import ComponentBlock from '@models/component_block';
 import tpl from './tpl.hbs';
 
-export default class UserProfile extends SimpleBlock
+export default class UserProfile extends ComponentBlock
 {
-    _template = new Templator(tpl);
     constructor ()
     {
-        super({bem:{name:'name'}});
+        super({bem:{name:'_userProfile'}});
+    }
+    protected get _template () 
+    {
+        return new Templator(tpl);
     }
 }

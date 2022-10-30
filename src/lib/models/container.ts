@@ -1,21 +1,23 @@
 // import DomComponent from './bem_block';
-import {Compilable} from './types';
+import {CompilableTemplate} from './types';
 import SimpleBlock from './simple_block';
 
 import mount from '../utils/mount';
+
+// @todo по умолчанию ставить какой-то контейнер... 
 
 export default class Container
 {
     protected _view : SimpleBlock;
     
     constructor (
-        template : Compilable,
-        params = {}) 
+        template : CompilableTemplate,
+        params) 
     {   
         this._view = new (class extends SimpleBlock
                     {
                         _template = template;
-                        componentDidUpdate = () => false;
+                        // componentDidUpdate = () => false;
 
                     }) (params);
     }

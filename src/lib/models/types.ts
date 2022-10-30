@@ -17,7 +17,7 @@ export type Handler = (...args) => void;
 export type CEventLsnr = { event : string, handler : Handler };
 
 
-export interface Compilable // @todo все таки вызывают то другой метод...
+export interface CompilableTemplate 
 {
     compile (data : any) : string;
     // compile (tpl : string, data : any) : string

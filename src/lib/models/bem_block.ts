@@ -89,7 +89,7 @@ export default abstract class BemBlock extends DomComponent
         this.block.addCssCls(cls);
         return this;
     }
-    mixElem (name : string, itemDef : BemItemDef)
+    mixElem (name : string, itemDef : BemItemDef) : BemBlock
     {
         if (name in this.elems)
         {
@@ -102,9 +102,9 @@ export default abstract class BemBlock extends DomComponent
         return this;
     }
 
-    protected _createElement () 
+    protected _initElement () 
     {
-        super._createElement();
+        super._initElement();
         
         this.block.querySelectorAll(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`).forEach(element => 
         {

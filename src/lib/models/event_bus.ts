@@ -1,35 +1,35 @@
-import {SingleOrPlural, Handler, CEventLsnr} from '../models/types';
-import {plural2Arr} from '../utils';
+import {Handler} from '../models/types';
 
 export default class EventBus
 {
-    protected _listeners : Record< string, Set< Handler >>;
+    listeners : Record< string, Handler[] >;
 
     constructor() 
     {
-        this._listeners = {};
+        this.listeners = {};
     }
-    on (lsnrs : SingleOrPlural< CEventLsnr >) 
+    on (event : string, callback : Handler) 
     {
-        plural2Arr(lsnrs).forEach(lsnr => 
+        if (!(event in this.listeners))
         {
-            this._listeners[lsnr.name].add(lsnr.handler);
-        });
+            this.listeners[event] = [];
+        }
+        this.listeners[event].push(callback);
     }
-    off (lsnrs : SingleOrPlural< CEventLsnr >) 
+    off (event : string, callback : Handler) 
     {
-        plural2Arr(lsnrs).forEach(lsnr => 
+        if (event in this.listeners) 
         {
-            this._listeners[lsnr.name].delete(lsnr.handler);
-        });
+            this.listeners[event] = this.listeners[event].filter(listener => listener !== callback);
+        }
     }
-    emit (eventName : string, ...args) 
+    emit (event : string, ...args) 
     {
-        if (eventName in this._listeners) 
+        if (event in this.listeners) 
         {
-            this._listeners[eventName].forEach(handler => handler(...args));
+            this.listeners[event].forEach(listener => listener(...args));
         }
         else
-            throw `Error: no event with name ${eventName}`;
+            throw `Error: no event with name ${event}`;
     }
 }

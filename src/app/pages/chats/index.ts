@@ -1,11 +1,13 @@
-import Templator from '../../../models/templator';
-import Page from '../../../models/page';
-import Container from '../../../models/Container';
-import leftcolWindow from '../../../layouts/leftcol_window';
+import Templator from '../../../lib/models/templator';
+import Page from '../../models/page';
+import Container from '../../../lib/models/Container';
+
+import leftcolWindow from '../../../lib/layouts/leftcol_window';
 import leftcolTpl from './leftcol.hbs';
 import workareaTpl from './workarea.hbs';
+
 import UserProfile from '../../modules/user_profile';
-import Chats from '../../modules/chats';
+import Chats from '../../modules/chats_list';
 import ChatProfile from '../../modules/chat_profile';
 import Messages from '../../modules/messages';
 

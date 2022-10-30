@@ -1,3 +1,11 @@
+
+/*
+@todo 
+view
+name (дляпостроения урла)
+из входной точки эти методы работы с урлом 
+*/
+
 export default class Page 
 {
     _layout = null;

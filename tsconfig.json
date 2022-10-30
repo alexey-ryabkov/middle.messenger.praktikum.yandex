@@ -3,6 +3,7 @@
         "module": "esnext",
         "moduleResolution": "node",
         "target": "ES5",
+        "lib": ["DOM", "ESNext"],
         "sourceMap": true,
         "allowSyntheticDefaultImports": true,
         "noImplicitAny": false,

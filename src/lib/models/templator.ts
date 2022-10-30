@@ -1,7 +1,7 @@
 import Handlebars from 'handlebars';
-import {Compilable} from './types';
+import {CompilableTemplate} from './types';
 
-export default class Templator implements Compilable 
+export default class Templator implements CompilableTemplate 
 {
     tpl : string = '';
 

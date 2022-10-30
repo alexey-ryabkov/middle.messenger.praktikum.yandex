@@ -1,33 +1,37 @@
-// import Templator from '../../models/templator';
-// import _Module from '../../models/_module';
-import {unique} from '../../utils';
-// import tpl from './tpl.hbs';
-// import './style.scss';
+import MainContainer from './modules/main';
+import Page from './models/page';
+import ChatList from './models/chat_list';
+import User from './models/user';
+import { Nullable } from '../lib/models/types';
 
-// const APP_ROOT_CSSCLASS = '_surApp';
-// const APP_CONTAINER_CSSCLASS = '_surApp__workarea';
-// const APP_BGBOX_CSSCLASS = '_surApp__background _surApp__background--bg_image';
-// const INITIALIZE_MSG = 'Загрузка приложения...';
+const INITIALIZE_MSG = 'Загрузка приложения...';
 const APP_SINGLETON_TOKEN = Symbol();
+
+// @todo в какой момент маунтится верстка контейнера?
+// а страниц? 
 
 export default class App 
 {
-    _page = null;
+    static readonly NAME = 'Sur chat';
     
-    constructor (token) // синглтон 
+    protected _title : string;
+    protected _container : MainContainer; 
+    protected _page : Page;
+    protected _chatsList : ChatList;
+    protected _user : Nullable< User > = null;
+
+    // @todo "авторизация" пользователя
+    // и инициация его чатов
+    // интерфейс http транспорта
+    
+    constructor (token : Symbol)  
     {        
-        // super();
         if (APP_SINGLETON_TOKEN !== token)
         {
             throw new Error('This class cannot instantiate directly')
-        }        
-        // this.rootCssClass = '';
-        // this.title = INITIALIZE_MSG;
-        // this.props = {
-        //     appContainerCssClass: APP_CONTAINER_CSSCLASS,
-        //     appBgBoxCssClass: APP_BGBOX_CSSCLASS,
-        //     page: INITIALIZE_MSG
-        // }
+        }          
+        this._container = new MainContainer(INITIALIZE_MSG);
+        this.title = INITIALIZE_MSG;
     }    
     static get instance () 
     {        
@@ -37,48 +41,36 @@ export default class App
         }
         return this[APP_SINGLETON_TOKEN];
     }
-    // _initTemplate () 
-    // {
-    //     this.template = new Templator(tpl);
-    // }
+    protected set title (title : string)
+    {
+        title = title.trim();
+        document.title = `${App.NAME}${title ? ': '+title : ''}`; 
+    }
+    get title ()
+    {
+        return this._title;
+    }
     get chatsList ()
     {
-        
+        return this._chatsList;
     }
     get user ()
     {
-        
+        return this._user;
     }
-    set page (page)
+    set page (page : Page)
     {
         this._page = page;
-        // @todo настраивать пропсы модуля-контейнера
-        // this.rootCssClass = this._page.rootCssClass;
-        // this.title = this._page.title;
-    } 
-    // @todo настраивать пропсы модуля-контейнера
-    // set title (title)
-    // {
-    //     title = String(title).trim();
-    //     document.title = `Sur chat${title ? ': '+title : ''}`; 
-    // }
-    // set rootCssClass (cssClass = '')
-    // {
-    //     document.body.className = unique([APP_ROOT_CSSCLASS, cssClass]).join(' ').trim();
-    // }
-    // get container ()
-    // {
-    //     return document.getElementsByClassName(APP_CONTAINER_CSSCLASS)[0];
-    // }
+        this._container.page = page;
+        this.title = this._page.title;
+    }
     // render ()
     // {
     //     this.props.page = this._page?.render() ?? '';
     //     return super.render();
     // }
-    mount () // @todo перемонтировать главный модуль (со всем его содержимым)
-    {
-        // return super.mount(document.body);
-    }
-    // static rootCssClass = () => APP_ROOT_CSSCLASS;
-    // static containerCssClass = () => APP_CONTAINER_CSSCLASS;
+    // mount () // @todo перемонтировать главный модуль (со всем его содержимым)
+    // {
+    //     // return super.mount(document.body);
+    // }
 }

@@ -2,7 +2,7 @@
 
 // @todo пльзователь ведь тоже мб чатом 
 
-import {Image, Video, Location, Label} from '../../lib/models/types';
+import {Image, Video, Location, Label} from '../../lib/@models/types';
 
 
 type ChatMember = // @todo это замешано с валидаторами обязательных полей регистрации 

@@ -1,8 +1,9 @@
-import Templator from '../../models/templator';
-import Page from '../../models/page';
-import signFormLayout from '../../layouts/sign_form';
-import '../../components/button';
-import '../../components/input-text';
+import Templator from '../../../lib/@models/templator';
+import Page from '../../@models/page';
+// import Container from '../../../lib/@models/Container';
+import centeredFormLayout from '../../../lib/layouts/centered_form';
+import Button from '../../../lib/components/button';
+import InputText from '../../../lib/components/input-text';
 import tpl from './tpl.hbs';
 
 const layoutAreas = {
@@ -30,4 +31,4 @@ const layoutAreas = {
         }
     })
 }
-export default new Page(signFormLayout, layoutAreas, '_pageAuth', 'Авторизация');
+export default new Page(centeredFormLayout, layoutAreas, '_pageAuth', 'Авторизация');

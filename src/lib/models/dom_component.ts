@@ -1,10 +1,10 @@
 import { v4 as makeUUID } from 'uuid';
-import EventEmitter from './event_emitter';
-import EventBus from './event_bus';
-import SimpleProps from './simple_props';
-import {Nullable, SingleOrPlural, EventLsnr, CompilableTemplate} from './types';
-import CssClsHelperMixin, {CssCls, HTMLElementCssCls} from '../utils/css_cls_helper';
-import EventsHelperMixin, {HTMLElementEvnts} from '../utils/events_helper';
+import EventEmitter from '@models/event_emitter';
+import EventBus from '@models/event_bus';
+import SimpleProps from '@models/simple_props';
+import {Nullable, SingleOrPlural, EventLsnr, CompilableTemplate} from '@models/types';
+import CssClsHelperMixin, {CssCls, HTMLElementCssCls} from '@lib-utils/css_cls_helper';
+import EventsHelperMixin, {HTMLElementEvnts} from '@lib-utils/events_helper';
 
 export interface HTMLElementExt extends HTMLElement, HTMLElementCssCls, HTMLElementEvnts
 {}
@@ -15,22 +15,26 @@ export function makeHTMLElementExt (element : Element) : HTMLElementExt
     return element as HTMLElementExt; 
 }
 
-export type CompProps = Record< string, any >; // key?: CompKey, @todo как один из пропсов 
-export type CompElement = HTMLElement | DocumentFragment | string;
 export type CompKey = number | string;
+export type CompProps = {
+    [key : string]: any,
+    key?: CompKey
+}; 
+export type CompAttrs = Record< string, string | number | boolean >;
+export type CompElement = HTMLElement | DocumentFragment | string;
 export type CompParams = 
 {
     node? : CompElement,    
-    props? : CompProps,    
+    props? : CompProps, 
+    attrs? :  CompAttrs,  
     cssCls? : CssCls,    
     events? : SingleOrPlural< EventLsnr >,
     settings? : Record< string, any >
 }
-
 export interface ComponentPropsEngine
 {
     component : DomComponent;
-    propsSubComponents : DomComponent[];
+    propsSubComponents : Record< string, DomComponent >;
     processProps () : void;
     compileWithProps (template : CompilableTemplate) : DocumentFragment;
 }
@@ -56,15 +60,15 @@ export default abstract class DomComponent extends EventEmitter
         FLOW_CDU: 'flow:component-did-update',
         FLOW_RENDER: 'flow:render'
     };
-    constructor (params : CompParams = {}) 
+    constructor (params : CompParams) 
     {
         super();
 
-        const {node, props, events, cssCls = ''} = params; 
+        const {props} = params;
+        this._processParams(params);
 
         this._id = makeUUID();
         this._key = props.key; // @todo при reinit ? 
-        this._meta = {node, props, cssCls, events}; // @todo реинициация с начальными prop ?
 
         this._props = this._makePropsProxy(props);
         this._propsEngine = new SimpleProps(this);
@@ -73,23 +77,41 @@ export default abstract class DomComponent extends EventEmitter
         this._lifecircle = new EventBus();
         this._regLifeEvents();
 
-        this._lifecircle.emit(DomComponent._LIFE_EVENTS.INIT);
+        if (!(this._meta.node instanceof HTMLElement)) // for node of HTMLElement it`s need to init component manually by mount method
+        {
+            this._lifecircle.emit(DomComponent._LIFE_EVENTS.INIT);
+        }
     }
     get id ()  
     {
         return this._id;
+    }    
+    get content () // semantic alias
+    {
+        return this.element;
     }
-    get element ()
+    protected get element ()
     {
         return this._element;
     }
+    
     get props ()
     {
         return this._props;
     }
-    set props (nextProps)
+    mount () // for node of HTMLElement it`s need to init component manually by this method
     {
-        if (!nextProps) 
+        const {node} = this._meta; 
+
+        if (node instanceof HTMLElement)
+        {
+            this._lifecircle.emit(DomComponent._LIFE_EVENTS.INIT);
+        }
+        return this;
+    }
+    setProps (nextProps : CompProps)
+    {
+        if (!this.element || !nextProps) 
         {
             return;
         }
@@ -99,9 +121,16 @@ export default abstract class DomComponent extends EventEmitter
         Object.assign(this.props, nextProps);
         this._flags.inSetPropsCall = false;
     }
+    setAttrs (attrs : CompAttrs)
+    {
+        Object.entries(attrs).forEach(([name, value]) => 
+        {
+            this.element.setAttribute(name, String(value));
+        });
+    }    
     dispatchComponentDidMount = () => this._lifecircle.emit(DomComponent._LIFE_EVENTS.FLOW_CDM);
 
-    compile = (template : CompilableTemplate) => this._propsEngine.compileWithProps(template);    
+    compile = (template : CompilableTemplate) => this._propsEngine.compileWithProps(template);   
 
     show = () => this.element.style.display = 'block';
     hide = () => this.element.style.display = 'none';
@@ -109,11 +138,12 @@ export default abstract class DomComponent extends EventEmitter
     init () 
     {
         this._initElement();
+        this._processAttrs();
         this._processCssCls();
         this._processDomEvents();
 
         this._lifecircle.emit(DomComponent._LIFE_EVENTS.FLOW_RENDER);
-    }  
+    }      
     componentDidMount (oldProps) 
     {}
     componentDidUpdate (oldProps, newProps) 
@@ -122,6 +152,15 @@ export default abstract class DomComponent extends EventEmitter
     }
     abstract render () : DocumentFragment | HTMLElement;
 
+    protected _processParams (params : CompParams)
+    {
+        this._meta = this._params4meta(params); 
+    }
+    protected _params4meta (params : CompParams)
+    {
+        const {node = 'div', attrs = {}, cssCls = '', events = []} = params; 
+        return {node, attrs, cssCls, events};
+    }
     protected _makePropsProxy (props) 
     {
         return new Proxy(props, 
@@ -163,6 +202,12 @@ export default abstract class DomComponent extends EventEmitter
         element.setAttribute('data-id', this._id);
 
         this._element = makeHTMLElementExt(element); // @todo придется переделывать из-за fragment ? 
+    }
+    protected _processAttrs ()
+    {
+        const {attrs} = this._meta; 
+
+        this.setAttrs(attrs);
     }
     protected _processCssCls ()
     {

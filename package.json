@@ -10,14 +10,16 @@
   "author": "Alexey Ryabkov",
   "license": "ISC",
   "devDependencies": {
-    "@anikin/parcel-transformer-handlebars": "1.0.9",
     "@parcel/transformer-sass": "2.7.0",
+    "@types/node": "^18.11.8",
+    "@types/uuid": "^8.3.4",
+    "handlebars": "^4.7.7",
     "parcel": "2.7.0",
+    "parcel-resolver-tspaths": "^0.0.9",
     "typescript": "4.8.4"
   },
   "dependencies": {
     "express": "4.18.2",
-    "handlebars": "4.7.7",
     "uuid": "^9.0.0"
   }
 }

@@ -1,5 +1,5 @@
-import Templator from '../../models/templator';
-import Page from '../../models/page';
+import Templator from '../../@models/templator';
+import Page from '../../@models/page';
 import layout from '../../layouts/sign_form';
 import Button from '../../components/button'; 
 import InputText from '../../components/input-text';

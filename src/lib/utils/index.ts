@@ -1,4 +1,4 @@
-import {SingleOrPlural, Plural} from '../models/types'
+import {SingleOrPlural, Plural} from '../@models/types'
 
 export const unique = (item : any[]) : any[] => [...new Set(item)];
 // arr.filter( (item, i, arr) => arr.indexOf(item) == i )

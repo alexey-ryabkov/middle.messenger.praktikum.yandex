@@ -1,5 +1,5 @@
 import {unique} from '.';
-import {SingleOrPlural} from '../models/types';
+import {SingleOrPlural} from '../@models/types';
 
 export type CssCls = SingleOrPlural<string>;
 export function cssCls2str (cls : CssCls) : string

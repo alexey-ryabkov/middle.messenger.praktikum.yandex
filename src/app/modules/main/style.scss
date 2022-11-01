@@ -3,8 +3,9 @@
 @import './vars';
 @import './mixins';
 
+
 @each $name, $weight in $font-weights {
-    @include font-face($font-family, '../../../static/fonts/SFProDisplay/SFProDisplay-#{$name}', $weight, normal, eot woff2 woff ttf);
+    @include font-face($font-family, '../../../../static/fonts/SFProDisplay/SFProDisplay-#{$name}', $weight, normal, eot woff2 woff ttf);
 }
 
 .icontainer {
@@ -172,7 +173,7 @@
                         background: $gray-light;
                     }
                     &image {
-                        background: $gray-light url(../../../static/images/sur_bg.svg) center/cover no-repeat;
+                        background: $gray-light url(../../../../static/images/sur_bg.svg) center/cover no-repeat;
                     }
                     &animation {
                         background: $gray-light;

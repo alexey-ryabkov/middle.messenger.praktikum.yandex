@@ -1,6 +1,6 @@
-import DomComponent, {CompParams, HTMLElementExt, makeHTMLElementExt} from './dom_component';
-import {CssCls} from '../utils/css_cls_helper';
-import {SingleOrPlural, EventLsnr} from './types';
+import DomComponent, {CompParams, HTMLElementExt, makeHTMLElementExt} from '@models/dom_component';
+import {CssCls} from '@lib-utils/css_cls_helper';
+import {SingleOrPlural, EventLsnr} from '@models/types';
 
 export type BemModDef = [string, string?];
 export type BemBlockDef = [string, BemModDef[]?];
@@ -42,17 +42,8 @@ export default abstract class BemBlock extends DomComponent
     protected _elems : Record< string, HTMLElementExt > = {}; // Record< string, { element: HTMLElement, bem: BemItemDef, events: {} } > ?
 
     constructor (params : BemCompParams)
-    {
-        const {bem} = params;
-
-        delete params.bem;        
+    {   
         super(params);
-
-        this._meta.bem = bem;
-        this._name = this._meta.bem.name;
-
-        // @todo это нужно перенести в init ?
-        
     }
     get name ()
     {
@@ -60,7 +51,7 @@ export default abstract class BemBlock extends DomComponent
     }
     get block () // semantic alias
     {
-        return this._element;
+        return this.element;
     }
     get elems ()
     {
@@ -102,9 +93,32 @@ export default abstract class BemBlock extends DomComponent
         return this;
     }
 
+    // @todo все здесь - хуйня. нужно заниматься css когда уже отрендерен шаблон 
+
+    protected _processParams (params : BemCompParams)
+    {
+        super._processParams(params);
+        this._name = this._meta.bem.name;
+    }
+    protected _params4meta (params : BemCompParams) //: Record< string, any >
+    {
+        return {bem: params.bem, ...super._params4meta(params)}; 
+    }
     protected _initElement () 
     {
         super._initElement();
+
+        
+    }
+    protected _processCssCls ()
+    {
+        const {name} = this._meta.bem;
+
+        this.block.addCssCls(name);
+    }
+    protected _processElems ()
+    {
+        console.log(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`, this.element, this.block.querySelectorAll(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`)); 
         
         this.block.querySelectorAll(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`).forEach(element => 
         {
@@ -120,9 +134,11 @@ export default abstract class BemBlock extends DomComponent
                     this._elems[name] = elem;
                 }
             });
+
+            console.log(this._elems); 
         });
     }
-    protected _processCssCls ()
+    protected _processBemCssCls ()
     {
         const {mods, mix, cssCls} = this._meta.bem;
 
@@ -154,6 +170,8 @@ export default abstract class BemBlock extends DomComponent
             }            
             if (mods.elems)
             {
+                console.log(mods.elems, this.elems); 
+
                 Object.entries(mods.elems as Record< string, BemModDef[] >).forEach(([name, mods]) => 
                 {
                     if (name in this.elems)
@@ -205,6 +223,13 @@ export default abstract class BemBlock extends DomComponent
                 });
             }
         }
+    }
+    protected _render() 
+    {
+        super._render();
+        
+        this._processElems();
+        this._processBemCssCls();
     }
 
     static getBlockCls (clsDef : BemBlockDef) : string[]

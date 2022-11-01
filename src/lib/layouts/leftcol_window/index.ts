@@ -1,4 +1,4 @@
-import Layout from '../../models/layout';
+import Layout from '../../@models/layout';
 import tpl from './tpl.hbs';
 import './style.scss';
 

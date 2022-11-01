@@ -1,13 +1,13 @@
-import authPage from './auth';
+// import authPage from './auth';
 // import regPage from './reg';
-import chatsPage from './chats';
+// import chatsPage from './chats';
 import error404Page from './error404';
 // import error500Page from './error500';
 
 const pages = {
-    auth: authPage, 
+    //auth: authPage, 
     // reg: regPage,
-    chats: chatsPage,
+    //chats: chatsPage,
     error404: error404Page,
     // error500: error500Page
 };

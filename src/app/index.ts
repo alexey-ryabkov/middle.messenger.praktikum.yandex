@@ -1,20 +1,16 @@
-import MainContainer from './modules/main';
-import Page from './models/page';
-import ChatList from './models/chat_list';
-import User from './models/user';
-import { Nullable } from '../lib/models/types';
+import MainContainer from '@app-modules/main';
+import Page from '@models/page';
+import ChatList from '@models/chat_list';
+import User from '@models/user';
+import { Nullable } from '@models/types';
 
 const INITIALIZE_MSG = 'Загрузка приложения...';
 const APP_SINGLETON_TOKEN = Symbol();
-
-// @todo в какой момент маунтится верстка контейнера?
-// а страниц? 
 
 export default class App 
 {
     static readonly NAME = 'Sur chat';
     
-    protected _title : string;
     protected _container : MainContainer; 
     protected _page : Page;
     protected _chatsList : ChatList;
@@ -30,7 +26,7 @@ export default class App
         {
             throw new Error('This class cannot instantiate directly')
         }          
-        this._container = new MainContainer(INITIALIZE_MSG);
+        this._container = new MainContainer(INITIALIZE_MSG).mount(); // @todo контейнер тоже нужно инициализировать 
         this.title = INITIALIZE_MSG;
     }    
     static get instance () 
@@ -46,9 +42,9 @@ export default class App
         title = title.trim();
         document.title = `${App.NAME}${title ? ': '+title : ''}`; 
     }
-    get title ()
+    get container ()
     {
-        return this._title;
+        return this._container;
     }
     get chatsList ()
     {
@@ -60,17 +56,11 @@ export default class App
     }
     set page (page : Page)
     {
-        this._page = page;
-        this._container.page = page;
+        this._page = page.mount();
         this.title = this._page.title;
     }
-    // render ()
-    // {
-    //     this.props.page = this._page?.render() ?? '';
-    //     return super.render();
-    // }
-    // mount () // @todo перемонтировать главный модуль (со всем его содержимым)
-    // {
-    //     // return super.mount(document.body);
-    // }
+    get page ()
+    {
+        return this._page;
+    }
 }

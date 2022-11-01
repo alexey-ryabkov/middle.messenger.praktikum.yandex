@@ -1,40 +1,38 @@
-import Templator from '../../../lib/models/templator';
-import Page from '../../models/page';
-import Container from '../../../lib/models/container';
+import Templator from '@models/templator';
+import SimpleBlock from '@models/simple_block';
 import tpl from './tpl.hbs';
 import './style.scss';
+import { CompilableTemplate } from '@models/types';
 
-type Content = HTMLElement | string; // @todo типа содержимое шаблона
-type MainContainerContent = Page | HTMLElement | string;
+const template = new Templator(tpl);
 
-export default class MainContainer extends Container
+export default class MainContainer extends SimpleBlock 
 {
-    constructor (pageHolder : Content) 
+    constructor (pageHolder : HTMLElement | string) 
     {   
-        super(new Templator(tpl),
-        {
+        console.log(new Templator(tpl));
+
+        super({
             props: {
-                node: document.body,
+                node: document.body, 
                 page: pageHolder,
             },
             bem: {
                 name: '_appSur',
                 mods: {
                     elems: {
-                        workarea: [['bg', 'image']] // @todo попробовать там тип SingleOrPlural 
+                        workarea: [['bg', 'image']] 
                     }
                 }
             }
         });
     }
-    set page (page : MainContainerContent)
+    get workarea ()
     {
-        if (page instanceof Page)
-        {
-            page = newPage.view.element; // @todo да, getContent как-то посемантичнее будет 
-            this.view.mix(['somePage']); // @todo страница должна будет отдавать свой класс блока 
-        }            
-        this.view.props = {page};
-        // @todo по идее настройки css при установке page также должны быть здесь ... 
+        return this.elems['workarea'];
+    }
+    protected get _template () : CompilableTemplate
+    {
+        return template;
     }
 }

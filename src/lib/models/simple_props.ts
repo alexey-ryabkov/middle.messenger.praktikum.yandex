@@ -1,9 +1,9 @@
-import {CompilableTemplate} from './types';
-import DomComponent, {ComponentPropsEngine} from './dom_component';
+import {CompilableTemplate} from '@models/types';
+import DomComponent, {ComponentPropsEngine} from '@models/dom_component';
 
 export default class SimpleProps implements ComponentPropsEngine
 {
-    protected _propsSubComponents : DomComponent[];
+    protected _propsSubComponents : Record< string, DomComponent > = {};
     
     constructor (protected _component : DomComponent) 
     {}
@@ -21,6 +21,8 @@ export default class SimpleProps implements ComponentPropsEngine
     }
     processProps () : void
     {
+        console.log(this._props);
+        
         Object.entries(this._props).forEach(([prop, value]) => 
         {
             if (value instanceof DomComponent) 
@@ -31,6 +33,8 @@ export default class SimpleProps implements ComponentPropsEngine
     }
     compileWithProps (template : CompilableTemplate) : DocumentFragment
     {   
+        console.log(this._propsSubComponents, template);
+        
         Object.entries(this._propsSubComponents).forEach(([prop, child]) => 
         {
             this._props[prop] = `<div data-id="${child.id}"></div>`
@@ -41,7 +45,7 @@ export default class SimpleProps implements ComponentPropsEngine
 
         Object.values(this._propsSubComponents).forEach(child => 
         {
-            fragment.content.querySelector(`[data-id="${child.id}"]`).replaceWith(child.element);
+            fragment.content.querySelector(`[data-id="${child.id}"]`).replaceWith(child.content);
         });
         return fragment.content;
     }

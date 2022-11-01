@@ -1,9 +1,13 @@
-import {CompilableTemplate} from './types';
-import BemBlock from './bem_block';
+import {CompilableTemplate} from '@models/types';
+import BemBlock from '@models/bem_block';
 
 // @todo абстрактный класс SimpleBlock не очень семантично 
-export default abstract class SimpleBlock extends BemBlock
+// переименовать Block -> BemBlock -> ComponentBlock 
+export default abstract class SimpleBlock extends BemBlock 
 {
-    abstract _template : CompilableTemplate; 
-    render = () => this.compile(this._template); 
+    render ()
+    {
+        return this.compile(this._template); 
+    }
+    protected abstract get _template () : CompilableTemplate; 
 }

@@ -1,5 +1,5 @@
 
-import {SingleOrPlural, Handler, CEventLsnr} from '../models/types';
+import {SingleOrPlural, Handler, CEventLsnr} from '../@models/types';
 import {plural2Arr} from '../utils';
 
 export default abstract class EventEmitter

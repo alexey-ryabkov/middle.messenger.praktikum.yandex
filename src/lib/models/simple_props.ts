@@ -17,11 +17,11 @@ export default class SimpleProps implements ComponentPropsEngine
     }
     protected get _props () 
     {
-        return {...this._component.props};
+        return Object.assign({}, this._component.props); //{...this._component.props};
     }
     processProps () : void
     {
-        console.log(this._props);
+        // console.log(this._props);
         
         Object.entries(this._props).forEach(([prop, value]) => 
         {
@@ -33,21 +33,31 @@ export default class SimpleProps implements ComponentPropsEngine
     }
     compileWithProps (template : CompilableTemplate) : DocumentFragment
     {   
-        console.log(this._propsSubComponents, template);
-        
-        Object.entries(this._propsSubComponents).forEach(([prop, child]) => 
+        // console.log(this._propsSubComponents); // , template
+        // console.log(this._props);
+
+        const propsAndStubs : Record< string, any > = {};
+
+        Object.entries(this._props).forEach(([prop, value]) => 
         {
-            this._props[prop] = `<div data-id="${child.id}"></div>`
+            propsAndStubs[prop] = prop in this._propsSubComponents
+                                    ? `<div ${DomComponent.ID_ATTR}="${this._propsSubComponents[prop].id}"></div>` // stub 
+                                    : value;
         });
+        console.log(this._propsSubComponents);
+        console.log(propsAndStubs);
+        // debugger; 
 
         const fragment = document.createElement('template');
-        fragment.innerHTML = template.compile(this._props); 
+        fragment.innerHTML = template.compile(propsAndStubs); 
+
+        // console.log(fragment.innerHTML);
 
         Object.values(this._propsSubComponents).forEach(child => 
         {
-            fragment.content.querySelector(`[data-id="${child.id}"]`).replaceWith(child.content);
+            fragment.content.querySelector(`[${DomComponent.ID_ATTR}="${child.id}"]`).replaceWith(child.content);
         });
-        return fragment.content;
+        return fragment.content; 
     }
 }
 // protected _processProps (props : CompProps)
@@ -55,7 +65,7 @@ export default class SimpleProps implements ComponentPropsEngine
 //     const processed = {};
 
 //     /*
-//     @todo здесь не нужно ничего process, нужнопросто найти все чилдрены, не удаляя их из пропсов 
+//     TODO здесь не нужно ничего process, нужнопросто найти все чилдрены, не удаляя их из пропсов 
 //     чтобы задиспачить о маунте этогохватит
 //     если нужно дать вовне доступ для настройки пропсов, то
 //     можно фильтровать дерево оставляя только компоненты (отдавать sub-? components)
@@ -74,7 +84,7 @@ export default class SimpleProps implements ComponentPropsEngine
 //     {
 //         if (value instanceof DomComponent) 
 //         {
-//             // children[name] = value; @todo по идее просто созранять ссылку.. но тогда мы в рекурсии должны сохранить объект. можно через Map ? 
+//             // children[name] = value; TODO по идее просто созранять ссылку.. но тогда мы в рекурсии должны сохранить объект. можно через Map ? 
 //         } 
 //         else if (value instanceof Array)
 //         {
@@ -83,7 +93,7 @@ export default class SimpleProps implements ComponentPropsEngine
 //             {
 //                 if (val instanceof DomComponent)
 //                 {
-//                     // @todo 
+//                     // TODO 
 //                 }
 //                 else if ('object' == typeof val)
 //                 {

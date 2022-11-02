@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "esnext",
         "moduleResolution": "node",
-        "target": "ES5",
+        "target": "ES2015",
         "lib": ["DOM", "ESNext"],
 
         "sourceMap": true,
@@ -24,7 +24,9 @@
             "@app-modules/*": ["app/modules/*"],
             "@lib-components/*": ["lib/components/*"],
             "@app-components/*": ["app/components/*"],
+            "@lib-utils-kit": ["lib/utils"],
             "@lib-utils/*": ["lib/utils/*"],
+            "@app-utils-kit": ["app/utils"],
             "@app-utils/*": ["app/utils/*"]
         } 
     },

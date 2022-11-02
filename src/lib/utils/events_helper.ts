@@ -1,4 +1,4 @@
-import {SingleOrPlural, EventLsnr} from '../@models/types';
+import {SingleOrPlural, EventLsnr} from '@models/types';
 import {plural2Arr} from '.';
 
 export interface HTMLElementEvnts 
@@ -15,7 +15,7 @@ const EventsHelperMixin =
     {       
         plural2Arr(lsnrs).forEach(lsnr => 
         {
-            this._element.addEventListener(lsnr.name, lsnr.handler);
+            this.addEventListener(lsnr.name, lsnr.handler);
             this._evntsCache.add(lsnr);
         });        
     },
@@ -23,7 +23,7 @@ const EventsHelperMixin =
     {
         plural2Arr(lsnrs).forEach(lsnr => 
         {
-            this._element.removeEventListener(lsnr.name, lsnr.handler);
+            this.removeEventListener(lsnr.name, lsnr.handler);
             this._evntsCache.delete(lsnr);
         });  
     },
@@ -33,7 +33,7 @@ const EventsHelperMixin =
         {
             if (name == lsnr.name)
             {
-                this._element.removeEventListener(name, lsnr.handler);
+                this.removeEventListener(name, lsnr.handler);
             }
         });
     },
@@ -41,7 +41,7 @@ const EventsHelperMixin =
     {
         this._evntsCache.forEach(lsnr => 
         {
-            this._element.removeEventListener(lsnr.name, lsnr.handler);
+            this.removeEventListener(lsnr.name, lsnr.handler);
         });
         this._evntsCache.clear();
     }

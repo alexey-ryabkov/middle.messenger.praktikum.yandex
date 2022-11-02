@@ -5,7 +5,6 @@ import tpl from './tpl.hbs';
 import './style.scss';
 
 const template = new Templator(tpl);
-template.regAsTemplatorBlock('button');
 
 export type InputTextProps = CompProps & 
 {
@@ -14,10 +13,16 @@ export type InputTextProps = CompProps &
     plaseholder? : string,
     autocomplete? : boolean,
 };
+export function buildFormFields (fields : Record< string, string >) // : Record< string, string > @todo разобраться с возвращаемым типом 
+{
+    const fldDef = {
+        type: 'text',
+        cssClass: 'form__field' // @todo определить через bem , когда переделаю компонент InputText
+    };
+    return Object.fromEntries(Object.entries(fields).map( ([label, name]) => [ label, new InputText({name, ...fldDef}).render() ] ));
+}
 export default class InputText extends SimpleBlock 
 {
-    _template = template;
-
     constructor (props : InputTextProps)
     {
         if (!props.type)
@@ -25,5 +30,9 @@ export default class InputText extends SimpleBlock
             props.type = 'text';
         }
         super({ attrs: props, bem: {name: 'inputText'} });
+    }
+    protected get _template () 
+    {
+        return template;
     }
 }

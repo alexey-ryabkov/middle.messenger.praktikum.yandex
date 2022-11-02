@@ -137,8 +137,6 @@
             align-items: flex-start;
             padding-top: 20px;
         }
-        &submitButton {            
-        }
         &altSubmitLink {
             display: inline-block;
             margin: 10px auto;
@@ -257,7 +255,7 @@
         }
     }
 
-    ._errorPageLayout__content {
+    ._centeredMsgLayout__content {
         font-weight: map.get($font-weights, 'Thin');
     }
 }

@@ -48,7 +48,7 @@ export default class HttpTransport
     {
         const xhr = new XMLHttpRequest();
 
-        if (METHODS.GET == method && 'object' == typeof data) // это лучше вынести в get
+        if (METHODS.GET == method && typeof data == 'object') // это лучше вынести в get
         {
           url += '?'+queryStringify(data);
         }

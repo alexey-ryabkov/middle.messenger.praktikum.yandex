@@ -8,7 +8,7 @@ export default class User
     }
     static create ()
     {
-        // @todo фабричный метод
+        // TODO фабричный метод
     }
     static login ()
     {

@@ -16,7 +16,7 @@ export default class App
     protected _chatsList : ChatList;
     protected _user : Nullable< User > = null;
 
-    // @todo "авторизация" пользователя
+    // TODO "авторизация" пользователя
     // и инициация его чатов
     // интерфейс http транспорта
     
@@ -26,7 +26,7 @@ export default class App
         {
             throw new Error('This class cannot instantiate directly')
         }          
-        this._container = new MainContainer(INITIALIZE_MSG).mount(); // @todo контейнер тоже нужно инициализировать 
+        this._container = new MainContainer(INITIALIZE_MSG).mount(); // TODO контейнер тоже нужно инициализировать 
         this.title = INITIALIZE_MSG;
     }    
     static get instance () 

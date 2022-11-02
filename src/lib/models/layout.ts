@@ -11,22 +11,25 @@ export default abstract class Layout extends SimpleBlock
 {
     constructor (params : BemCompParams)
     {
-        if (!params.props)
-        {
-            params.props = {};
-        }
-        params.props.node = document.body;        
+        params.node = document.body;        
         super(params);
     }
-    set areas (areas : Record< string, SimpleBlock >) // layout areas, for example {content: ..., sidebar: ...}
+    set areas (areas : Record< string, SimpleBlock | string >) // layout areas, for example {content: ..., sidebar: ...}
     {
         this.setProps({areas}); 
     }
-    protected _render() // @todo если модель запрашивает App, то она не может быть в lib... либо app должен быть в моделях... а от него наследоваться SurApp 
+    protected _render() 
+    // TODO если модель запрашивает App, то она не может быть в lib... либо app должен быть в моделях... а от него наследоваться SurApp 
     // мб передавать в конструкторе container? который выаолняет определенный интерфейс
     // подумать с т.з. переноссимости 
     {
+        // console.log('in Layout _render', this._props);
+
         app.container.workarea.innerHTML = '';
         app.container.workarea.appendChild(this.render());
+
+        this._processElems();
+        this._processElemCssCls();
+        this._processElemsDomEvents();
     }  
 }

@@ -1,34 +1,33 @@
 import Templator from '@models/templator';
 import SimpleBlock from '@models/simple_block';
-import {CompProps} from '@models/dom_component';
+import {CompProps, CompEvents} from '@models/dom_component';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-export type ButtonProps = CompProps & 
+const template = new Templator(tpl);
+
+export type ButtonProps = CompProps & //
 {
     label : string,
     isLink? : boolean,
     href? : string,
     name? : string,
-    tagline? : string,
     importance? : 'primary' | 'secondary',
     size? : 'big',
     width? : 'full',
 };
 export default class Button extends SimpleBlock 
 {
-    _template = new Templator(tpl);
-
-    constructor (props : ButtonProps)
+    constructor (props : ButtonProps, events? : CompEvents)
     {
         const attrs : { href? : string, name? : string} = {};
         const bem = { name: 'button', mods: {block: []} };
 
-        props.node = 'button';
+        let node = 'button';
 
         if (props.isLink)
         {
-            props.node = 'a';
+            node = 'a';
             attrs.href = props.href ? props.href : '#';
         }
         else if (props.name)
@@ -42,6 +41,10 @@ export default class Button extends SimpleBlock
                 bem.mods.block.push([ mod, props[mod] ]);
             }
         });        
-        super({props, attrs, bem});
+        super({node, props, attrs, bem});
+    }
+    protected get _template () 
+    {
+        return template;
     }
 }

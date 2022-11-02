@@ -1,19 +1,17 @@
 // import Container from '@models/container';
 import Layout from '@models/layout';
-import SimpleBlock from '@models/simple_block';
+// import SimpleBlock from '@models/simple_block';
 
-export default class Page 
+export default abstract class Page 
 {   
     constructor (
         protected _name : string, 
-        protected _layout : Layout, 
-        protected _areas : Record< string, SimpleBlock >, 
-        protected _bemName? : string, 
-        protected _title? : string) 
+        protected _title? : string,
+        protected _blockName? : string) 
     {
-        if (!this._bemName)
+        if (!this._blockName)
         {
-            this._bemName = this._name;
+            this._blockName = `_page${ this._name[0].toUpperCase() + this._name.slice(1) }`;
         }
     }
     get name ()
@@ -31,10 +29,15 @@ export default class Page
     mount ()
     {
         this._layout.mount();
-        this._layout.mix([this._bemName]);
-        this._layout.areas = this._areas;
+        this._processPageLayout();
         return this;
     }
+    protected abstract get _layout () : Layout; 
+
+    protected _processPageLayout ()
+    {
+        this._layout.mix([this._blockName]);
+    } 
     static nameFromUrl (url : string)
     {
         let pageName = '';

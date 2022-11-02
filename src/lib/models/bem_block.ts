@@ -9,7 +9,7 @@ export type BemItemDef = BemBlockDef | BemElemDef;
 
 export function isItemElem (item : BemItemDef) : item is BemElemDef
 {
-    return 'string' == item[1];
+    return typeof item[1] == 'string';
 }
 export type BemParams = {
     name : string, 
@@ -34,6 +34,7 @@ export type BemCompParams = CompParams & { bem : BemParams };
 
 export default abstract class BemBlock extends DomComponent
 {
+    static readonly ELEM_NAME_ATTR = 'bem-element';
     static readonly ELEMENT_SEPARATOR = '__';
     static readonly MODIFIER_SEPARATOR = '--';
     static readonly MODIFIER_VAL_SEPARATOR = '_';
@@ -55,7 +56,8 @@ export default abstract class BemBlock extends DomComponent
     }
     get elems ()
     {
-        return this._elems; // @todo мб миксить в HTMLElementExt чтобы элемент отдавал свои бем-сущности?
+        return this._elems; 
+        // TODO мб миксить в HTMLElementExt чтобы элемент отдавал свои бем-сущности?
     }
 
     setMods (mods : BemModDef[])
@@ -93,135 +95,132 @@ export default abstract class BemBlock extends DomComponent
         return this;
     }
 
-    // @todo все здесь - хуйня. нужно заниматься css когда уже отрендерен шаблон 
-
     protected _processParams (params : BemCompParams)
     {
         super._processParams(params);
+        this._elems = {};
         this._name = this._meta.bem.name;
     }
-    protected _params4meta (params : BemCompParams) //: Record< string, any >
+    protected _params4meta (params : BemCompParams) 
     {
         return {bem: params.bem, ...super._params4meta(params)}; 
     }
-    protected _initElement () 
-    {
-        super._initElement();
-
-        
-    }
     protected _processCssCls ()
     {
-        const {name} = this._meta.bem;
+        const {name, mods, mix, cssCls} = this._meta.bem;
+
+        console.log(this.block, this._element);
 
         this.block.addCssCls(name);
-    }
-    protected _processElems ()
-    {
-        console.log(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`, this.element, this.block.querySelectorAll(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`)); 
-        
-        this.block.querySelectorAll(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`).forEach(element => 
+
+        if (cssCls?.block) // bem's block css classes override component's css classes
         {
-            // @todo мб настраивать способ биндинга или привязывать через атрибуты bem-block="" bem-element=""
-            const elem : HTMLElementExt = makeHTMLElementExt(element);
-
-            elem.getCssClsArr().forEach(cls => 
-            {               
-                const clsMatch = cls.match(new RegExp(`^${this._name}${BemBlock.ELEMENT_SEPARATOR}(\w+)$`));
-                if (clsMatch)
-                {
-                    const name = clsMatch[1];
-                    this._elems[name] = elem;
-                }
-            });
-
-            console.log(this._elems); 
-        });
-    }
-    protected _processBemCssCls ()
-    {
-        const {mods, mix, cssCls} = this._meta.bem;
-
-        if (cssCls)
-        {
-            if (cssCls.block) // bem's block css classes override component's css classes
-            {
-                this.block.addCssCls(cssCls.block);
-            }
-            else
-                super._processCssCls();
-
-            if (cssCls.elems)
-            {
-                Object.entries(cssCls.elems as Record< string, CssCls >).forEach(([name, cls]) => 
-                {
-                    if (name in this.elems)
-                    {
-                        this.elems[name].addCssCls(cls);
-                    }
-                });
-            }
+            this.block.addCssCls(cssCls.block);
         }
-        if (mods)
-        {
-            if (mods.block)
-            {
-                this.setMods(mods.block);
-            }            
-            if (mods.elems)
-            {
-                console.log(mods.elems, this.elems); 
+        else
+            super._processCssCls();
 
-                Object.entries(mods.elems as Record< string, BemModDef[] >).forEach(([name, mods]) => 
-                {
-                    if (name in this.elems)
-                    {
-                        this.setElemMods(name, mods);
-                    }
-                });
-            }
-        }
-        if (mix)
+        if (mods?.block)
         {
-            if (mix.block)
-            {
-                (mix.block as BemElemDef[]).forEach(item => this.mix(item));
-            }            
-            if (mix.elems)
-            {
-                Object.entries(mix.elems as Record< string, BemElemDef[] >).forEach(([name, items]) => 
-                {
-                    if (name in this.elems)
-                    {
-                        items.forEach(item => this.mixElem(name, item));
-                    }
-                });
-            }
+            this.setMods(mods.block);
+        } 
+        if (mix?.block)
+        {
+            (mix.block as BemElemDef[]).forEach( item => this.mix(item) );
         }
-    }
+    } 
     protected _processDomEvents ()
     {
         const {events} = this._meta.bem;
 
-        if (events)
+        if (events?.block) // bem's block events override component's events
         {
-            if (events.block) // bem's block events override component's events
-            {
-                this.block.addEvntLsnrs(events.block);
-            }
-            else
-                super._processDomEvents();
+            this.block.addEvntLsnrs(events.block);
+        }
+        else
+            super._processDomEvents();
+    }
+    protected _processElems ()
+    {
+        // will check element binding in both ways: by css-class and by bem-element attribute. each of binding type can be handy in different situations
+        this.block.querySelectorAll(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`).forEach(element => 
+        {
+            const elem : HTMLElementExt = makeHTMLElementExt(element);
 
-            if (events.elems)
-            {
-                Object.entries(events.elems as Record< string, SingleOrPlural< EventLsnr >>).forEach(([name, lsnrs]) => 
+            elem.getCssClsArr().forEach(cls => 
+            {               
+                const clsMatch = cls.match(new RegExp(`^${this._name}${BemBlock.ELEMENT_SEPARATOR}(\\w+)$`));
+
+                if (clsMatch)
                 {
-                    if (name in this.elems)
-                    {
-                        this.elems[name].addEvntLsnrs(lsnrs);
-                    }
-                });
-            }
+                    const elemName = clsMatch[1];
+                    this._elems[elemName] = elem;
+                }
+            });
+        });
+        // this.block.querySelectorAll(`[${BemBlock.ELEM_NAME_ATTR}]`).forEach(element => 
+        // {
+        //     const elemName = element.getAttribute(BemBlock.ELEM_NAME_ATTR);            
+
+        //     if (!this._elems[elemName])
+        //     {
+        //         const elem : HTMLElementExt = makeHTMLElementExt(element);
+
+        //         elem.addCssCls( BemBlock.getElemCls( [this._name, elemName] ));                
+
+        //         this._elems[elemName] = elem;
+        //     }
+        // });
+
+    }
+    protected _processElemCssCls ()
+    {
+        const {mods, mix, cssCls} = this._meta.bem;
+
+        if (cssCls?.elems)
+        {
+            Object.entries(cssCls.elems as Record< string, CssCls >).forEach(([name, cls]) => 
+            {
+                if (name in this.elems)
+                {
+                    this.elems[name].addCssCls(cls);
+                }
+            });
+        }        
+        if (mods?.elems)
+        {
+            Object.entries(mods.elems as Record< string, BemModDef[] >).forEach(([name, mods]) => 
+            {
+                if (name in this.elems)
+                {
+                    this.setElemMods(name, mods);
+                }
+            });
+        }      
+        if (mix?.elems)
+        {
+            Object.entries(mix.elems as Record< string, BemElemDef[] >).forEach(([name, items]) => 
+            {
+                if (name in this.elems)
+                {
+                    items.forEach(item => this.mixElem(name, item));
+                }
+            });
+        }
+    }
+    protected _processElemsDomEvents ()
+    {
+        const {events} = this._meta.bem;
+
+        if (events?.elems)
+        {
+            Object.entries(events.elems as Record< string, SingleOrPlural< EventLsnr >>).forEach(([name, lsnrs]) => 
+            {
+                if (name in this.elems)
+                {
+                    this.elems[name].addEvntLsnrs(lsnrs);
+                }
+            });
         }
     }
     protected _render() 
@@ -229,7 +228,8 @@ export default abstract class BemBlock extends DomComponent
         super._render();
         
         this._processElems();
-        this._processBemCssCls();
+        this._processElemCssCls();
+        this._processElemsDomEvents();
     }
 
     static getBlockCls (clsDef : BemBlockDef) : string[]

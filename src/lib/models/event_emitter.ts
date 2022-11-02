@@ -1,5 +1,5 @@
 
-import {SingleOrPlural, Handler, CEventLsnr} from '../@models/types';
+import {SingleOrPlural, Handler, CEventLsnr} from '@models/types';
 import {plural2Arr} from '../utils';
 
 export default abstract class EventEmitter
@@ -16,7 +16,7 @@ export default abstract class EventEmitter
         return this._availEvents;
     }
     on (lsnrs : SingleOrPlural< CEventLsnr >) 
-    // @todo on / off / emit можно сделать через миксин
+    // TODO on / off / emit можно сделать через миксин
     // различать DOMEvents и CustomEvents 
     {
         plural2Arr(lsnrs).forEach(lsnr => 

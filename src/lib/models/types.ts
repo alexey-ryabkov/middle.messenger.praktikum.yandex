@@ -11,7 +11,7 @@ export type SingleOrPlural<T> = T | Plural<T>;
 
 
 export type EventHandler = (event : Event) => void; 
-export type EventLsnr = { name : string, handler : EventHandler };
+export type EventLsnr = [string, EventHandler]; // { name : string, handler : EventHandler }
 
 export type Handler = (...args) => void; 
 export type CEventLsnr = { event : string, handler : Handler };

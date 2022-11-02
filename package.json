@@ -11,6 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "@parcel/transformer-sass": "2.7.0",
+    "@parcel/validator-typescript": "^2.7.0",
     "@types/node": "^18.11.8",
     "@types/uuid": "^8.3.4",
     "handlebars": "^4.7.7",

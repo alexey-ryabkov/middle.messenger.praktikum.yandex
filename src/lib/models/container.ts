@@ -3,7 +3,7 @@ import {CompilableTemplate} from '@models/types';
 import SimpleBlock from '@models/simple_block';
 // import mount from '../utils/mount';
 
-// @todo по умолчанию ставить какой-то контейнер... 
+// TODO по умолчанию ставить какой-то контейнер... 
 
 export default class Container
 {
@@ -28,6 +28,6 @@ export default class Container
     //     // container.dispatchComponentDidMount();
     //     // return container;
     // }
-    // @todo чтоб это был синтаксический сахар для одноразовых простых контейнерных блоков. типа создал и замаунтил сразу куда-то. больше он нам вообще не нужен
+    // TODO чтоб это был синтаксический сахар для одноразовых простых контейнерных блоков. типа создал и замаунтил сразу куда-то. больше он нам вообще не нужен
     // примитивный блок - тоже сахар. тот у которого нет никакой логики при рендеринге, по сути весь компонент - это шаблон
 }

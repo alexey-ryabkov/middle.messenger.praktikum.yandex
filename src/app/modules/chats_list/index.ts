@@ -1,5 +1,5 @@
-import Templator from '../../../lib/@models/templator';
-import SimpleBlock from '../../../lib/@models/simple_block';
+import Templator from '@models/templator';
+import SimpleBlock from '@models/simple_block';
 import tpl from './tpl.hbs';
 
 export default class ChatsList extends SimpleBlock

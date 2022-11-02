@@ -1,6 +1,6 @@
-import Templator from '../../../lib/@models/templator';
-import Page from '../../@models/page';
-import Container from '../../../lib/@models/Container';
+import Templator from '@models/templator';
+import Page from '@models/page';
+import Container from '@models/Container';
 import leftcolWindow from '../../../lib/layouts/leftcol_window';
 import UserProfile from '../../modules/user_profile';
 import Chats from '../../modules/chats_list';
@@ -21,7 +21,7 @@ import workareaTpl from './workarea.hbs';
 
 // const app = App.instance;
 
-// @todo здесь нужен также евент-бас для связи использования меню 
+// TODO здесь нужен также евент-бас для связи использования меню 
 
 const userProfile = new UserProfile(); 
 const chats = new Chats();
@@ -41,7 +41,7 @@ const workarea = new Container(new Templator(workareaTpl),
     messages
 });
 
-export default new Page(leftcolWindow, { leftcol, workarea }, '_pageChats', 'Чат'); // @todo изменение заголовка в зависимости от открытого чата 
+export default new Page(leftcolWindow, { leftcol, workarea }, '_pageChats', 'Чат'); // TODO изменение заголовка в зависимости от открытого чата 
 
 
 // ProfileArea(

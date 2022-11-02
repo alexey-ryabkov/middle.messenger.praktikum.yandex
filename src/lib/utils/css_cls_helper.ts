@@ -1,5 +1,5 @@
 import {unique} from '.';
-import {SingleOrPlural} from '../@models/types';
+import {SingleOrPlural} from '@models/types';
 
 export type CssCls = SingleOrPlural<string>;
 export function cssCls2str (cls : CssCls) : string
@@ -8,7 +8,7 @@ export function cssCls2str (cls : CssCls) : string
 }
 export function cssCls2arr (cls : CssCls) : string[] 
 {
-    if ('string' == typeof cls)
+    if (typeof cls == 'string')
     {
         cls = cls.split(/\s+/).filter(Boolean);
     }

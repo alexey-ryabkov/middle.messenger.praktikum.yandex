@@ -1,4 +1,4 @@
-._signFormLayout {
+._centeredFormLayout {
     min-width: 520px;
 
     &__ {
@@ -15,12 +15,10 @@
             margin: 0 auto;
             text-align: center;
         }
-        &bg {
-        }
     }
 }
 /* пока не придумал как управлять порядком подключения стилей 
 и приходится использоват такие конструкции */
-.caption._signFormLayout__caption  { 
+.caption._centeredFormLayout__caption  { 
     padding: 15px 0 10px;
 }

@@ -4,14 +4,12 @@ export default `
     <div class="form__fieldLabelWrap">
         <label class="form__fieldLabel">{{@key}}:</label>
     </div>
-    <div class="form__fieldWrap">
-        {{> input-text this}}
-    </div>
+    <div class="form__fieldWrap">{{{this}}}</div>
 </div>
 {{/each}}
 <div class="form__buttonsBox">
     <!-- Пока кнопка сделана ссылкой для навигации -->
-    {{> button button}}
-    <a href="{{regPageUrl}}" class="form__altSubmitLink link link--size_big">создать аккаунт</a>
+    {{{button}}}
+    <a href="{{regUrl}}" class="form__altSubmitLink link link--size_big">создать аккаунт</a>
 </div>
 `.trim();

@@ -1,4 +1,5 @@
-import {SingleOrPlural, Plural} from '../@models/types'
+import {SingleOrPlural, Plural} from '@models/types';
+// import InputText from '@lib-components/input-text';
 
 export const unique = (item : any[]) : any[] => [...new Set(item)];
 // arr.filter( (item, i, arr) => arr.indexOf(item) == i )
@@ -39,5 +40,5 @@ export function plural2Arr (item : SingleOrPlural<any>) : Array<any>
 }
 export function toArr<T> (item: Iterable<T>): T[] 
 {
-    return [...item];
+    return [...item]; 
 }

@@ -1,4 +1,4 @@
-// import DomComponent from '../@models/dom_component';
+// import DomComponent from '@models/dom_component';
 
 export enum MountType 
 {
@@ -10,7 +10,7 @@ export enum MountType
 }
 export default function mount (subject : HTMLElement | string, node : Element | string | null, mountType : MountType = MountType.append)
 {
-    // @todo тут же нужно вызывать dispatch...
+    // TODO тут же нужно вызывать dispatch...
 
     if (!(node instanceof Element))
     {

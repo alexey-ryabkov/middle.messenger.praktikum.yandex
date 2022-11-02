@@ -16,19 +16,20 @@ export function makeHTMLElementExt (element : Element) : HTMLElementExt
 }
 
 export type CompKey = number | string;
+export type CompElement = HTMLElement | DocumentFragment | string;
 export type CompProps = {
     [key : string]: any,
     key?: CompKey
 }; 
 export type CompAttrs = Record< string, string | number | boolean >;
-export type CompElement = HTMLElement | DocumentFragment | string;
+export type CompEvents = SingleOrPlural< EventLsnr >;
 export type CompParams = 
 {
     node? : CompElement,    
     props? : CompProps, 
     attrs? :  CompAttrs,  
     cssCls? : CssCls,    
-    events? : SingleOrPlural< EventLsnr >,
+    events? : CompEvents,
     settings? : Record< string, any >
 }
 export interface ComponentPropsEngine
@@ -41,6 +42,8 @@ export interface ComponentPropsEngine
 
 export default abstract class DomComponent extends EventEmitter
 {
+    static readonly ID_ATTR = 'data-block_id';
+    
     protected _id : string = ''; 
     protected _key : Nullable< CompKey > = null; 
     protected _element : HTMLElementExt; 
@@ -67,19 +70,30 @@ export default abstract class DomComponent extends EventEmitter
         const {props} = params;
         this._processParams(params);
 
-        this._id = makeUUID();
-        this._key = props.key; // @todo при reinit ? 
+        let id = makeUUID();
+        this._key = props.key; // TODO при reinit ? 
 
         this._props = this._makePropsProxy(props);
+        // this._props = props;
         this._propsEngine = new SimpleProps(this);
         this._propsEngine.processProps();
 
         this._lifecircle = new EventBus();
         this._regLifeEvents();
-
-        if (!(this._meta.node instanceof HTMLElement)) // for node of HTMLElement it`s need to init component manually by mount method
+        
+        if (this._meta.node instanceof HTMLElement)
         {
-            this._lifecircle.emit(DomComponent._LIFE_EVENTS.INIT);
+            const nodeId = this._meta.node.getAttribute(DomComponent.ID_ATTR); // @todo а этим процессор занимается... получается логику раздвоили 
+            if (nodeId)
+            {
+                id = nodeId;
+            }
+            this._id = id;
+        }
+        else
+        {  
+            this._id = id;
+            this._lifecircle.emit(DomComponent._LIFE_EVENTS.INIT); // for node of HTMLElement it`s need to init component manually by mount method, otherwise go to init 
         }
     }
     get id ()  
@@ -118,7 +132,7 @@ export default abstract class DomComponent extends EventEmitter
         this._flags.inSetPropsCall = true;
         this._flags.nextEvntEmmited = false;
 
-        Object.assign(this.props, nextProps);
+        Object.assign(this._props, nextProps);
         this._flags.inSetPropsCall = false;
     }
     setAttrs (attrs : CompAttrs)
@@ -167,10 +181,12 @@ export default abstract class DomComponent extends EventEmitter
         {
             set: (target, prop, value) =>
             {
+                // console.log(prop, value);
                 if (!this._flags.inSetPropsCall)
                 {
                     throw new Error('No access');
-                }                
+                }
+                // console.log('!!');
                 const oldProps = {...target};
                 target[prop] = value;
 
@@ -198,10 +214,8 @@ export default abstract class DomComponent extends EventEmitter
     {
         const {node} = this._meta; 
 
-        const element = 'string' ==  typeof node ? document.createElement(node) : node; // .cloneNode(false)
-        element.setAttribute('data-id', this._id);
-
-        this._element = makeHTMLElementExt(element); // @todo придется переделывать из-за fragment ? 
+        const element = typeof node == 'string' ? document.createElement(node) : node; 
+        element.setAttribute(DomComponent.ID_ATTR, this._id);
     }
     protected _processAttrs ()
     {
@@ -223,7 +237,7 @@ export default abstract class DomComponent extends EventEmitter
 
     protected _componentDidMount () 
     {
-        this.componentDidMount(this.props);
+        this.componentDidMount(this._props);
     }
     protected _componentDidUpdate(oldProps, newProps) 
     {
@@ -237,4 +251,20 @@ export default abstract class DomComponent extends EventEmitter
         this.element.innerHTML = '';
         this.element.appendChild(this.render());
     }  
+    [Symbol.toPrimitive] (hint : string)
+    {
+        let result : string | number;
+        switch (hint)
+        {
+            case 'number':
+                result = NaN;
+            break;
+
+            default:
+            case 'string':
+                result = this.element.outerHTML;
+            break;
+        }
+        return result;
+    }
 }

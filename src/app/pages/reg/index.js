@@ -1,7 +1,7 @@
-import Templator from '../../@models/templator';
-import Page from '../../@models/page';
-import layout from '../../layouts/sign_form';
-import Button from '../../components/button'; 
+import Templator from '@models/templator';
+import Page from '@models/page';
+import layout from '@lib-components/sign_form';
+import Button from '@lib-components/button'; 
 import InputText from '../../components/input-text';
 import tpl from './tpl.hbs';
 import './style.scss';
@@ -20,6 +20,8 @@ const fields = Object.fromEntries(Object.entries({
     'Пароль (еще раз)': 'password_confirm'
 
 }).map(([label, name]) => [label, new InputText({name, ...fldDef}).render()]));
+
+
 
 const button = new Button({
     label: 'Зарегистрироваться',

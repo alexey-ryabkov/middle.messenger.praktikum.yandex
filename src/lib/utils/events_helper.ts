@@ -29,7 +29,7 @@ const EventsHelperMixin =
     },
     clearEvnt (name : string)
     {
-        this._evntsCache.forEach(lsnr => 
+        this._evntsCache.forEach((lsnr : EventLsnr) => 
         {
             if (name == lsnr[0])
             {
@@ -39,7 +39,7 @@ const EventsHelperMixin =
     },
     clearEvntLsnrs ()
     {
-        this._evntsCache.forEach(lsnr => 
+        this._evntsCache.forEach((lsnr : EventLsnr) => 
         {
             this.removeEventListener(lsnr[0], lsnr[1]);
         });

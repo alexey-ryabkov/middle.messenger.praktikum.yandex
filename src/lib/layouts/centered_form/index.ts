@@ -1,3 +1,4 @@
+import {App} from '@models/types';
 import Templator from '@models/templator';
 import Layout, {LayoutProps} from '@models/layout';
 import Caption, {CaptionSize} from '@lib-components/caption';
@@ -12,7 +13,7 @@ export type CenteredFormLayoutProps = LayoutProps &
 };
 export default class CenteredFormLayout extends Layout
 {
-    constructor (app, props : CenteredFormLayoutProps)
+    constructor (app : App, props : CenteredFormLayoutProps)
     {
         const caption = new Caption({ caption: props.title, size: CaptionSize.h1 });
 

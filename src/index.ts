@@ -9,7 +9,7 @@ const app = SurApp.instance;
 
 const url = location.href;
 const getPage = (pageName : string, defPage : Page = pages['auth']) : Page => pageName in pages ? pages[pageName] : defPage; 
-const go2page = (pageName : string) => location.replace(Page.url(pageName));
+// const go2page = (pageName : string) => location.replace(Page.url(pageName));
 const renderPage = (page : Page) => { app.page = page };
 
 let pageName = Page.nameFromUrl(url);
@@ -32,6 +32,10 @@ document.body.addEventListener('click', event =>
     // TODO ссылкам, которые могут вызывать рутинг надо специальный атрибут добавить 
     {
         event.preventDefault();
-        renderPage( getPage( Page.nameFromUrl(element.getAttribute('href')), pages['error404'] ) );
+        const href = element.getAttribute('href');
+        if (href)
+        {
+            renderPage( getPage( Page.nameFromUrl(href), pages['error404'] ) );
+        }        
     }
 });

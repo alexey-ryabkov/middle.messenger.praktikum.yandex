@@ -6,22 +6,30 @@ export enum MountType
     after = 'after', 
     replaceWith = 'replaceWith'
 }
-export default function mount (subject : HTMLElement | string, node : Element | string | null, mountType : MountType = MountType.append)
+export default function mount (subject : HTMLElement | string, node : HTMLElement | string | null, mountType : MountType = MountType.append)
 {
     // TODO тут же нужно вызывать dispatch...
 
-    if (!(node instanceof Element))
+    let nodeElement : Element = document.body;
+
+    if (node instanceof HTMLElement)
     {
-        node = document.querySelector(node);
-    }    
-    if (!node)
+        nodeElement = node;
+    } 
+    else if (typeof node == 'string')
     {
-        node = document.body;
+        const element = document.querySelector(node);
+
+        if (element)
+        {
+            nodeElement = element;
+        }
     }
+
     if (subject instanceof HTMLElement)
     {
-        node[mountType](subject);
+        nodeElement[mountType](subject);
     }
     else
-        node.innerHTML = subject;
+        nodeElement.innerHTML = subject;
 }

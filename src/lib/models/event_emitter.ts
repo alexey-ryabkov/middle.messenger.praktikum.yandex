@@ -3,8 +3,7 @@ import {SingleOrPlural, Handler, CEventLsnr} from '@models/types';
 import {plural2Arr} from '../utils';
 
 export default abstract class EventEmitter
-{
-    protected abstract _availEvents : string[];    
+{       
     protected _listeners : Record< string, Set< Handler >>;
 
     constructor() 
@@ -31,7 +30,7 @@ export default abstract class EventEmitter
             this._listeners[lsnr.name].delete(lsnr.handler);
         });
     }
-    protected emit (eventName : string, ...args) 
+    protected emit (eventName : string, ...args: any[]) 
     {
         if (eventName in this.availEvents) 
         {
@@ -40,6 +39,7 @@ export default abstract class EventEmitter
         else
             throw `Error: no event with name ${eventName}`;
     }
+    protected abstract get _availEvents () : string[]; 
 }
 
 // const CustomEventsHelperMixin = 

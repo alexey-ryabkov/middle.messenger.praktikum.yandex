@@ -13,7 +13,7 @@ export type SingleOrPlural<T> = T | Plural<T>;
 export type EventHandler = (event : Event) => void; 
 export type EventLsnr = [string, EventHandler]; 
 
-export type Handler = (...args) => void; 
+export type Handler = (...args: any[]) => void; 
 export type CEventLsnr = { event : string, handler : Handler };
 
 

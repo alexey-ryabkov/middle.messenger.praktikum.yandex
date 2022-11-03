@@ -23,7 +23,7 @@ export default class EventBus
             this.listeners[event] = this.listeners[event].filter(listener => listener !== callback);
         }
     }
-    emit (event : string, ...args) 
+    emit (event : string, ...args: any[]) 
     {
         if (event in this.listeners) 
         {

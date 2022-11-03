@@ -252,7 +252,7 @@ export default abstract class BemBlock extends Block implements BemEntity
     }    
     static getModsCls (itemCls : string, clsDef : BemModDef[]) : string[]
     {
-        const cls = [];
+        const cls : string[] = [];
 
         clsDef.forEach(modClsDef => cls.push(BemBlock.getItemModCls(itemCls, modClsDef)));        
         return cls;

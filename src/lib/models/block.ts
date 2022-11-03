@@ -50,7 +50,7 @@ export default abstract class Block extends EventEmitter
     protected _props : BlockProps = {};
     protected _meta : Record< string, any > = {};
     protected _lifecircle : EventBus;
-    protected _availEvents = [];
+    // protected _availEvents = [];
     protected _propsEngine : BlockPropsEngine;
 
     protected _flags = {
@@ -71,7 +71,7 @@ export default abstract class Block extends EventEmitter
         this._processParams(params);
 
         let id = makeUUID();
-        this._key = props?.key; 
+        this._key = props?.key || null; 
         // TODO при reinit ? 
 
         this._props = this._makePropsProxy(props);
@@ -166,7 +166,8 @@ export default abstract class Block extends EventEmitter
     }      
     componentDidMount () 
     {}
-    componentDidUpdate (oldProps, newProps) 
+    // @ts-ignore
+    componentDidUpdate (oldProps : BlockProps, newProps : BlockProps) 
     {
         let didUpd = !this._key;
         if (newProps?.key && newProps.key !== this._key)
@@ -178,6 +179,10 @@ export default abstract class Block extends EventEmitter
     }
     abstract render () : DocumentFragment | HTMLElement;
 
+    protected get _availEvents () : string[]
+    {
+        return [];
+    } 
     protected _processParams (params : BlockParams)
     {
         this._meta = this._params4meta(params); 
@@ -187,11 +192,11 @@ export default abstract class Block extends EventEmitter
         const {node = 'div', attrs = {}, cssCls = '', events = []} = params; 
         return {node, attrs, cssCls, events};
     }
-    protected _makePropsProxy (props) 
+    protected _makePropsProxy (props : BlockProps) 
     {
         return new Proxy(props, 
         {
-            set: (target, prop, value) =>
+            set: (target, prop : string, value) =>
             {
                 if (!this._flags.inSetPropsCall)
                 {
@@ -247,7 +252,7 @@ export default abstract class Block extends EventEmitter
     {
         this.componentDidMount();
     }
-    protected _componentDidUpdate(oldProps, newProps) 
+    protected _componentDidUpdate(oldProps : BlockProps, newProps : BlockProps) 
     {
         if (this.componentDidUpdate(oldProps, newProps))
         {

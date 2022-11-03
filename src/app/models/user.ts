@@ -1,4 +1,4 @@
-import ChatMember from './chat_member';
+// import ChatMember from './chat_member';
 
 export default class User 
 {
@@ -12,7 +12,7 @@ export default class User
     }
     static login ()
     {
-        app.user = false;
+        // app.user = false;
     }
     static logout ()
     {

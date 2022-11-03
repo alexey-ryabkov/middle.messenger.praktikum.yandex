@@ -1,3 +1,4 @@
+import {App} from '@models/types';
 import Templator from '@models/templator';
 import Layout from '@models/layout';
 import tpl from './tpl.hbs';
@@ -7,7 +8,7 @@ const template = new Templator(tpl);
 
 export default class LeftcolWindowLayout extends Layout
 {
-    constructor (app)
+    constructor (app : App)
     {
         super(app, { bem: {name: '_leftcolWindowLayout'} });
     } 

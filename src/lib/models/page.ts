@@ -4,8 +4,8 @@ export default abstract class Page
 {   
     constructor (
         protected _name : string, 
-        protected _title? : string,
-        protected _blockName? : string) 
+        protected _title : string = '',
+        protected _blockName : string = '') 
     {
         if (!this._blockName)
         {

@@ -1,11 +1,9 @@
-import Chat from './chat';
-
-
+// import Chat from './chat';
 
 export default class ChatList 
 {
-    get current ()
-    {
-        return null;
-    }
+    // get current ()
+    // {
+    //     return null;
+    // }
 }

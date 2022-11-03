@@ -1,3 +1,4 @@
+import {App} from '@models/types';
 import Templator from '@models/templator';
 import Layout, {LayoutProps} from '@models/layout';
 import Caption from '@lib-components/caption';
@@ -14,7 +15,7 @@ export type CenteredMsgLayoutProps = LayoutProps &
 };
 export default class CenteredMsgLayout extends Layout
 {
-    constructor (app, props : CenteredMsgLayoutProps)
+    constructor (app : App, props : CenteredMsgLayoutProps)
     {
         const caption = new Caption({caption: props.title});
 

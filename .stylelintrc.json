@@ -1,0 +1,11 @@
+{
+    "extends": "stylelint-config-standard",
+    "rules": {
+        "color-hex-case": "lower",
+        "indentation": 4
+    },
+    "ignoreFiles": [
+        "dist/*",
+        "node_modules/*"
+    ]
+  } 

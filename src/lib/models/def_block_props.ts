@@ -23,7 +23,8 @@ export default class DefaultBlockProps implements BlockPropsEngine
     }
     protected get _props () // every call gets component's props copy
     {
-        return Object.assign({}, this._component.props); //{...this._component.props};
+        return Object.assign({}, this._component.props);
+        // TODO {...this._component.props};
     }
     processProps () 
     {

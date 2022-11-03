@@ -11,7 +11,7 @@ export type SingleOrPlural<T> = T | Plural<T>;
 
 
 export type EventHandler = (event : Event) => void; 
-export type EventLsnr = [string, EventHandler]; // { name : string, handler : EventHandler }
+export type EventLsnr = [string, EventHandler]; 
 
 export type Handler = (...args) => void; 
 export type CEventLsnr = { event : string, handler : Handler };
@@ -20,7 +20,6 @@ export type CEventLsnr = { event : string, handler : Handler };
 export interface CompilableTemplate 
 {
     compile (data : any) : string;
-    // compile (tpl : string, data : any) : string
 }
 export interface App
 {
@@ -45,17 +44,3 @@ export interface BemEntity
     bemClear (itemDef : BemItemDef) : void;
     elemBemClear  (name : string, itemDef : BemItemDef) : void;
 }
-
-// type EventBusListeners = (...args: any) => void;
-
- // @ts-ignore
-
-//  export interface ComponentProps {
-//     [key: string]: any;
-//     className?: string;
-//     children?: {};
-//     child?: Child | HTMLElement | string;
-//     events?: Record<string, (...args: any) => void>;
-// }
-
-// this.node = <HTMLElement>divElement.firstChild; это типа as?

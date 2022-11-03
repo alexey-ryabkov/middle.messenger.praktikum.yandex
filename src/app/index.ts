@@ -30,28 +30,8 @@ export default class SurApp implements App
 
     static get instance ()
     {
-        // Do you need arguments? Make it a regular static method instead.
         return this._instance || (this._instance = new this());
     }
-    
-    // constructor (token : Symbol)  
-    // {        
-    //     if (APP_SINGLETON_TOKEN !== token)
-    //     {
-    //         throw new Error('This class cannot instantiate directly')
-    //     } 
-    //     this._root = document.body;         
-    //     this._container = new MainContainer(this._root, INITIALIZE_MSG).mount(); 
-    //     this.title = INITIALIZE_MSG;
-    // }    
-    // static get instance () 
-    // {        
-    //     if (!this[APP_SINGLETON_TOKEN])
-    //     {
-    //         this[APP_SINGLETON_TOKEN] = new SurApp(APP_SINGLETON_TOKEN);
-    //     }
-    //     return this[APP_SINGLETON_TOKEN];
-    // }
     protected set title (title : string)
     {
         title = title.trim();

@@ -1,9 +1,6 @@
 import {SingleOrPlural, Plural} from '@models/types';
-// import InputText from '@lib-components/input-text';
 
 export const unique = (item : any[]) : any[] => [...new Set(item)];
-// arr.filter( (item, i, arr) => arr.indexOf(item) == i )
-// export const addMixin = (item : any, mixin : object) : void => Object.assign(item, mixin);
 
 export const dummyQuery = (data:object, delay:number = 1000) => new Promise(resolve => setTimeout(() => resolve(data), delay)); 
 

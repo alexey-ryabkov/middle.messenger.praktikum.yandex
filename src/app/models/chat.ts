@@ -5,7 +5,8 @@
 import {Image, Video, Location, Label} from '@models/types';
 
 
-type ChatMember = // TODO это замешано с валидаторами обязательных полей регистрации 
+type ChatMember = 
+// TODO это замешано с валидаторами обязательных полей регистрации 
 {
     nickname:string,
     first_name?:string,
@@ -26,7 +27,8 @@ type MessageContent = Image | Video | Location | string;
 
 // Record<K:MessageType, V:MessageContent>
 
-type Message = // TODO если такие проверки, то это скорее класс... 
+type Message = 
+// TODO если такие проверки, то это скорее класс... 
 {
     user:ChatMember,
     type:MessageType,

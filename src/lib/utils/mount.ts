@@ -1,5 +1,3 @@
-// import DomComponent from '@models/dom_component';
-
 export enum MountType 
 {
     append = 'append',

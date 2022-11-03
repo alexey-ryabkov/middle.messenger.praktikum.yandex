@@ -37,7 +37,7 @@ export default abstract class BemBlock extends Block implements BemEntity
     static readonly MODIFIER_VAL_SEPARATOR = '_';
 
     protected _name : string;
-    protected _elems : Record< string, HTMLElementExt > = {}; // Record< string, { element: HTMLElement, bem: BemItemDef, events: {} } > ?
+    protected _elems : Record< string, HTMLElementExt > = {};
 
     constructor (params : BemCompParams)
     {   
@@ -115,8 +115,6 @@ export default abstract class BemBlock extends Block implements BemEntity
     {
         const {name, mods, mix, cssCls} = this._meta.bem;
 
-        // console.log(this.element, this._element);
-
         this.element.addCssCls(name);
 
         if (cssCls?.block) // bem's block css classes override component's css classes
@@ -148,7 +146,6 @@ export default abstract class BemBlock extends Block implements BemEntity
     }
     protected _processElems ()
     {
-        // will check element binding in both ways: by css-class and by bem-element attribute. each of binding type can be handy in different situations
         this.element.querySelectorAll(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`).forEach(element => 
         {
             const elem : HTMLElementExt = makeHTMLElementExt(element);
@@ -164,19 +161,6 @@ export default abstract class BemBlock extends Block implements BemEntity
                 }
             });
         });
-        // this.element.querySelectorAll(`[${BemBlock.ELEM_NAME_ATTR}]`).forEach(element => 
-        // {
-        //     const elemName = element.getAttribute(BemBlock.ELEM_NAME_ATTR);            
-
-        //     if (!this._elems[elemName])
-        //     {
-        //         const elem : HTMLElementExt = makeHTMLElementExt(element);
-
-        //         elem.addCssCls( BemBlock.getElemCls( [this._name, elemName] ));                
-
-        //         this._elems[elemName] = elem;
-        //     }
-        // });
 
     }
     protected _processElemCssCls ()

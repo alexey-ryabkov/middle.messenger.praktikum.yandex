@@ -83,7 +83,7 @@ export default abstract class Block extends EventEmitter
         
         if (this._meta.node instanceof HTMLElement)
         {
-            const nodeId = this._meta.node.getAttribute(Block.ID_ATTR); // @todo а этим процессор занимается... получается логику раздвоили 
+            const nodeId = this._meta.node.getAttribute(Block.ID_ATTR); 
             if (nodeId)
             {
                 id = nodeId;
@@ -131,12 +131,11 @@ export default abstract class Block extends EventEmitter
         const oldProps = {...this._props};
 
         Object.assign(this._props, nextProps);
-        this._processProps(); // @todo по идее после этого нужно вызывать 
+        this._processProps();
 
         if (this._flags.isPropsGotSet) 
         {
             this._lifecircle.emit(Block._LIFE_EVENTS.FLOW_CDU, oldProps, this._props);
-            // this._flags.nextEvntEmmited = true;
         }
 
         this._flags.inSetPropsCall = false;

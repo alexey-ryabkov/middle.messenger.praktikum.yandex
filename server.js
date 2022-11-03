@@ -1,5 +1,4 @@
 const express = require('express');
-const fs = require('fs');
 
 const DEFAULT_PAGE = '/?page=error404';
 const DEFAULT_PORT = 3000;

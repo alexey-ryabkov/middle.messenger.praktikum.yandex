@@ -15,10 +15,10 @@ $icon-paddings: ('small': 4px 6px, 'regular': 6.5px 9.5px, 'large': 8px 14px);
     font-size: 13px;
     font-weight: 400;
     margin: 0;
-    border: none;
+    border: 0;
     cursor: pointer;
     background: transparent;
-    transition: .2s;
+    transition: 0.2s;
 
     &:hover {
         background-color: rgba(0, 0, 0, 5%);

@@ -176,6 +176,18 @@
     }
 }
 
+.badge {
+    border-radius: 50%;
+    color: white;
+    background: black;
+    display: inline-block;
+    line-height: 21px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    vertical-align: middle;
+}
+
 $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6': 11px);
 
 ._surApp {  

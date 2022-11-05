@@ -11,12 +11,17 @@ export type SearchProps = BlockProps &
 {
     inputName : string
 };
-export default class Search extends ComponentBlock 
+export default class SearchComponent extends ComponentBlock 
 {
     constructor (props : SearchProps)
     {
         const icon = new Icon({ variant: IconVar.search });
-        const input = new InputText({ name: props.inputName, plaseholder: 'Поиск по чатам' });
+        
+        const input = new InputText({ 
+            name: props.inputName, 
+            plaseholder: 'Поиск по чатам' 
+
+        }, ['keyup', () => console.log('type in search phrase')]);
         
         icon.bemMix([ 'inputText', 'icon' ]);
 

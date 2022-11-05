@@ -5,9 +5,6 @@ import {BemParams} from '@models/bem_block';
 import {BlockProps} from '@models/block';
 import tpl from './tpl.hbs';
 
-
-const template = new Templator(tpl);
-
 export type AvatarProps = BlockProps & 
 {
     image : string,
@@ -29,6 +26,6 @@ export default class Avatar extends ComponentBlock
     }
     protected get _template () 
     {
-        return template;
+        return new Templator(tpl);
     }
 }

@@ -5,8 +5,6 @@ import {BlockProps} from '@models/block';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-const template = new Templator(tpl);
-
 export enum MessageTypes {
     text = 'text',
     photo = 'photo'
@@ -41,6 +39,6 @@ export default class MessageComponent extends ComponentBlock
     }
     protected get _template () 
     {
-        return template;
+        return new Templator(tpl);
     }
 }

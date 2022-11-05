@@ -4,8 +4,6 @@ import {BlockProps} from '@models/block';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-const template = new Templator(tpl);
-
 export enum CaptionSize {
     h1 = 'h1',
     h2 = 'h2',
@@ -30,6 +28,6 @@ export default class Caption extends ComponentBlock
     }
     protected get _template () 
     {
-        return template;
+        return new Templator(tpl);
     }
 } 

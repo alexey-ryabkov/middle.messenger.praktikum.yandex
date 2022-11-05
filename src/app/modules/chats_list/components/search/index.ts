@@ -6,9 +6,6 @@ import InputText from '@lib-components/input-text';
 import Icon, {IconVar} from '@lib-components/icon';
 import tpl from './tpl.hbs';
 
-
-const template = new Templator(tpl);
-
 export type SearchProps = BlockProps & 
 {
     inputName : string
@@ -34,6 +31,6 @@ export default class SearchComponent extends ComponentBlock
     }
     protected get _template () 
     {
-        return template;
+        return new Templator(tpl);
     }
 }

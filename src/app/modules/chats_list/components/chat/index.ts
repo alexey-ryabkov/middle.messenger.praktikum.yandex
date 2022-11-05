@@ -7,8 +7,6 @@ import Caption, {CaptionSize} from '@lib-components/caption';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-const template = new Templator(tpl);
-
 export type ChatProps = BlockProps & 
 {
     image : string,
@@ -62,6 +60,6 @@ export default class ChatComponent extends ComponentBlock
     }
     protected get _template () 
     {
-        return template;
+        return new Templator(tpl);
     }
 }

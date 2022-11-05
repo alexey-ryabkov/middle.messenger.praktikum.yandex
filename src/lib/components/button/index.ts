@@ -5,8 +5,6 @@ import {BlockProps, BlockEvents} from '@models/block';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-const template = new Templator(tpl);
-
 export type ButtonProps = BlockProps & 
 {
     label : string,
@@ -46,6 +44,6 @@ export default class Button extends ComponentBlock
     }
     protected get _template () 
     {
-        return template;
+        return new Templator(tpl);
     }
 }

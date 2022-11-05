@@ -9,8 +9,6 @@ import Icon, {IconVar} from '@lib-components/icon';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-const template = new Templator(tpl);
-
 export type ProfileCardProps = BlockProps & 
 {
     image : string,
@@ -44,6 +42,6 @@ export default class ProfileCard extends ComponentBlock
     }
     protected get _template () 
     {
-        return template;
+        return new Templator(tpl);
     }
 }

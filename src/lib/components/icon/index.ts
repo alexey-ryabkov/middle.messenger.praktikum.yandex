@@ -5,9 +5,6 @@ import {BemParams} from '@models/bem_block';
 import {BlockProps} from '@models/block';
 import tpl from './tpl.hbs';
 
-
-const template = new Templator(tpl);
-
 export enum IconVar {
     plus = 'plus',
     search = 'search',
@@ -73,6 +70,6 @@ export default class Icon extends ComponentBlock
     }
     protected get _template () 
     {
-        return template;
+        return new Templator(tpl);
     }
 }

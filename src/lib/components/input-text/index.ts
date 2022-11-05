@@ -4,8 +4,6 @@ import {BlockProps, BlockEvents} from '@models/block';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-const template = new Templator(tpl);
-
 export type InputTextProps = BlockProps & 
 {
     name? : string,
@@ -29,6 +27,6 @@ export default class InputText extends ComponentBlock
     }
     protected get _template () 
     {
-        return template;
+        return new Templator(tpl);
     }
 }

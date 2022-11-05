@@ -6,8 +6,6 @@ import Icon from '@lib-components/icon';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-const template = new Templator(tpl);
-
 export type IconButtonProps = BlockProps & 
 {
     icon : Icon,
@@ -36,6 +34,6 @@ export default class IconButton extends ComponentBlock
     }
     protected get _template () 
     {
-        return template;
+        return new Templator(tpl);
     }
 }

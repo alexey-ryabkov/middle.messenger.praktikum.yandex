@@ -44,7 +44,7 @@ export default abstract class Page
     static nameFromUrl (url : string)
     {
         let pageName = '';
-        const pageMatch = url.match(/^.*?page\=(\w+).*?$/i);
+        const pageMatch = url.match(/^.*?page=(\w+).*?$/i);
 
         if (pageMatch)
         {

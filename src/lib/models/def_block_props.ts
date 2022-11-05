@@ -47,7 +47,7 @@ export default class DefaultBlockProps implements BlockPropsEngine
         const fragment = document.createElement('template');
         fragment.innerHTML = template.compile(this._propsAndStubs); 
 
-        for (let subComponent of this._propsSubComponents.keys()) 
+        for (const subComponent of this._propsSubComponents.keys()) 
         {
             const stub = fragment.content.querySelector(`[${Block.ID_ATTR}="${subComponent.id}"]`);
             

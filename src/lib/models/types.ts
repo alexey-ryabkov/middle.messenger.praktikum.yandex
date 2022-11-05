@@ -1,7 +1,7 @@
-export type Image = string;
-export type Video = string;
-export type Location = string;
-export type Label = { title : string, image? : Image };
+export type ResourceImage = string;
+export type ResourceVideo = string;
+export type ResourceLocation = string;
+export type Label = { title : string, image? : ResourceImage };
 
 export type Nullable<T> = T | null;
 

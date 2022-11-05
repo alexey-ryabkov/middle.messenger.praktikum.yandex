@@ -44,7 +44,7 @@ export default abstract class Block extends EventEmitter
 {
     static readonly ID_ATTR = 'data-block_id';
     
-    protected _id : string = ''; 
+    protected _id = ''; 
     protected _key : Nullable< BlockKey > = null; 
     protected _element : HTMLElementExt; 
     protected _props : BlockProps = {};
@@ -93,7 +93,8 @@ export default abstract class Block extends EventEmitter
         else
         {  
             this._id = id;
-            this._lifecircle.emit(Block._LIFE_EVENTS.INIT); // for node of HTMLElement it`s need to init component manually by mount method, otherwise go to init 
+            // for node of HTMLElement it`s need to init component manually by mount method, otherwise go to init 
+            this._lifecircle.emit(Block._LIFE_EVENTS.INIT); 
         }
     }
     get id ()  
@@ -164,9 +165,9 @@ export default abstract class Block extends EventEmitter
 
         this._lifecircle.emit(Block._LIFE_EVENTS.FLOW_RENDER);
     }      
-    componentDidMount () 
-    {}
-    // @ts-ignore
+    componentDidMount () {
+        return;
+    }
     componentDidUpdate (oldProps : BlockProps, newProps : BlockProps) 
     {
         let didUpd = !this._key;

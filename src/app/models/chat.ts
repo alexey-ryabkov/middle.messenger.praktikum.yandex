@@ -2,7 +2,7 @@
 
 // TODO пльзователь ведь тоже мб чатом 
 
-import {Image, Video, Location, Label} from '@models/types';
+import {ResourceImage, ResourceVideo, ResourceLocation, Label} from '@models/types';
 
 
 type ChatMember = 
@@ -11,7 +11,7 @@ type ChatMember =
     nickname:string,
     first_name?:string,
     last_name?:string,    
-    avatar?:Image,
+    avatar?:ResourceImage,
     email?:string,
     phone?:string,
 }
@@ -23,7 +23,7 @@ enum MessageType
     video,
     location
 }
-type MessageContent = Image | Video | Location | string;
+type MessageContent = ResourceImage | ResourceVideo | ResourceLocation | string;
 
 // Record<K:MessageType, V:MessageContent>
 

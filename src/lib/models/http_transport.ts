@@ -18,12 +18,12 @@ export enum Methods {
     GET = 'GET',
     PUT = 'PUT',
     POST = 'POST',
-    DELETE = 'DELETE',
-};
+    DELETE = 'DELETE'
+}
 type HttpTransportOptions = 
 {
     method? : Methods,
-    data? : Record< string, any > | string,
+    data? : any,
     headers? : Record< string, string >,
     timeout? : number
 }
@@ -39,7 +39,7 @@ export default class HttpTransport
 
     request = (url = '/', options : HttpTransportOptions = {}, timeout = 5000) => 
     {
-        const {method = Methods.GET, data, headers = {}} = options;
+        const {method = Methods.GET, data = {}, headers = {}} = options;
 
         return new Promise((resolve, reject) => 
         {
@@ -47,7 +47,7 @@ export default class HttpTransport
 
             if (Methods.GET == method && typeof data == 'object') 
             {
-                url += '?'+queryStringify(data);
+                url += '?'+queryStringify(data as Record< string, any >);
             }
             xhr.open(method, url);
 
@@ -73,7 +73,6 @@ export default class HttpTransport
             //   xhr.send(JSON.stringify(data));
             // }
 
-            // @ts-ignore
             xhr.send(data);
         });      
     };

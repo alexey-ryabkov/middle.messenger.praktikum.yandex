@@ -12,7 +12,7 @@ const getPage = (pageName : string, defPage : Page = pages['auth']) : Page => pa
 // const go2page = (pageName : string) => location.replace(Page.url(pageName));
 const renderPage = (page : Page) => { app.page = page };
 
-let pageName = Page.nameFromUrl(url);
+const pageName = Page.nameFromUrl(url);
 
 // if (app.user && 'chats' != pageName)
 // {

@@ -3,7 +3,7 @@ import {CompilableTemplate} from './types';
 
 export default class Templator implements CompilableTemplate 
 {
-    tpl : string = '';
+    tpl = '';
 
     constructor (tpl : string) 
     {

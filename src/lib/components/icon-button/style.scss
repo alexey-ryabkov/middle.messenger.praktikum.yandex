@@ -1,0 +1,56 @@
+$icon-sizes: ('small': scale(0.749), 'regular': scale(1), 'large': scale(1.5));
+$icon-paddings: ('small': 4px 6px, 'regular': 6.5px 9.5px, 'large': 8px 14px);
+
+.iconButton {
+    @include gen-props('&--size_', [transform], $icon-sizes);
+    @include gen-props('&--size_', [padding], $icon-paddings);
+
+    text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-sizing: border-box;
+    border-radius: 8px;
+    padding: map.get($icon-paddings, 'regular');
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    transition: .2s;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 5%);
+    }
+
+    &__ {
+        &icon {
+            fill: black;            
+        }
+
+        &label {
+            font-size: 13px;
+            font-weight: 400;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    }
+
+    &-- {
+        &importance_ {
+            &primary {
+                .iconButton__icon {
+                    fill: black;
+                } 
+            }
+
+            &secondary {
+                .iconButton__icon {
+                    fill: lightgray; 
+                } 
+            } 
+        }
+    }        
+}

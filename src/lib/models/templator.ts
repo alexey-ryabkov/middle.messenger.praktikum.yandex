@@ -1,6 +1,11 @@
 import Handlebars from 'handlebars';
 import {CompilableTemplate} from './types';
 
+Handlebars.registerHelper ('ifEquals', function (arg1 : any, arg2 : any, options) 
+{
+    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+});
+
 export default class Templator implements CompilableTemplate 
 {
     tpl = '';

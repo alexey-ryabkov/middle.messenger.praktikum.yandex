@@ -1,14 +1,13 @@
 import Templator from '@models/templator';
 import ComponentBlock from '@models/component_block';
-import './style.scss';
 import {BemParams} from '@models/bem_block';
 import {BlockProps, BlockEvents} from '@models/block';
 import tpl from './tpl.hbs';
-
+import './style.scss';
 
 const template = new Templator(tpl);
 
-export type ButtonProps = BlockProps & //
+export type ButtonProps = BlockProps & 
 {
     label : string,
     isLink? : boolean,

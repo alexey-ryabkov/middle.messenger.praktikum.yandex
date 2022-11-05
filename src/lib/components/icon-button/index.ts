@@ -1,7 +1,7 @@
 import Templator from '@models/templator';
 import ComponentBlock from '@models/component_block';
 import {BemParams} from '@models/bem_block';
-import {BlockProps} from '@models/block';
+import {BlockProps, BlockEvents} from '@models/block';
 import Icon from '@lib-components/icon';
 import tpl from './tpl.hbs';
 import './style.scss';
@@ -17,7 +17,7 @@ export type IconButtonProps = BlockProps &
 };
 export default class IconButton extends ComponentBlock 
 {
-    constructor (props : IconButtonProps)
+    constructor (props : IconButtonProps, events? : BlockEvents)
     {
         const bem : BemParams = { name: 'iconButton', mods: {block: []} };
 
@@ -32,7 +32,7 @@ export default class IconButton extends ComponentBlock
 
         props.icon.bemMix(['iconButton', 'icon']);
 
-        super({ props, bem });
+        super({ props, events, bem });
     }
     protected get _template () 
     {

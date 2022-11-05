@@ -1,6 +1,6 @@
 import Templator from '@models/templator';
 import ComponentBlock from '@models/component_block';
-import {BlockProps} from '@models/block';
+import {BlockProps, BlockEvents} from '@models/block';
 import tpl from './tpl.hbs';
 import './style.scss';
 
@@ -19,13 +19,13 @@ export function buildFormFields (fields : Record< string, string >)
 }
 export default class InputText extends ComponentBlock 
 {
-    constructor (props : InputTextProps)
+    constructor (props : InputTextProps, events? : BlockEvents)
     {
         if (!props.type)
         {
             props.type = 'text';
         }
-        super({ attrs: props, bem: {name: 'inputText'} });
+        super({ attrs: props, events, bem: {name: 'inputText'} });
     }
     protected get _template () 
     {

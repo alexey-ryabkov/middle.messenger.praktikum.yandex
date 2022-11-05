@@ -41,29 +41,29 @@
 
         &size_ {
             &small {
-                border-radius: 4px;
+                border-radius: 6px;
 
-                .icontainer__ {
+                > .icontainer__ {
                     &header {
-                        border-radius: 4px 4px 0 0;
-                        padding: 5px 5px 0;
+                        border-radius: 6px 6px 0 0;
+                        padding: 8px 8px 0;
                     }
 
                     &content {
-                        padding: 5px;
+                        padding: 8px;
                     }
-
+                    
                     &footer {
-                        padding: 0 5px 5px;
-                        border-radius: 0 0 4px 4px; 
+                        padding: 0 8px 8px;
+                        border-radius: 0 0 6px 6px; 
                     }
                 }
             }
-
+            
             &big {
                 border-radius: 20px;
 
-                .icontainer__ {
+                > .icontainer__ {
                     &header {
                         border-radius: 20px 20px 0 0;
                         padding: 22px 22px 0;
@@ -234,7 +234,7 @@
                     background: $primary-color;
                 }
 
-                &seconadary {
+                &secondary {
                     background: $secondary-color;
                 }
             }
@@ -255,6 +255,20 @@
     }
 
     .icontainer {
+        &__ {
+            &header {
+                &--bg_grayLight {
+                    background: $gray-light;
+                }
+            }
+
+            &footer {
+                &--bg_grayLight {
+                    background: $gray-light;
+                }
+            }
+        }
+
         &--bg_ {
             &glass {
                 .caption,
@@ -262,6 +276,18 @@
                 .form__fieldLabel,
                 .notification { 
                     opacity: 0.75;
+
+                    &__icon {  
+                        fill: white;
+                        opacity: 0.9;    
+                    }
+
+                    &--lvl_ {
+                        &error {
+                            color: white;
+                            opacity: 0.75;            
+                        }
+                    }
                 }
 
                 .link {
@@ -269,17 +295,17 @@
                     opacity: 0.75;
                     border-bottom-color: rgba(white, 0.5);
                 }
-
-                .notification--lvl_ {
-                    &error {
-                        color: white;
-                        opacity: 0.75;            
-                    }
-                }
+                
             }
 
             &grayLight {
                 background: $gray-light;
+
+                .link {
+                    color: $gray-90;
+                    opacity: 0.75;
+                    border-bottom-color: rgba($gray-90, 0.5);
+                }
             }
         }
     }

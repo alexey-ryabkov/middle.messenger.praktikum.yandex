@@ -1,0 +1,56 @@
+@import '../../../main/vars';
+
+._messages {
+    &__ {
+        &box {
+            box-sizing: border-box;
+            list-style: none;
+            padding: 22px;
+            margin: 0 -22px 0 0;
+            height: 595px;
+            overflow: auto;
+        }
+
+        &dayGroup {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        &day {
+            background: $gray-dark;
+            color: white;
+            border-radius: 8px;
+            padding: 0 7px;
+            font-size: 13px;
+            line-height: 21px;
+            height: 20px;
+            display: inline-block;
+            margin: 0 auto 20px;
+        }
+
+        &list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        &listItem {
+            margin-bottom: 10px;
+        }
+
+        &sendMessage {
+            height: 47px;
+            display: flex;
+            align-items: center;
+            padding-left: 22px;
+            margin-right: -12px;
+        }
+
+        &messageField {
+            margin-right: 10px;
+        }
+    }    
+}

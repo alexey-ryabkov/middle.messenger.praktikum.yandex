@@ -1,3 +1,19 @@
-export default `<div class="text">Здесь пока нет верстки, зато отсюда можно попасть на страницы <a class="link" href="/?page=auth">авторизации</a>, 
-<a class="link" href="/?page=reg">регистрации</a>, ошибок <a class="link" href="/?page=error404">404</a> и 
-<a class="link" href="/?page=error500">500</a></div>`.trim();
+export default `
+<div class="_messages">
+    <ul class="_messages__box">
+        <li class="_messages__dayGroup">
+            <div class="_messages__day">{{messagesDay}}</div>    
+            <ul class="_messages__list">
+                {{#each messages}}
+                    {{{this}}}
+                {{/each}}
+            </ul>
+        </li>
+    </ul>
+    <div class="_messages__sendMessage sendMessage">
+        {{{inputSend}}}
+        {{{buttonSend}}}
+        {{{buttonAttach}}}
+    </div>    
+</div>
+`.trim();

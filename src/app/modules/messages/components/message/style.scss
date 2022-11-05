@@ -1,0 +1,27 @@
+@import '../../../main/vars';
+
+.message {
+    display: inline-block;
+    max-width: 70%;
+    min-width: 100px;
+
+    &__ {
+        &time {
+            text-align: right;
+        }
+    }
+
+    &-- {
+        &of_ {
+            &you {
+                background: $primary-color;
+                color: white;
+                align-self: flex-start;
+            }
+
+            &chat {
+                align-self: flex-end;
+            }
+        }
+    }
+}

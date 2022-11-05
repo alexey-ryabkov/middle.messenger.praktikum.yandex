@@ -1,0 +1,26 @@
+._chats {
+    &__ {
+        &list {
+            list-style: none;
+            padding: 22px;
+            margin: 0 0 0 -22px;
+            height: 551px;
+            overflow: auto;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        &listItem {
+            margin-bottom: 8px;
+        }
+
+        &panel {
+            height: 47px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: -22px;
+            border-right: 1px solid $gray;
+            padding: 0 10px;
+        }
+    }
+}

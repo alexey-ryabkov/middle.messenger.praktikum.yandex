@@ -1,4 +1,4 @@
-import SurApp from '@app';
+import SurChat from '@app';
 import Templator from '@models/templator';
 import Page from '@models/page';
 import Button from '@lib-components/button';
@@ -8,7 +8,7 @@ import tpl from './tpl.hbs';
 
 
 const blockName = '_pageAuth';
-const layout = new CenteredFormLayout(SurApp.instance, { title: 'Авторизация' });
+const layout = new CenteredFormLayout(SurChat.instance, { title: 'Авторизация' });
 
 const page = new class extends Page
 {

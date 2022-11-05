@@ -4,7 +4,7 @@ import ChatList from '@models/chat_list';
 import User from '@models/user';
 import {App, AppContainer, Nullable} from '@models/types';
 
-export default class SurApp implements App
+export default class SurChat implements App
 {
     static readonly NAME = 'Sur chat';
     protected static readonly INITIALIZE_MSG = 'Загрузка приложения...';
@@ -19,13 +19,13 @@ export default class SurApp implements App
     // и инициация его чатов
     // интерфейс http транспорта
 
-    private static _instance: SurApp;
+    private static _instance: SurChat;
 
     private constructor()
     {
         this._root = document.body;         
-        this._container = new MainContainer(this._root, SurApp.INITIALIZE_MSG).mount(); 
-        this.title = SurApp.INITIALIZE_MSG;
+        this._container = new MainContainer(this._root, SurChat.INITIALIZE_MSG).mount(); 
+        this.title = SurChat.INITIALIZE_MSG;
     }
 
     static get instance ()
@@ -35,7 +35,7 @@ export default class SurApp implements App
     protected set title (title : string)
     {
         title = title.trim();
-        document.title = `${SurApp.NAME}${title ? ': '+title : ''}`; 
+        document.title = `${SurChat.NAME}${title ? ': '+title : ''}`; 
     }
     get root ()
     {

@@ -1,0 +1,11 @@
+@import '../../modules/main/vars';
+
+._leftcolWindowLayout {
+    .inputText--iconed .inputText__icon {
+        fill: $gray-dark;
+    }
+
+    .profileCard {
+        height: 62px;
+    }
+}

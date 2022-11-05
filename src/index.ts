@@ -1,9 +1,9 @@
 //require('module-alias/register');
-import SurApp from './app';
+import SurChat from './app';
 import Page from '@models/page';
 import pages from './app/pages';
 
-const app = SurApp.instance;
+const app = SurChat.instance;
 
 // dummy page routing
 

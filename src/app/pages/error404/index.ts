@@ -1,8 +1,8 @@
-import SurApp from '@app';
+import SurChat from '@app';
 import Page from '@models/page';
 import CenteredMsgLayout from '@lib-layouts/centered_msg';
 
-const layout = new CenteredMsgLayout(SurApp.instance, 
+const layout = new CenteredMsgLayout(SurChat.instance, 
 {    
     title: '404',
     msg: 'Кажется, вы не туда попали...',   

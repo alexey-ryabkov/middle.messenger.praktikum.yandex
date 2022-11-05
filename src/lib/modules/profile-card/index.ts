@@ -40,7 +40,7 @@ export default class ProfileCard extends ComponentBlock
         caption.bemMix(['profileCard', 'name']); 
         button.bemMix(['profileCard', 'button']);
 
-        super({bem});
+        super({props: {avatar, caption, button}, bem});
     }
     protected get _template () 
     {

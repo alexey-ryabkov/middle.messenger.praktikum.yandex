@@ -1,9 +1,9 @@
 import Templator from '@models/templator';
 import ComponentBlock from '@models/component_block';
-import './style.scss';
 import {BemParams} from '@models/bem_block';
 import {BlockProps} from '@models/block';
 import tpl from './tpl.hbs';
+import './style.scss';
 
 export enum IconVar {
     plus = 'plus',

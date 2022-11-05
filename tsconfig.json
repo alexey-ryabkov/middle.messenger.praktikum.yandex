@@ -4,9 +4,12 @@
         "moduleResolution": "node",
         "target": "ES2015",
         "lib": ["DOM", "ESNext"],
-
+        
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
         "sourceMap": true,
         "allowSyntheticDefaultImports": true,
+
         "noImplicitAny": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,

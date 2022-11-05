@@ -17,7 +17,7 @@ export type ChatProps = BlockProps &
     datetime? : string,
     msg? : string,
     author : 'you' | null,
-    tag? : 'string',
+    tag? : string,
     newMsgCnt? : number
 };
 export default class ChatComponent extends ComponentBlock 

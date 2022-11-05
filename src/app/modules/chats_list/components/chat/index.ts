@@ -20,7 +20,7 @@ export type ChatProps = BlockProps &
     tag? : 'string',
     newMsgCnt? : number
 };
-export default class Chat extends ComponentBlock 
+export default class ChatComponent extends ComponentBlock 
 {
     constructor (props : ChatProps)
     {

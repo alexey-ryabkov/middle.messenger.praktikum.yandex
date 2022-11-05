@@ -17,7 +17,6 @@ export enum CaptionSize {
 export type CaptionProps = BlockProps & 
 {
     caption : string,
-    captionTag? : string,
     tagline? : string,
     size? : CaptionSize
 };
@@ -25,10 +24,8 @@ export default class Caption extends ComponentBlock
 {
     constructor (props : CaptionProps)
     {
-        if (!props.captionTag)
-        {
-            props.captionTag = 'h1';
-        }
+        props.captionTag = props.size ? props.size : CaptionSize.h1;
+
         super({ props, bem: {name: 'caption'} });
     }
     protected get _template () 

@@ -4,7 +4,7 @@
         "color-hex-case": "lower",
         "indentation": 4,
         "color-named": "always-where-possible",
-        "max-nesting-depth": 5,
+        "max-nesting-depth": null,
         "order/properties-alphabetical-order": null,        
         "selector-class-pattern": null
     },

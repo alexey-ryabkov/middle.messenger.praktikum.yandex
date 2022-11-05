@@ -5,9 +5,11 @@
         &content {
             width: 480px;
         }
-        &caption  {
+
+        &caption {
             text-align: center;
         }
+
         &form {
             width: 320px;
             display: flex;
@@ -19,6 +21,6 @@
 }
 /* пока не придумал как управлять порядком подключения стилей 
 и приходится использоват такие конструкции */
-.caption._centeredFormLayout__caption  { 
+.caption._centeredFormLayout__caption { 
     padding: 15px 0 10px;
 }

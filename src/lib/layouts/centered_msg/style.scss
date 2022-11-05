@@ -6,7 +6,8 @@
             align-items: baseline;
             color: white;
         }
-        &caption  {            
+
+        &caption {            
             margin-right: 20px;
             padding: 0;
             font-size: 72px;
@@ -15,20 +16,21 @@
         &descPhrase {
             font-size: 24px;
         }
+
         &awayPhrase {
             padding-top: 5px;
             font-size: 16px;
 
             .link {
-                color: white; 
+                color: white;
                 border-bottom-color: rgba(white, 0.4);
                 line-height: 15px;
             }
         }
     }
+
     ._surApp__background--bg_image {
         filter: gray;
-        -webkit-filter: grayscale(0.9);
         filter: grayscale(0.9);
     }
 }

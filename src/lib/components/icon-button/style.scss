@@ -1,3 +1,7 @@
+@use 'sass:map';
+
+@import '../../scss/mixins';
+
 $icon-sizes: ('small': scale(0.749), 'regular': scale(1), 'large': scale(1.5));
 $icon-paddings: ('small': 4px 6px, 'regular': 6.5px 9.5px, 'large': 8px 14px);
 

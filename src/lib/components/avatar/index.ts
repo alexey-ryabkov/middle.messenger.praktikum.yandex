@@ -10,7 +10,7 @@ const template = new Templator(tpl);
 
 export type AvatarProps = BlockProps & 
 {
-    img : string,
+    image : string,
     size? : 'small' | 'regular'
 };
 export default class Avatar extends ComponentBlock 

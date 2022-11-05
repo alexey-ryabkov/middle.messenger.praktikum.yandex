@@ -1,3 +1,3 @@
 export default `
-<img class="avatar__image" src="{{img}}" />
+<img class="avatar__image" src="{{image}}" />
 `.trim();

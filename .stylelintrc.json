@@ -1,11 +1,16 @@
 {
-    "extends": "stylelint-config-standard",
+    "extends": "stylelint-config-sass-guidelines",
     "rules": {
         "color-hex-case": "lower",
-        "indentation": 4
+        "indentation": 4,
+        "color-named": "always-where-possible",
+        "max-nesting-depth": 5,
+        "order/properties-alphabetical-order": null,        
+        "selector-class-pattern": null
     },
     "ignoreFiles": [
         "dist/*",
-        "node_modules/*"
+        "node_modules/*",
+        "**/*.min.css"
     ]
   } 

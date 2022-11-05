@@ -6,7 +6,8 @@
     "start": "parcel build ./src/index.html && node ./server.js",
     "dev": "parcel ./src/index.html --no-cache",
     "build": "parcel build ./src/index.html",
-    "lint-scc": "npx stylelint '**/*.scss'"
+    "lint-ts": "node_modules/.bin/eslint --ext .ts ./src",
+    "lint-scss": "npx stylelint './src/**/*.scss'"
   },
   "author": "Alexey Ryabkov",
   "license": "ISC",
@@ -15,12 +16,14 @@
     "@parcel/validator-typescript": "2.7.0",
     "@types/node": "18.11.8",
     "@types/uuid": "8.3.4",
+    "@typescript-eslint/eslint-plugin": "5.42.0",
+    "@typescript-eslint/parser": "5.42.0",
     "eslint": "8.26.0",
     "handlebars": "4.7.7",
     "parcel": "2.7.0",
     "parcel-resolver-tspaths": "0.0.9",
     "stylelint": "14.14.0",
-    "stylelint-config-sass-guidelines": "^9.0.1",
+    "stylelint-config-sass-guidelines": "9.0.1",
     "typescript": "4.8.4"
   },
   "dependencies": {

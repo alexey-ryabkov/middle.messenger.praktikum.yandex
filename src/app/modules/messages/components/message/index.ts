@@ -17,9 +17,9 @@ export type MessageProps = BlockProps &
     datetime : string,    
     of : 'you' | 'chat',
     type? : MessageTypes,
-    tag? : 'string'
+    tag? : string
 };
-export default class Message extends ComponentBlock 
+export default class MessageComponent extends ComponentBlock 
 {
     constructor (props : MessageProps)
     {
@@ -29,7 +29,7 @@ export default class Message extends ComponentBlock
             mix: { block: [['icontainer', [['bg', 'grayLight'], ['size', 'small']] ]] },
             mods: { block: [] }
         };
-        
+
         if (!props.type)
         {
             props.type = MessageTypes.text;

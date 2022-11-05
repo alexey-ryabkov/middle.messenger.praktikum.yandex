@@ -7,7 +7,8 @@
     "dev": "parcel ./src/index.html --no-cache",
     "build": "parcel build ./src/index.html",
     "lint-ts": "node_modules/.bin/eslint --ext .ts ./src",
-    "lint-scss": "npx stylelint './src/**/*.scss'"
+    "lint-scss": "npx stylelint './src/**/*.scss'",
+    "lint-scss-fix": "npx stylelint './src/**/*.scss' --fix"
   },
   "author": "Alexey Ryabkov",
   "license": "ISC",

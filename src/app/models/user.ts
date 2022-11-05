@@ -1,21 +1,9 @@
-// import ChatMember from './chat_member';
+import userProfile from '@data/user.json'; 
 
 export default class User 
 {
-    changePswd ()
+    get profile ()
     {
-        
-    }
-    static create ()
-    {
-        // TODO фабричный метод
-    }
-    static login ()
-    {
-        // app.user = false;
-    }
-    static logout ()
-    {
-        
+        return userProfile;
     }
 }

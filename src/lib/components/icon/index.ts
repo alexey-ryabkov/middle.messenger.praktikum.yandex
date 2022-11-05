@@ -59,7 +59,7 @@ export default class Icon extends ComponentBlock
     {
         const node = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         const bem : BemParams = { name: 'icon', mods: {block: []} };
-        const variant = props.var;
+        const variant = props.variant;
 
         node.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
 

@@ -186,18 +186,18 @@
 
 .iconButton {
     &--importance_ {
-       &primary {
-           .iconButton__icon {
-               fill: $primary-color;
-           } 
-       }
+        &primary {
+            .iconButton__icon {
+                fill: $primary-color;
+            } 
+        }
        
-       &secondary {
-           .iconButton__icon {
-               fill: $gray-dark;
-           } 
-       } 
-   }    
+        &secondary {
+            .iconButton__icon {
+                fill: $gray-dark;
+            } 
+        } 
+    }    
 }
 
 .badge {

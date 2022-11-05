@@ -2,9 +2,10 @@ import {App, AppContainer} from '@models/types';
 import {BlockProps, BlockEvents} from '@models/block';
 import {BemCompParams} from '@models/bem_block';
 import ComponentBlock from '@models/component_block';
+import Block from '@models/block';
 import {plural2Arr} from '@lib-utils-kit';
 
-export type LayoutProps = BlockProps & {areas? : Record< string, ComponentBlock >};
+export type LayoutProps = BlockProps & {areas? : Record< string, Block >};
 
 export default abstract class Layout extends ComponentBlock
 {
@@ -23,7 +24,7 @@ export default abstract class Layout extends ComponentBlock
             this._events = params.events;
         }
     }
-    set areas (areas : Record< string, ComponentBlock | string >) // layout areas, for example {content: ..., sidebar: ...}
+    set areas (areas : Record< string, Block | string >) // layout areas, for example {content: ..., sidebar: ...}
     {
         this.setProps({areas}); 
     }

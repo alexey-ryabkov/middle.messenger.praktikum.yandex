@@ -1,13 +1,62 @@
 ._leftcolWindowLayout {
     &__ {
-        &content {
-            min-width: 480px;
-            min-height: 240px;
+        &wrapper {
+            box-sizing: border-box;
+            margin: 0 20px;
+            min-width: 1260px;            
         }
 
-        &caption {            
-            margin: 0;
-            padding: 0;
+        &content {
+            display: flex;
+            flex-direction: row;
+            min-height: 500px;
         }
+
+        &conrainerHeader {
+            height: 40px;
+        }
+
+        &conrainerFooter {
+            height: 25px;
+        }
+
+        &leftcol {
+            box-sizing: border-box;
+            width: 30%;
+            margin: -84px 0 -69px;
+        }
+
+        &workarea {
+            box-sizing: border-box;
+            width: 70%;
+            margin: -84px 0 -69px;
+        }
+    }
+
+    .icontainer {        
+        &-- {
+            &bg_glass {
+                background: rgba(255, 255, 255, 0.4);
+            }
+
+            &size_big {
+                border-radius: 12px;
+
+                > .icontainer__ {
+                    &header {
+                        border-radius: 12px 12px 0 0; 
+                    } 
+
+                    &footer {
+                        border-radius: 0 0 12px 12px; 
+
+                    }
+                }
+            }
+        }
+    }
+
+    .profileCard {
+        height: 62px;
     }
 }

@@ -1,7 +1,9 @@
-@mixin gen-sizes($selector, $prop, $sizes) {
-    @each $name, $value in $sizes {
-        #{$selector}#{$name} { 
-            #{$prop}: $value;
+@mixin gen-props($selector, $props, $variants, $child:'') {
+    @each $name, $value in $variants {
+        #{$selector}#{$name} #{$child} { 
+			@each $prop in $props {
+				#{$prop}: $value;
+			}
         }
     }
 }

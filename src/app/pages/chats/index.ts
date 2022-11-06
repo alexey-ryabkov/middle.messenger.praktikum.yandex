@@ -30,7 +30,7 @@ if (user)
     {
         constructor ()
         {
-            const userProfileCard = new ProfileCard((user as User).profile);  
+            const userProfileCard = new ProfileCard( (user as User).profile,  [ 'click', () => console.log('show user menu') ] );  
 
             userProfileCard.bemMix(['_userProfile']);
 
@@ -47,7 +47,7 @@ if (user)
     {
         constructor ()
         {
-            const chatProfileCard = new ProfileCard(activeChat.profile);
+            const chatProfileCard = new ProfileCard( activeChat.profile, [ 'click', () => console.log('show chat menu') ] );
 
             chatProfileCard.bemMix(['_chatProfile']);
 

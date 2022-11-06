@@ -1,7 +1,7 @@
 import Templator from '@models/templator';
 import ComponentBlock from '@models/component_block';
 import {BemParams} from '@models/bem_block';
-import {BlockProps} from '@models/block';
+import {BlockEvents, BlockProps} from '@models/block';
 import Avatar from '@lib-components/avatar';
 import Caption, {CaptionSize, CaptionWeight} from '@lib-components/caption';
 import IconButton from '@lib-components/icon-button';
@@ -16,7 +16,7 @@ export type ProfileCardProps = BlockProps &
 };
 export default class ProfileCard extends ComponentBlock 
 {
-    constructor (props : ProfileCardProps)
+    constructor (props : ProfileCardProps, btnEvents? : BlockEvents)
     {
         const bem : BemParams = {name: 'profileCard'};
         
@@ -33,7 +33,8 @@ export default class ProfileCard extends ComponentBlock
             icon: new Icon({ variant: IconVar.circle_dots }), 
             size: 'regular',
             importance: 'primary' 
-        });
+
+        }, btnEvents);
 
         avatar.bemMix(['profileCard', 'avatar']);
         caption.bemMix(['profileCard', 'name']); 

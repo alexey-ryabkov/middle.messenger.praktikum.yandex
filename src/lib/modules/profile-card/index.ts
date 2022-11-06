@@ -3,7 +3,7 @@ import ComponentBlock from '@models/component_block';
 import {BemParams} from '@models/bem_block';
 import {BlockProps} from '@models/block';
 import Avatar from '@lib-components/avatar';
-import Caption, {CaptionSize} from '@lib-components/caption';
+import Caption, {CaptionSize, CaptionWeight} from '@lib-components/caption';
 import IconButton from '@lib-components/icon-button';
 import Icon, {IconVar} from '@lib-components/icon';
 import tpl from './tpl.hbs';
@@ -27,11 +27,12 @@ export default class ProfileCard extends ComponentBlock
         const caption = new Caption({ 
             caption: props.name,
             size: CaptionSize.h2, 
-            weight: 'Regular'  
+            weight: CaptionWeight.Regular
         });
         const button = new IconButton({ 
             icon: new Icon({ variant: IconVar.circle_dots }), 
-            size: 'regular' 
+            size: 'regular',
+            importance: 'primary' 
         });
 
         avatar.bemMix(['profileCard', 'avatar']);

@@ -16,8 +16,6 @@ export default class Avatar extends ComponentBlock
     {
         const bem : BemParams = { name: 'avatar', mods: {block: []} };
 
-        props.image = `../../../../static/images/${props.image}`;
-
         if ('size' in props && bem?.mods?.block)
         {
             bem.mods.block.push([ 'size', props.size ]);

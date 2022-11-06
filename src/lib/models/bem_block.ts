@@ -70,6 +70,7 @@ export default abstract class BemBlock extends Block implements BemEntity
     }
     bemMix (itemDef : BemItemDef)
     {
+        // console.log(itemDef, BemBlock.getMixCls(itemDef));
         this.element.addCssCls( BemBlock.getMixCls(itemDef) );
     }
     elemBemMix (name : string, itemDef : BemItemDef)
@@ -132,6 +133,7 @@ export default abstract class BemBlock extends Block implements BemEntity
         } 
         if (mix?.block)
         {
+            // console.log(mix.block);
             (mix.block as BemElemDef[]).forEach( item => this.bemMix(item) );
         }
     } 
@@ -264,22 +266,22 @@ export default abstract class BemBlock extends Block implements BemEntity
     static getBlockCls (clsDef : BemBlockDef) : string[]
     {
         const blockCls = clsDef[0];
-        const cls = [blockCls];
+        let cls : string[] = [blockCls];
 
         if (clsDef[1])
         {
-            cls.concat(BemBlock.getModsCls(blockCls, clsDef[1]));
+            cls = cls.concat(BemBlock.getModsCls(blockCls, clsDef[1]));
         }
         return cls;
     }
     static getElemCls (clsDef : BemElemDef) : string[]
     {
         const elemCls = BemBlock.getItemElemCls(clsDef[0], clsDef[1]);
-        const cls = [elemCls];
+        let cls : string[] = [elemCls];
 
         if (clsDef[2])
         {
-            cls.concat(BemBlock.getModsCls(elemCls, clsDef[2]));
+            cls = cls.concat(BemBlock.getModsCls(elemCls, clsDef[2]));
         }
         return cls;
     }    
@@ -287,7 +289,8 @@ export default abstract class BemBlock extends Block implements BemEntity
     {
         const cls : string[] = [];
 
-        clsDef.forEach(modClsDef => cls.push(BemBlock.getItemModCls(itemCls, modClsDef)));        
+        clsDef.forEach(modClsDef => cls.push(BemBlock.getItemModCls(itemCls, modClsDef))); 
+
         return cls;
     }
     static getItemElemCls (blockName : string, name : string) : string

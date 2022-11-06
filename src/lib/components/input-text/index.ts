@@ -8,7 +8,7 @@ export type InputTextProps = BlockProps &
 {
     name? : string,
     type? : string,
-    plaseholder? : string,
+    placeholder? : string,
     autocomplete? : boolean,
 };
 export function buildFormFields (fields : Record< string, string >) 
@@ -19,11 +19,12 @@ export default class InputText extends ComponentBlock
 {
     constructor (props : InputTextProps, events? : BlockEvents)
     {
-        if (!props.type)
+        const attrs = props;
+        if (!attrs.type)
         {
-            props.type = 'text';
+            attrs.type = 'text';
         }
-        super({ attrs: props, events, bem: {name: 'inputText'} });
+        super({ events, bem: {name: 'inputText', attrs: { elems: { 'input': attrs }}}});
     }
     protected get _template () 
     {

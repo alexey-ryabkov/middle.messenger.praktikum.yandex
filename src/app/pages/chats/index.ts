@@ -1,21 +1,16 @@
 import SurChat from '@app';
+import User from '@models/user';
 import Templator from '@models/templator';
 import Page from '@models/page';
+import ContainerBlock from '@models/container_block';
+import ProfileCard from '@lib-modules/profile-card';
+import ChatsModule from '@app-modules/chats_list';
+import MessagesModule from '@app-modules/messages';
+import {MessageProps} from '@app-modules/messages/components/message';
+import {ChatProps} from '@app-modules/chats_list/components/chat';
 import LeftcolWindowLayout from '@lib-layouts/leftcol_window';
-
-// import UserProfile from '@app-modules/user_profile';
-// import Chats from '@app-modules/chats_list';
-// import ChatProfile from '@app-modules/chat_profile';
-// import MessagesModule from '@app-modules/messages';
-
 import leftcolTpl from './leftcol.hbs';
 import workareaTpl from './workarea.hbs';
-import ProfileCard from '@lib-modules/profile-card';
-import User from '@models/user';
-// import ComponentBlock from '@models/component_block';
-// import Block, {BlockProps} from '@models/block';
-import ContainerBlock from '@models/container_block';
-// import Icon, { IconVar } from '@lib-components/icon';
 
 const blockName = '_pageChat';
 const layout = new LeftcolWindowLayout(SurChat.instance);
@@ -35,11 +30,13 @@ if (user)
     {
         constructor ()
         {
-            const userProfileCard = new ProfileCard((user as User).profile);
-    
+            const userProfileCard = new ProfileCard((user as User).profile);  
+
             userProfileCard.bemMix(['_userProfile']);
+
+            const chatsList = new ChatsModule(chats.list as Record< string, ChatProps >);
     
-            super({ props: {userProfileCard} });
+            super({ props: {userProfileCard, chatsList} });
         }
         protected get _template () 
         {
@@ -53,8 +50,10 @@ if (user)
             const chatProfileCard = new ProfileCard(activeChat.profile);
 
             chatProfileCard.bemMix(['_chatProfile']);
+
+            const messages = new MessagesModule(activeChat.messages as Record< string, MessageProps >);
     
-            super({ props: {chatProfileCard} });
+            super({ props: {chatProfileCard, messages} });
         }
         protected get _template () 
         {

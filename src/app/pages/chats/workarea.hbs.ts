@@ -1,4 +1,4 @@
 export default `
 <div>{{{chatProfileCard}}}</div>
-<div>{{{message}}}</div>
+<div>{{{messages}}}</div>
 `.trim();

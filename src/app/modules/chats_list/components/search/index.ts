@@ -19,15 +19,13 @@ export default class SearchComponent extends ComponentBlock
         
         const input = new InputText({ 
             name: props.inputName, 
-            plaseholder: 'Поиск по чатам' 
+            placeholder: 'Поиск по чатам' 
 
         }, events);
 
         const bem = { name: 'search', mix: { block: [[ 'inputText', [['iconed']] ]] }} as BemParams;
 
-        super({ node: input.element, props: {icon, input}, bem });
-
-        this.mount();
+        super({ props: {icon, input}, bem });
     }
     protected get _template () 
     {

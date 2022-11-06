@@ -1,3 +1,8 @@
+@mixin text-ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
 @mixin gen-props($selector, $props, $variants, $child:'') {
     @each $name, $value in $variants {
         #{$selector}#{$name} #{$child} { 

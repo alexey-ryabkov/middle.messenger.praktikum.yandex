@@ -1,5 +1,5 @@
 export default `
-<svg class="icon__icon" xmlns="http://www.w3.org/2000/svg">
+<svg class="icon__icnImg" xmlns="http://www.w3.org/2000/svg">
 {{#ifEquals variant "plus"}}
     <path d="M7 14.0044C7.40674 14.0044 7.74707 13.6807 7.74707 13.2822V7.76221H13.1094C13.5078 7.76221 13.8481 7.42188 
     13.8481 7.01514C13.8481 6.6084 13.5078 6.27637 13.1094 6.27637H7.74707V0.748047C7.74707 

@@ -57,8 +57,8 @@ export default class Icon extends ComponentBlock
         const node = 'span';
         const bem : BemParams = { 
             name: 'icon', 
-            mods: { elems: { 'icon': [] }},
-            attrs: { elems: { 'icon': {} }}
+            mods: { elems: { 'icnImg': [] }},
+            attrs: { elems: { 'icnImg': {} }}
         };
         const variant = props.variant;
 
@@ -66,12 +66,12 @@ export default class Icon extends ComponentBlock
         {
             if (bem?.attrs?.elems)
             {
-                bem.attrs.elems['icon'][prop] = `${iconSizes[variant][i]}px`;
+                bem.attrs.elems['icnImg'][prop] = `${iconSizes[variant][i]}px`;
             }
         }); 
         if ('size' in props && bem?.mods?.elems)
         {
-            bem.mods.elems['icon'].push([ 'size', props.size ]);
+            bem.mods.elems['icnImg'].push([ 'size', props.size ]);
         }
         super({ node, props, bem });
     }

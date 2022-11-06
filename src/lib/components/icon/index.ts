@@ -54,17 +54,24 @@ export default class Icon extends ComponentBlock
 {
     constructor (props : IconProps)
     {
-        const node = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        const bem : BemParams = { name: 'icon', mods: {block: []} };
+        const node = 'span';
+        const bem : BemParams = { 
+            name: 'icon', 
+            mods: { elems: { 'icon': [] }},
+            attrs: { elems: { 'icon': {} }}
+        };
         const variant = props.variant;
 
-        node.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
-
-        ['width', 'height'].forEach((prop, i) => node.setAttribute( prop, `${iconSizes[variant][i]}px` ));
-
-        if ('size' in props && bem?.mods?.block)
+        ['width', 'height'].forEach((prop, i) => 
         {
-            bem.mods.block.push([ 'size', props.size ]);
+            if (bem?.attrs?.elems)
+            {
+                bem.attrs.elems['icon'][prop] = `${iconSizes[variant][i]}px`;
+            }
+        }); 
+        if ('size' in props && bem?.mods?.elems)
+        {
+            bem.mods.elems['icon'].push([ 'size', props.size ]);
         }
         super({ node, props, bem });
     }

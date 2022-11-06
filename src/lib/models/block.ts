@@ -16,7 +16,7 @@ export function makeHTMLElementExt (element : Element) : HTMLElementExt
 }
 
 export type BlockKey = number | string;
-export type BlockElement = HTMLElement | DocumentFragment | string;
+export type BlockElement = HTMLElement | SVGElement | DocumentFragment | string;
 export type BlockProps = {
     [key : string]: any,
     key?: BlockKey

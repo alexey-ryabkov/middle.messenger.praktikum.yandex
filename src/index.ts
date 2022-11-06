@@ -8,7 +8,7 @@ const app = SurChat.instance;
 // dummy page routing
 
 const url = location.href;
-const getPage = (pageName : string, defPage : Page = pages['auth']) : Page => pageName in pages ? pages[pageName] : defPage; 
+const getPage = (pageName : string, defPage : Page = pages['chats']) : Page => pageName in pages ? pages[pageName] : defPage; 
 // const go2page = (pageName : string) => location.replace(Page.url(pageName));
 const renderPage = (page : Page) => { app.page = page };
 

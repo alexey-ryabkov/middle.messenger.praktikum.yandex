@@ -8,8 +8,6 @@ export type Nullable<T> = T | null;
 export type Plural<T> = Array<T> | ArrayLike<T>;
 export type SingleOrPlural<T> = T | Plural<T>;
 
-
-
 export type EventHandler = (event : Event) => void; 
 export type EventLsnr = [string, EventHandler]; 
 

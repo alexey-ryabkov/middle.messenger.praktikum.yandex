@@ -1,8 +1,6 @@
-import Block, {BlockParams, HTMLElementExt, makeHTMLElementExt} from '@models/block';
+import Block, {BlockAttrs, BlockParams, HTMLElementExt, makeHTMLElementExt} from '@models/block';
 import {CssCls} from '@lib-utils/css_cls_helper';
 import {SingleOrPlural, EventLsnr, BemModDef, BemBlockDef, BemElemDef, BemItemDef, BemEntity} from '@models/types';
-
-
 
 export function isItemElem (item : BemItemDef) : item is BemElemDef
 {
@@ -17,15 +15,19 @@ export type BemParams = {
     mix? : {
         block? : BemBlockDef[],
         elems? : Record< string, BemElemDef[] >
+    },    
+    cssCls? : {
+        block? : CssCls,
+        elems? : Record< string, CssCls >
+    },
+    attrs? : {
+        block? : BlockAttrs,
+        elems? : Record< string, BlockAttrs >
     },
     events? : {
         block? : SingleOrPlural< EventLsnr >,
         elems? : Record< string, SingleOrPlural< EventLsnr >>
-    }
-    cssCls? : {
-        block? : CssCls,
-        elems? : Record< string, CssCls >
-    }
+    } 
 };
 export type BemCompParams = BlockParams & { bem : BemParams };
 
@@ -133,6 +135,17 @@ export default abstract class BemBlock extends Block implements BemEntity
             (mix.block as BemElemDef[]).forEach( item => this.bemMix(item) );
         }
     } 
+    protected _processAttrs ()
+    {
+        const {attrs} = this._meta; 
+
+        if (attrs?.block) // bem's block attrs override component's attrs
+        {
+            this.setAttrs(attrs.block);
+        }
+        else
+            super._processAttrs();
+    }
     protected _processDomEvents ()
     {
         const {events} = this._meta.bem;
@@ -198,6 +211,25 @@ export default abstract class BemBlock extends Block implements BemEntity
             });
         }
     }
+    protected _processElemAttrs ()
+    {
+        const {attrs} = this._meta.bem;
+       
+        if (attrs?.elems)
+        {
+            Object.entries(attrs.elems as Record< string, BlockAttrs >).forEach(([name, elemAttrs]) => 
+            {
+                if (name in this.elems)
+                {
+                    Object.entries(elemAttrs).forEach(([attrName, attrValue]) => 
+                    {
+                        this.elems[name].setAttribute(attrName, String(attrValue));
+                    });
+                    
+                }
+            });
+        } 
+    }
     protected _processElemsDomEvents ()
     {
         const {events} = this._meta.bem;
@@ -212,13 +244,14 @@ export default abstract class BemBlock extends Block implements BemEntity
                 }
             });
         }
-    }
+    }    
     protected _render() 
     {
         super._render();
         
         this._processElems();
         this._processElemCssCls();
+        this._processElemAttrs();
         this._processElemsDomEvents();
     }
 

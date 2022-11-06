@@ -15,10 +15,6 @@ export default class SurChat implements App
     protected _chatsList : ChatList;
     protected _user : Nullable< User > = null;
 
-    // TODO "авторизация" пользователя
-    // и инициация его чатов
-    // интерфейс http транспорта
-
     private static _instance: SurChat;
 
     private constructor()
@@ -26,8 +22,10 @@ export default class SurChat implements App
         this._root = document.body;         
         this._container = new MainContainer(this._root, SurChat.INITIALIZE_MSG).mount(); 
         this.title = SurChat.INITIALIZE_MSG;
-    }
 
+        this._user = new User();
+        this._chatsList = new ChatList();
+    }
     static get instance ()
     {
         return this._instance || (this._instance = new this());

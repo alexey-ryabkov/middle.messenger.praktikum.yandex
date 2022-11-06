@@ -5,10 +5,11 @@ import InputText from '@lib-components/input-text';
 import IconButton from '@lib-components/icon-button';
 import Icon, {IconVar} from '@lib-components/icon';
 import tpl from './tpl.hbs';
+import './style.scss';
 
 export default class MessagesModule extends ComponentBlock
 {
-    constructor (messagesData : Record< string, MessageProps > )
+    constructor (messagesData : Record< string, MessageProps >)
     {
         const messages : MessageComponent[] = [];
 
@@ -24,7 +25,8 @@ export default class MessagesModule extends ComponentBlock
 
         const buttonSend = new IconButton({ 
             icon: new Icon({ variant: IconVar.plane }), 
-            size: 'regular' 
+            size: 'regular',
+            importance: 'primary'  
 
         }, ['click', () => console.log('send message')]);
 
@@ -35,7 +37,7 @@ export default class MessagesModule extends ComponentBlock
 
         }, ['click', () => console.log('attach smth to message')]);
         
-        const inputSend = new InputText({ name: 'message', plaseholder: 'Сообщение' });
+        const inputSend = new InputText({ name: 'message', placeholder: 'Сообщение' });
 
         const props = {
             messagesDay: 'Сегодня',

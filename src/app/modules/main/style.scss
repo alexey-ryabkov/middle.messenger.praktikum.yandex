@@ -176,29 +176,7 @@
     }
 }
 
-.icon--color_blue {
-    fill: $blue;
-}
 
-.icon--color_gray {
-    fill: $gray;
-}
-
-.iconButton {
-    &--importance_ {
-        &primary {
-            .iconButton__icon {
-                fill: $primary-color;
-            } 
-        }
-       
-        &secondary {
-            .iconButton__icon {
-                fill: $gray-dark;
-            } 
-        } 
-    }    
-}
 
 .badge {
     border-radius: 50%;
@@ -293,6 +271,30 @@ $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6
                 }
             }
         }
+    }
+
+    .icon--color_blue {
+        fill: $blue;
+    }
+    
+    .icon--color_gray {
+        fill: $gray;
+    }
+    
+    .iconButton {
+        &--importance_ {
+            &primary {
+                .iconButton__icon {
+                    fill: $primary-color;
+                } 
+            }
+           
+            &secondary {
+                .iconButton__icon {
+                    fill: $gray-dark;
+                } 
+            } 
+        }    
     }
 
     .notification--lvl_ {

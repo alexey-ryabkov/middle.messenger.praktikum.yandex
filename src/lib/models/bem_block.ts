@@ -13,8 +13,8 @@ export type BemParams = {
         elems? : Record< string, BemModDef[] >
     },
     mix? : {
-        block? : BemBlockDef[],
-        elems? : Record< string, BemElemDef[] >
+        block? : BemItemDef[],
+        elems? : Record< string, BemItemDef[] >
     },    
     cssCls? : {
         block? : CssCls,
@@ -52,9 +52,8 @@ export default abstract class BemBlock extends Block implements BemEntity
     get elems ()
     {
         return this._elems; 
-        // TODO мб миксить в HTMLElementExt чтобы элемент отдавал свои бем-сущности?
     }
- 
+     
     setBemMods (mods : BemModDef[])
     {
         const cls = BemBlock.getModsCls(this._name, mods);
@@ -70,7 +69,6 @@ export default abstract class BemBlock extends Block implements BemEntity
     }
     bemMix (itemDef : BemItemDef)
     {
-        // console.log(itemDef, BemBlock.getMixCls(itemDef));
         this.element.addCssCls( BemBlock.getMixCls(itemDef) );
     }
     elemBemMix (name : string, itemDef : BemItemDef)
@@ -159,7 +157,7 @@ export default abstract class BemBlock extends Block implements BemEntity
         else
             super._processDomEvents();
     }
-    protected _processElems ()
+    processElems () 
     {
         this.element.querySelectorAll(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`).forEach(element => 
         {
@@ -251,7 +249,7 @@ export default abstract class BemBlock extends Block implements BemEntity
     {
         super._render();
         
-        this._processElems();
+        this.processElems();
         this._processElemCssCls();
         this._processElemAttrs();
         this._processElemsDomEvents();

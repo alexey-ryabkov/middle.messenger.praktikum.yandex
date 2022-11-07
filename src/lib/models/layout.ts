@@ -45,7 +45,7 @@ export default abstract class Layout extends ComponentBlock
         this._container.workarea.innerHTML = '';
         this._container.workarea.appendChild(this.render());
 
-        this._processElems();
+        this.processElems();
         this._processElemCssCls();
         this._processElemsDomEvents();
     }  

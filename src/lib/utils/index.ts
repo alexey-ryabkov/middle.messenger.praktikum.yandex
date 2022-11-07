@@ -6,7 +6,7 @@ export const dummyQuery = (data:object, delay = 1000) => new Promise(resolve => 
 
 export const isPlural = (item : SingleOrPlural<any>) : item is Plural<any> => !Array.isArray(item);
 
-export function isJsonString (str:string):boolean 
+export function isJsonString (str:string) : boolean 
 {
     try {
         JSON.parse(str);
@@ -35,7 +35,7 @@ export function plural2Arr (item : SingleOrPlural<any>) : Array<any>
     } 
     return Array.from(item);
 }
-export function toArr<T> (item: Iterable<T>): T[] 
+export function toArr<T> (item: Iterable<T>) : T[] 
 {
     return [...item]; 
 }

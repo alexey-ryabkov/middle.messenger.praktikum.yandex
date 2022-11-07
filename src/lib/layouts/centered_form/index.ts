@@ -19,7 +19,11 @@ export default class CenteredFormLayout extends Layout
         caption.bemMix(['_centeredFormLayout', 'caption']);
         props.caption = caption;
 
-        super(app, { props, events, bem: {name: '_centeredFormLayout'} });
+        super(app, { 
+            props, 
+            events, 
+            bem: {name: '_centeredFormLayout'} 
+        });
     } 
     protected get _template () 
     {

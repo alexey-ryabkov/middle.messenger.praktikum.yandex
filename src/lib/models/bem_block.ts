@@ -110,7 +110,7 @@ export default abstract class BemBlock extends Block implements BemEntity
     }
     protected _params4meta (params : BemCompParams) 
     {
-        return {bem: params.bem, ...super._params4meta(params)}; 
+        return { bem: params.bem, ...super._params4meta(params) }; 
     }
     protected _processCssCls ()
     {

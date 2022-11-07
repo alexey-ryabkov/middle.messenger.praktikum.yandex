@@ -18,7 +18,7 @@ export default class FormFieldWrap extends ComponentBlock
         super({ 
             props, 
             bem: { 
-                name: 'formFieldWrap', 
+                name: '_formFieldWrap', 
                 mix: { block: [['form', 'fieldWrap']] }
             }});
     }

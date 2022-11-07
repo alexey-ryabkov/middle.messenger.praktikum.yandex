@@ -48,7 +48,7 @@ export default class MessagesModule extends ComponentBlock
         };
         inputSend.bemMix([ '_messages', 'messageField' ]);
         buttonSend.bemMix([ '_messages', 'messageSubmit' ]);
-        buttonSend.bemMix([ '_messages', 'attachmentButton' ]);
+        buttonAttach.bemMix([ '_messages', 'attachmentButton' ]);
 
         super({ props, bem: {name: '_messages'} });
     }

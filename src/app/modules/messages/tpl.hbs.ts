@@ -10,7 +10,7 @@ export default `
             </ul>
         </li>
     </ul>
-    <div class="_messages__sendMessage sendMessage">
+    <div class="_messages__sendMessage _sendMessage">
         {{{inputSend}}}
         {{{buttonSend}}}
         {{{buttonAttach}}}

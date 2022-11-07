@@ -12,20 +12,32 @@ const EventsHelperMixin =
 {
     _evntsCache: new Set<EventLsnr>(),
     addEvntLsnrs (lsnrs : SingleOrPlural<EventLsnr>) 
-    {       
-        plural2Arr(lsnrs).forEach(lsnr => 
+    {
+        if ('string' == typeof lsnrs[0])
         {
-            this.addEventListener(lsnr[0], lsnr[1]);
-            this._evntsCache.add(lsnr);
-        });        
+            this.addEventListener(lsnrs[0], lsnrs[1]);
+            this._evntsCache.add(lsnrs);
+        }
+        else
+            (lsnrs as EventLsnr[]).forEach(lsnr => 
+            {           
+                this.addEventListener(lsnr[0], lsnr[1]);
+                this._evntsCache.add(lsnr);
+            });        
     },
     removeEvntLsnrs (lsnrs : SingleOrPlural<EventLsnr>)
     {
-        plural2Arr(lsnrs).forEach(lsnr => 
+        if ('string' == typeof lsnrs[0])
         {
-            this.removeEventListener(lsnr[0], lsnr[1]);
-            this._evntsCache.delete(lsnr);
-        });  
+            this.removeEventListener(lsnrs[0], lsnrs[1]);
+            this._evntsCache.delete(lsnrs);
+        }
+        else
+            (lsnrs as EventLsnr[]).forEach(lsnr => 
+            {           
+                this.removeEventListener(lsnr[0], lsnr[1]);
+                this._evntsCache.delete(lsnr);
+            }); 
     },
     clearEvnt (name : string)
     {

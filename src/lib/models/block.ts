@@ -6,8 +6,6 @@ import {Nullable, SingleOrPlural, EventLsnr, CompilableTemplate} from '@models/t
 import CssClsHelperMixin, {CssCls, HTMLElementCssCls} from '@lib-utils/css_cls_helper';
 import EventsHelperMixin, {HTMLElementEvnts} from '@lib-utils/events_helper';
 
-import { cloneDeep } from "lodash";
-
 export interface HTMLElementExt extends HTMLElement, HTMLElementCssCls, HTMLElementEvnts
 {}
 export function makeHTMLElementExt (element : Element) : HTMLElementExt
@@ -38,10 +36,10 @@ export type BlockParams =
 }
 export interface BlockPropsEngine
 {
-    // component : Block;
+    component : Block;
     subComponents : Iterable< Block >;
-    processProps (props : BlockProps) : void;
-    compileWithProps (template : CompilableTemplate, props : BlockProps) : DocumentFragment;
+    processProps () : void;
+    compileWithProps (template : CompilableTemplate) : DocumentFragment;
 }
 
 export default abstract class Block extends EventEmitter
@@ -52,7 +50,6 @@ export default abstract class Block extends EventEmitter
     protected _key : Nullable< BlockKey > = null; 
     protected _element : HTMLElementExt; 
     protected _props : BlockProps = {};
-    protected _rawProps : BlockProps = {};
     protected _meta : Record< string, any > = {};
     protected _lifecircle : EventBus;
     protected _propsEngine : BlockPropsEngine;
@@ -74,13 +71,11 @@ export default abstract class Block extends EventEmitter
         const {props = {}} = params;
         this._processParams(params);
 
-        let id = params.id || makeUUID();
+        let id = makeUUID();
         this._key = props?.key || null; 
 
-        this._rawProps = cloneDeep(props);
-
         this._props = this._makePropsProxy(props);
-        this._propsEngine = new DefaultBlockProps();     
+        this._propsEngine = new DefaultBlockProps(this);     
         this._processProps();   
 
         this._lifecircle = new EventBus();
@@ -101,8 +96,6 @@ export default abstract class Block extends EventEmitter
             // for node of HTMLElement it`s need to init component manually by mount method, otherwise go to init 
             this._lifecircle.emit(Block._LIFE_EVENTS.INIT); 
         }
-
-        // console.log(this._id);
     }
     get id ()  
     {
@@ -137,7 +130,6 @@ export default abstract class Block extends EventEmitter
         this._flags.isPropsGotSet = false;
 
         const oldProps = {...this._props};
-        this._rawProps = Object.assign(this._rawProps, nextProps);
 
         Object.assign(this._props, nextProps);
         
@@ -159,7 +151,7 @@ export default abstract class Block extends EventEmitter
     }    
     dispatchComponentDidMount = () => this._lifecircle.emit(Block._LIFE_EVENTS.FLOW_CDM);
 
-    compile = (template : CompilableTemplate) => this._propsEngine.compileWithProps(template, this.props);   
+    compile = (template : CompilableTemplate) => this._propsEngine.compileWithProps(template);   
 
     show = () => this.element.style.display = 'block';
     hide = () => this.element.style.display = 'none';
@@ -208,10 +200,10 @@ export default abstract class Block extends EventEmitter
         {
             set: (target, prop : string, value) =>
             {
-                if (!this._flags.inSetPropsCall)
-                {
-                    throw new Error('No access');
-                }
+                // if (!this._flags.inSetPropsCall)
+                // {
+                //     throw new Error('No access');
+                // }
                 
                 target[prop] = value;
 
@@ -256,7 +248,7 @@ export default abstract class Block extends EventEmitter
         const {events} = this._meta;
         this.element.addEvntLsnrs(events);
     }
-    protected _processProps = () => this._propsEngine.processProps(this._props);
+    protected _processProps = () => this._propsEngine.processProps();
 
     protected _componentDidMount () 
     {
@@ -271,10 +263,6 @@ export default abstract class Block extends EventEmitter
     }
     protected _render() 
     {
-        // if ('tlen' == this._id)
-        // {
-        //     console.log('@#@#@#@#@##@');
-        // }
         this.element.innerHTML = '';
         this.element.appendChild(this.render());
     }  

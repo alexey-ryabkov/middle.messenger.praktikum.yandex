@@ -16,6 +16,6 @@
         "no-unused-vars": 1,
         "no-undef": 2,
         "max-len": ["error", { "ignoreComments": true, "code": 150 }],
-        "max-params": [2, 3]
+        "max-params": [2, 4]
     }
 } 

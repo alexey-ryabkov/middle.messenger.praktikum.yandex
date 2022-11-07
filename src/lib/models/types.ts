@@ -14,7 +14,6 @@ export type EventLsnr = [string, EventHandler];
 export type Handler = (...args: any[]) => void; 
 export type CEventLsnr = { event : string, handler : Handler };
 
-
 export interface CompilableTemplate 
 {
     compile (data : any) : string;
@@ -41,4 +40,11 @@ export interface BemEntity
     elemBemMix (name : string, itemDef : BemItemDef) : void;
     bemClear (itemDef : BemItemDef) : void;
     elemBemClear  (name : string, itemDef : BemItemDef) : void;
+}
+
+export type InputTextField = {
+    name : string,
+    type? : string,
+    placeholder? : string,
+    autocomplete? : 'on' | 'off'
 }

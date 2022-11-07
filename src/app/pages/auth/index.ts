@@ -22,7 +22,7 @@ const page = new class extends Page
                     label: 'Логин',
                     validatorDefs: [
                         [isEmptyValidator],
-                        [lengthValidator, [3, Infinity]]
+                        [lengthValidator, [3, 20]]
                 ]}, {
                     name: 'password',
                     label: 'Пароль',

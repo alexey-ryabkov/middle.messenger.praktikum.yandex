@@ -21,7 +21,7 @@ export function lengthValidator (field : FormFieldDef, errorStack : string[] = [
 
     if (!isValid)
     {
-        errorStack.push(`Длина значения поля "${field[1] ? field[1] : field[0].name}" некорректна`);
+        errorStack.push(`Длина значения для "${field[1] ? field[1] : field[0].name}" некорректна, диапазон ${length}`);
     }
     return isValid;
 }

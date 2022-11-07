@@ -22,6 +22,7 @@ export default class MessageComponent extends ComponentBlock
     constructor (props : MessageProps)
     {
         const node = props?.tag ?? 'div';
+        
         const bem : BemParams = { 
             name: 'message', 
             mix: { block: [['icontainer', [['bg', 'grayLight'], ['size', 'small']] ]] },

@@ -3,23 +3,30 @@ import ComponentBlock from '@models/component_block';
 import ChatComponent, { ChatProps } from './components/chat';
 import IconButton from '@lib-components/icon-button';
 import Icon, {IconVar} from '@lib-components/icon';
-import tpl from './tpl.hbs';
 import SearchComponent from './components/search';
+import tpl from './tpl.hbs';
+import './style.scss';
 
 export default class ChatsModule extends ComponentBlock
 {
-    constructor (chatsData : Record< string, ChatProps > )
+    constructor (chatsData : Record< string, ChatProps >)
     {
         const chats : ChatComponent[] = [];
+
+        // window.mychat = [];
 
         Object.entries(chatsData).forEach(([, props]) => 
         {
             props.tag = 'li';
 
-            const message = new ChatComponent(props);
-            message.bemMix([ '_chats', 'listItem' ]);            
+            // console.log('1', props);
 
-            chats.push(message);
+            const chat = new ChatComponent(props, 'tlen');
+            chat.bemMix([ '_chats', 'listItem' ]);  
+            
+            // window.mychat.push(chat);
+
+            chats.push(chat);
         });
 
         const search = new SearchComponent({
@@ -29,7 +36,8 @@ export default class ChatsModule extends ComponentBlock
 
         const buttonAdd = new IconButton({ 
             icon: new Icon({ variant: IconVar.plus }), 
-            size: 'regular' 
+            size: 'regular',
+            importance: 'primary'  
 
         }, [ 'click', () => console.log('add chat') ]);
 
@@ -38,6 +46,9 @@ export default class ChatsModule extends ComponentBlock
             search,
             buttonAdd
         };
+
+        window.mychats = props;
+        // console.log(props);
 
         super({ props, bem: {name: '_chats'} });
     }

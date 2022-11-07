@@ -3,7 +3,7 @@ import ComponentBlock from '@models/component_block';
 import {BemParams} from '@models/bem_block';
 import {BlockProps} from '@models/block';
 import Avatar from '@lib-components/avatar';
-import Caption, {CaptionSize} from '@lib-components/caption';
+import Caption, {CaptionSize, CaptionWeight} from '@lib-components/caption';
 import tpl from './tpl.hbs';
 import './style.scss';
 
@@ -20,7 +20,7 @@ export type ChatProps = BlockProps &
 };
 export default class ChatComponent extends ComponentBlock 
 {
-    constructor (props : ChatProps)
+    constructor (props : ChatProps, id : string)
     {
         const node = props?.tag ?? 'div';
         const bem : BemParams = { 
@@ -50,13 +50,22 @@ export default class ChatComponent extends ComponentBlock
         const caption = new Caption({ 
             caption: props.name,
             size: CaptionSize.h3, 
-            weight: 'Regular'  
+            weight: CaptionWeight.Regular
         });
+
+        const chatProps = {avatar, caption, ...props};
 
         avatar.bemMix([ 'chat', 'avatar' ]);
         caption.bemMix([ 'chat', 'name' ]); 
 
-        super({ node, props, bem });
+        // console.log('12121', chatProps);
+
+        super({ id, node, props: chatProps, bem });
+
+        // window.myavatar = avatar;
+        // window.chatProps = chatProps;
+
+        //console.log(avatar, caption);
     }
     protected get _template () 
     {

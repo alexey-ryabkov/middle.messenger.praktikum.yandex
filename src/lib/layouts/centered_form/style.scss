@@ -10,7 +10,7 @@
             text-align: center;
         }
 
-        &form {
+        &form.form {
             width: 320px;
             display: flex;
             align-items: stretch;
@@ -19,8 +19,7 @@
         }
     }
 }
-/* пока не придумал как управлять порядком подключения стилей 
-и приходится использоват такие конструкции */
+
 .caption._centeredFormLayout__caption { 
     padding: 15px 0 10px;
 }

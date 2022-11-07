@@ -1,14 +1,13 @@
 import SurChat from '@app';
-import Templator from '@models/templator';
 import Page from '@models/page';
-import Button from '@lib-components/button';
-import {buildFormFields} from '@lib-components/input-text';
+import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
-import tpl from './tpl.hbs';
-
+import {isEmptyValidator, lengthValidator} from '@lib-utils/form_validation';
+import go2page from '@app-utils/dummy_routing';
 
 const blockName = '_pageAuth';
-const layout = new CenteredFormLayout(SurChat.instance, { title: 'Авторизация' });
+const pageName = 'Авторизация';
+const layout = new CenteredFormLayout(SurChat.instance, {title: pageName});
 
 const page = new class extends Page
 {
@@ -16,35 +15,29 @@ const page = new class extends Page
     {
         super._processPageLayout(); 
 
-        // TODO и тут можно сделать валидацию, прикручивая events к полям  
-        const fields = buildFormFields({ 
-            'Логин': 'login',
-            'Пароль': 'password',
-        }); 
-
-        const button = new Button(
+        const form = new Form(
         {
-            label: 'Войти',
-            isLink: true,
-            href: Page.url('chats'),
-            importance: 'primary',
-            size: 'big',
-            width: 'full' 
-
-        }, ['click', event => 
-        {
-            event.preventDefault();
-            console.log('you pushed it!');
-        }]);
-        button.bemMix(['form', 'submitButton']); 
-        // TODO тут вставка в шаблон, а не блок, поэтому вставляться должнопо другому... 
-        // TODO при такой установке обработчик естесствено работать не будет... 
-
-        const form = new Templator(tpl).compile({
-            fields,
-            button,
-            regUrl: Page.url('reg')
+            formFields: [{
+                    name: 'login',
+                    label: 'Логин',
+                    validatorDefs: [
+                        [isEmptyValidator],
+                        [lengthValidator, [3, Infinity]]
+                ]}, {
+                    name: 'password',
+                    label: 'Пароль',
+                    type: 'password',
+                    validatorDefs: [[isEmptyValidator]],
+                }],
+            btnLabel: 'Войти',
+            onSuccess: () => go2page( Page.url('chats') ),
+            link: {
+                url: Page.url('reg'),
+                title: 'создать аккаунт'
+            }
         });
+
+        form.bemMix(['_centeredFormLayout', 'form']);
 
         this._layout.areas = {form};
         this._layout.elemBemMix('content', [blockName, 'content']); 
@@ -53,6 +46,6 @@ const page = new class extends Page
     {
         return layout;
     }
-} ('auth', 'Авторизация', blockName);
+} ('auth', pageName, blockName);
 
 export default page;

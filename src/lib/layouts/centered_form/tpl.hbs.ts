@@ -3,9 +3,7 @@ export default `
     <div class="icontainer__header">{{{caption}}}</div>
     {{#with areas}} 
     <div class="icontainer__content">
-        <form action="" class="form _centeredFormLayout__form"> 
-        {{{form}}}
-        </form>
+        {{{form}}}        
     </div>
     {{/with}}
 </div>    

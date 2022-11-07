@@ -1,0 +1,38 @@
+@use 'sass:map';
+
+@import '../../scss/mixins';
+
+$avatar-sizes: ('small': 45px, 'regular': 75px);
+$avatar-size-default: map.get($avatar-sizes, 'regular');
+
+.avatar {
+
+    @include gen-props('&--size_', [height width], $avatar-sizes);
+    position: relative;
+    display: inline-block;
+    width: $avatar-size-default;
+    height: $avatar-size-default;
+    border-radius: 6px;
+
+    &::after {
+        content: '';
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 6px;
+        box-sizing: border-box;
+    } 
+
+    &__ {
+        &image {
+            object-fit: contain;
+            width: 100%;
+            height: 100%;
+            border-radius: 6px;
+            display: block;
+        }
+    } 
+}

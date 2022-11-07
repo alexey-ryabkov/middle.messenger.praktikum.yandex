@@ -1,0 +1,29 @@
+@import '../../scss/mixins';
+
+$icon-sizes: ('small': scale(0.749), 'regular': scale(1), 'large': scale(1.5));
+
+.icon {
+    display: inline-block;
+    fill: black;
+    line-height: 0;
+
+    &__icnImg {
+        @include gen-props('&--size_', [transform], $icon-sizes);
+
+        display: inline-block;
+
+        &color_ {
+            &blue {
+                fill: blue;
+            }
+
+            &gray {
+                fill: gray;
+            }
+            
+            &white {
+                fill: white;
+            } 
+        }
+    }
+}

@@ -1,0 +1,50 @@
+.inputText {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &__ {
+        &input {
+            box-sizing: border-box;
+            padding: 2px 4px;
+            height: 28px;
+            width: 100%;
+            min-width: 20px;
+            background: white;
+            border: 0.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+
+            &:focus {
+                border-radius: 7px;
+                outline: 3px solid rgba(0, 0, 0, 0.25);
+            }
+
+            &-- {
+                &textarea {
+                    height: auto;
+                }
+            }
+        }
+
+        &icon {
+            fill: inherit;
+        }
+    }
+
+    &-- {
+        &iconed {
+            position: relative;
+
+            .inputText__input {
+                padding-left: 30px;
+            }
+
+            .inputText__icon {
+                position: absolute;
+                left: 6px;
+            }
+        }
+    }
+}

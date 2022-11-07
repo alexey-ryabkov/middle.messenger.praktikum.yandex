@@ -1,0 +1,53 @@
+@import '../../../../../lib/scss/mixins';
+
+.chat {    
+    transition: 0.2s;
+
+    &.icontainer:hover {
+        background: white;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    &__ {
+        &wrapper {
+            overflow: hidden;
+            position: relative;
+            min-height: 50px;
+        }
+
+        &avatar {
+            margin-right: 10px;
+            float: left;
+        }
+
+        &header {
+            padding-right: 65px;
+        }
+
+        &name {
+            @include text-ellipsis;
+            padding-bottom: 5px;
+        }
+
+        &datetime {
+            font-size: 11px;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+
+        &msgAuthor {
+            display: inline;
+        }
+
+        &msgContent {
+            display: inline;
+        }
+
+        &newMsgCnt {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+    }
+}

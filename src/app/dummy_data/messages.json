@@ -1,0 +1,22 @@
+{
+	"tooday-16:20": {
+		"msg": "Отсюда можно попасть на страницы <a class=\"link\" href=\"/?page=auth\">авторизации</a>, <a class=\"link\" href=\"/?page=reg\">регистрации</a>, ошибок <a class=\"link\" href=\"/?page=error404\">404</a> и <a class=\"link\" href=\"/?page=error500\">500</a>",
+	    "datetime": "16:20",    
+	    "of": "chat"
+	},
+	"tooday-16:22": {
+		"msg": "Круто!",
+	    "datetime": "16:22",    
+	    "of": "you"
+	},
+	"tooday-18:45": {
+		"msg": "Ты приведешь капитана Соло и вуки ко мне",
+	    "datetime": "18:45",    
+	    "of": "you"
+	},
+	"tooday-18:46": {
+		"msg": "Твоя сила внушения не действует на меня, мальчишка",
+	    "datetime": "18:46",    
+	    "of": "chat"
+	}
+}

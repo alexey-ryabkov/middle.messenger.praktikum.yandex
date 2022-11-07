@@ -1,0 +1,7 @@
+dist
+node_modules
+**/*.min.js
+**/models/chat_list.ts
+**/models/chat_member.ts
+**/models/chat.ts
+**/models/user.ts

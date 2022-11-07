@@ -2,7 +2,7 @@ import SurChat from '@app';
 import Page from '@models/page';
 import pages from '../pages';
 
-const defaultPage = pages['chats']; // auth
+const defaultPage = pages['auth'];
 const fallbackPage = pages['error404'];
 
 export const getPage = (pageName : string, defPage : Page = defaultPage) : Page => pageName in pages ? pages[pageName] : defPage; 

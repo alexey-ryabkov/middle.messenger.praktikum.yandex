@@ -86,7 +86,7 @@ export default class Form extends ComponentBlock
 
         super({ 
             node: 'form', 
-            props: {fields: {...fields}, button, link}, 
+            props: {fields : {...fields}, button, link},
             attrs: {action, method}, 
 
             events: ['submit', (event : Event) => 

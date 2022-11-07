@@ -2,7 +2,7 @@ import SurChat from '@app';
 import Page from '@models/page';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
-import {isEmptyValidator, lengthValidator} from '@lib-utils/form_validation';
+import {isEmptyValidator, lengthValidator, phoneValidator} from '@lib-utils/form_validation';
 import go2page from '@app-utils/dummy_routing';
 
 const blockName = '_pageReg';
@@ -36,7 +36,9 @@ const page = new class extends Page
                 }, {
                     name: 'phone',
                     label: 'Телефон',
-                    validatorDefs: [[isEmptyValidator]]
+                    validatorDefs: [
+                        [isEmptyValidator],
+                        [phoneValidator]]
                 }, {
                     name: 'password',
                     label: 'Пароль',

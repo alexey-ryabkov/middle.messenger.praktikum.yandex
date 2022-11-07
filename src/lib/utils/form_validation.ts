@@ -25,6 +25,17 @@ export function lengthValidator (field : FormFieldDef, errorStack : string[] = [
     }
     return isValid;
 }
+export function phoneValidator (field : FormFieldDef, errorStack : string[] = []) : boolean
+{
+    const value = field[0].value.trim();
+    const isValid = /^\+?[0-9\s)(-]+$/.test(value);
+
+    if (!isValid)
+    {
+        errorStack.push(`Длина значения для "${field[1] ? field[1] : field[0].name}" некорректна, диапазон ${length}`);
+    }
+    return isValid;
+}
 export function validateField (field : FormFieldDef, validatorDefs : FieldValidatorDef[], errorStack : string[] = [])
 {
     return validatorDefs.every(validatorDef => 

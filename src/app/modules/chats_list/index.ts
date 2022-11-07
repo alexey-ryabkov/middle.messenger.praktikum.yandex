@@ -11,22 +11,16 @@ export default class ChatsModule extends ComponentBlock
 {
     constructor (chatsData : Record< string, ChatProps >)
     {
-        const chats : ChatComponent[] = [];
-
-        // window.mychat = [];
+        const chats : Record< string, ChatComponent > = {};
 
         Object.entries(chatsData).forEach(([, props]) => 
         {
             props.tag = 'li';
 
-            // console.log('1', props);
-
-            const chat = new ChatComponent(props, 'tlen');
+            const chat = new ChatComponent(props);
             chat.bemMix([ '_chats', 'listItem' ]);  
-            
-            // window.mychat.push(chat);
 
-            chats.push(chat);
+            chats[chat.id] = chat;
         });
 
         const search = new SearchComponent({
@@ -46,9 +40,6 @@ export default class ChatsModule extends ComponentBlock
             search,
             buttonAdd
         };
-
-        window.mychats = props;
-        // console.log(props);
 
         super({ props, bem: {name: '_chats'} });
     }

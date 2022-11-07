@@ -3,7 +3,7 @@
 .chat {    
     transition: 0.2s;
 
-    &:hover {
+    &.icontainer:hover {
         background: white;
         box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     }

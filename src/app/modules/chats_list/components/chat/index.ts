@@ -20,7 +20,7 @@ export type ChatProps = BlockProps &
 };
 export default class ChatComponent extends ComponentBlock 
 {
-    constructor (props : ChatProps, id : string)
+    constructor (props : ChatProps)
     {
         const node = props?.tag ?? 'div';
         const bem : BemParams = { 
@@ -58,14 +58,7 @@ export default class ChatComponent extends ComponentBlock
         avatar.bemMix([ 'chat', 'avatar' ]);
         caption.bemMix([ 'chat', 'name' ]); 
 
-        // console.log('12121', chatProps);
-
-        super({ id, node, props: chatProps, bem });
-
-        // window.myavatar = avatar;
-        // window.chatProps = chatProps;
-
-        //console.log(avatar, caption);
+        super({ node, props: chatProps, bem });
     }
     protected get _template () 
     {

@@ -128,54 +128,6 @@
     }
 }
 
-.form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-
-    &__ {
-        &fieldLabelWrap {
-            padding-bottom: 5px;
-        }
-
-        &fieldLabel {
-            font-size: 13px;
-        }
-
-        &fieldWrap {
-            padding-bottom: 15px;
-        }
-
-        &field {
-            .inputText__input {
-                padding: 2px 8px;
-                height: 32px;
-            }            
-        }
-
-        &fieldNotification {
-            padding: 5px 0 0 2px;
-        }
-
-        &buttonsBox {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding-top: 20px;
-        }
-
-        &altSubmitLink {
-            display: inline-block;
-            margin: 10px auto;
-        }
-    }
-
-    .notification {
-        font-size: 14px;
-        justify-content: center;
-    }
-}
-
 .badge {
     border-radius: 50%;
     color: white;

@@ -10,7 +10,7 @@ export default `
         {{#if msgAuthor}}
         <strong class="chat__msgAuthor">{{msgAuthor}}:</strong>
         {{/if}}
-        <div class="text chat__msgContent">{{author}}</div>
+        <div class="text chat__msgContent">{{msg}}</div>
     </div> 
     {{/if}}
     {{#if newMsgCnt}}

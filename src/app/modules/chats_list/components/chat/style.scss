@@ -1,6 +1,6 @@
 @import '../../../../../lib/scss/mixins';
 
-.chat {
+.chat {    
     transition: 0.2s;
 
     &:hover {
@@ -12,6 +12,7 @@
         &wrapper {
             overflow: hidden;
             position: relative;
+            min-height: 50px;
         }
 
         &avatar {

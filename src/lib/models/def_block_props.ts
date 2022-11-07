@@ -24,7 +24,6 @@ export default class DefaultBlockProps implements BlockPropsEngine
     protected get _props () // every call gets component's props copy
     {
         return Object.assign({}, this._component.props);
-        // TODO {...this._component.props};
     }
     processProps () 
     {
@@ -39,10 +38,6 @@ export default class DefaultBlockProps implements BlockPropsEngine
             // cause inProps is ref, it will replace in this._propsAndStubs 
             inProps.parent[inProps.prop] = `<div ${Block.ID_ATTR}="${subComponent.id}"></div>`;
         });
-        
-        // console.log(this._propsSubComponents);
-        // console.log(this._propsAndStubs);
-        // debugger; 
 
         const fragment = document.createElement('template');
         fragment.innerHTML = template.compile(this._propsAndStubs); 

@@ -131,7 +131,6 @@ export default abstract class BemBlock extends Block implements BemEntity
         } 
         if (mix?.block)
         {
-            // console.log(mix.block);
             (mix.block as BemElemDef[]).forEach( item => this.bemMix(item) );
         }
     } 

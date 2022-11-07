@@ -19,8 +19,6 @@ export default class CenteredMsgLayout extends Layout
     {
         const caption = new Caption({caption: props.title});
 
-        caption.setAttrs({'bem-element': 'caption'}); 
-        // TODO если переделать шаблоны на это, то микс не понадобиться
         caption.bemMix(['_centeredMsgLayout', 'caption']);
 
         props.caption = caption;

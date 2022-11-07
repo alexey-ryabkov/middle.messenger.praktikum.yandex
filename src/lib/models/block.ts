@@ -15,6 +15,7 @@ export function makeHTMLElementExt (element : Element) : HTMLElementExt
     return element as HTMLElementExt; 
 }
 
+export type BlockID = number | string;
 export type BlockKey = number | string;
 export type BlockElement = HTMLElement | SVGElement | DocumentFragment | string;
 export type BlockProps = {
@@ -24,7 +25,8 @@ export type BlockProps = {
 export type BlockAttrs = Record< string, string | number | boolean >;
 export type BlockEvents = SingleOrPlural< EventLsnr >;
 export type BlockParams = 
-{ 
+{
+    id? : BlockID, 
     node? : BlockElement,    
     props? : BlockProps, 
     attrs? :  BlockAttrs,  
@@ -44,13 +46,12 @@ export default abstract class Block extends EventEmitter
 {
     static readonly ID_ATTR = 'data-block_id';
     
-    protected _id = ''; 
+    protected _id : BlockID; 
     protected _key : Nullable< BlockKey > = null; 
     protected _element : HTMLElementExt; 
     protected _props : BlockProps = {};
     protected _meta : Record< string, any > = {};
     protected _lifecircle : EventBus;
-    // protected _availEvents = [];
     protected _propsEngine : BlockPropsEngine;
 
     protected _flags = {
@@ -72,7 +73,6 @@ export default abstract class Block extends EventEmitter
 
         let id = makeUUID();
         this._key = props?.key || null; 
-        // TODO при reinit ? 
 
         this._props = this._makePropsProxy(props);
         this._propsEngine = new DefaultBlockProps(this);     
@@ -120,7 +120,7 @@ export default abstract class Block extends EventEmitter
         }
         return this;
     }
-    setProps (nextProps : BlockProps)
+    setProps (nextProps : any)
     {
         if (!this.element || !nextProps) 
         {
@@ -132,6 +132,7 @@ export default abstract class Block extends EventEmitter
         const oldProps = {...this._props};
 
         Object.assign(this._props, nextProps);
+        
         this._processProps();
 
         if (this._flags.isPropsGotSet) 
@@ -199,10 +200,10 @@ export default abstract class Block extends EventEmitter
         {
             set: (target, prop : string, value) =>
             {
-                if (!this._flags.inSetPropsCall)
-                {
-                    throw new Error('No access');
-                }
+                // if (!this._flags.inSetPropsCall)
+                // {
+                //     throw new Error('No access');
+                // }
                 
                 target[prop] = value;
 

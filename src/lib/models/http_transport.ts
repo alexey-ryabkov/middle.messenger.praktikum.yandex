@@ -66,12 +66,6 @@ export default class HttpTransport
             {
                 xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
             }
-            // мб тут надо так
-            //  if (method === Methods.GET || !data) {
-            //   xhr.send();
-            // } else {
-            //   xhr.send(JSON.stringify(data));
-            // }
 
             xhr.send(data);
         });      

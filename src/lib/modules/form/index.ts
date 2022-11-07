@@ -92,11 +92,6 @@ export default class Form extends ComponentBlock
             events: ['submit', (event : Event) => 
             {
                 event.preventDefault();
-                //console.log('form submit!!!', event);
-
-                // console.log(fields);
-
-                // TODO кажется мой def_props заменяет пропсы на разментку в компоненте. даже несмотря на то что я копирую...
 
                 const fieldValues : Record< string, string > = {};
                 

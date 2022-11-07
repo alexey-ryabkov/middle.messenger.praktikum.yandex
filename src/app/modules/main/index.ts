@@ -4,8 +4,6 @@ import ComponentBlock from '@models/component_block';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-const template = new Templator(tpl);
-
 export default class MainContainer extends ComponentBlock implements AppContainer
 {
     constructor (root : HTMLElement, pageHolder : HTMLElement | string) 
@@ -31,6 +29,6 @@ export default class MainContainer extends ComponentBlock implements AppContaine
     }
     protected get _template () 
     {
-        return template;
+        return new Templator(tpl);
     }
 }

@@ -8,8 +8,6 @@ export enum MountType
 }
 export default function mount (subject : HTMLElement | string, node : HTMLElement | string | null, mountType : MountType = MountType.append)
 {
-    // TODO тут же нужно вызывать dispatch...
-
     let nodeElement : Element = document.body;
 
     if (node instanceof HTMLElement)

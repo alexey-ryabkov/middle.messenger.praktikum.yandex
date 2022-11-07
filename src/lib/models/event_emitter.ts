@@ -15,8 +15,6 @@ export default abstract class EventEmitter
         return this._availEvents;
     }
     on (lsnrs : SingleOrPlural< CEventLsnr >) 
-    // TODO on / off / emit можно сделать через миксин
-    // различать DOMEvents и CustomEvents 
     {
         plural2Arr(lsnrs).forEach(lsnr => 
         {
@@ -41,25 +39,3 @@ export default abstract class EventEmitter
     }
     protected abstract get _availEvents () : string[]; 
 }
-
-// const CustomEventsHelperMixin = 
-// {
-//     on (lsnrs : SingleOrPlural< CEventLsnr >) 
-//     {
-//         plural2Arr(lsnrs).forEach(lsnr => 
-//         {
-//             this._listeners[lsnr.name].add(lsnr.handler);
-//         });
-//     },
-//     off (lsnrs : SingleOrPlural< CEventLsnr >) 
-//     {
-//         plural2Arr(lsnrs).forEach(lsnr => 
-//         {
-//             this._listeners[lsnr.name].delete(lsnr.handler);
-//         });
-//     },
-//     emit (eventName : string, ...args) 
-//     {
-//         this._listeners[eventName].forEach(handler => handler(...args));
-//     }
-// }

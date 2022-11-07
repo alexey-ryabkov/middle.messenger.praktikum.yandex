@@ -204,7 +204,7 @@ export default abstract class Block extends EventEmitter
                 // {
                 //     throw new Error('No access');
                 // }
-                
+                // FIXME                
                 target[prop] = value;
 
                 this._flags.isPropsGotSet = true;

@@ -23,13 +23,13 @@ export default class DefaultBlockProps implements BlockPropsEngine
     }
     protected get _props () // every call gets component's props copy
     {
-        return Object.assign({}, this._component.props);
+        return {...this._component.props};
     }
     processProps () 
     {
         this._propsAndStubs = this._props;
         this._propsSubComponents = new Map();
-        DefaultBlockProps._processProps(this._propsAndStubs, this._propsSubComponents);
+        this._processProps(this._propsAndStubs, this._propsSubComponents);
     }
     compileWithProps (template : CompilableTemplate) : DocumentFragment
     {   
@@ -53,7 +53,7 @@ export default class DefaultBlockProps implements BlockPropsEngine
         }
         return fragment.content; 
     }
-    protected static _processProps (props : any, propsSubComponents : PropsSubComponents) 
+    protected _processProps (props : any, propsSubComponents : PropsSubComponents) 
     {
         Object.entries(props).forEach(([prop, value]) => 
         {
@@ -67,7 +67,7 @@ export default class DefaultBlockProps implements BlockPropsEngine
                 {
                     if (valueItem instanceof Object)
                     {
-                        DefaultBlockProps._processProps(valueItem, propsSubComponents);
+                        this._processProps(valueItem, propsSubComponents);
                     }
                     if (valueItem instanceof Block) 
                     {
@@ -77,7 +77,7 @@ export default class DefaultBlockProps implements BlockPropsEngine
             }
             else if (value instanceof Object) 
             {
-                DefaultBlockProps._processProps(value, propsSubComponents);
+                this._processProps(value, propsSubComponents);
             }
         });
     }

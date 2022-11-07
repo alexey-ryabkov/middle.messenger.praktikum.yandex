@@ -37,7 +37,11 @@ export default class MessagesModule extends ComponentBlock
 
         }, ['click', () => console.log('attach smth to message')]);
         
-        const inputSend = new InputText({ name: 'message', placeholder: 'Сообщение' });
+        const inputSend = new InputText({ 
+            name: 'message', 
+            placeholder: 'Сообщение' 
+
+        }, [ 'keyup', () => console.log('type in message') ]);
 
         const props = {
             messagesDay: 'Сегодня',

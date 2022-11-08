@@ -1,10 +1,12 @@
 import { v4 as makeUUID } from 'uuid';
 import EventEmitter from '@models/event_emitter';
 import EventBus from '@models/event_bus';
+import MapBlockProps from '@models/map_block_props';
 import DefaultBlockProps from '@models/def_block_props';
 import {Nullable, SingleOrPlural, EventLsnr, CompilableTemplate} from '@models/types';
 import CssClsHelperMixin, {CssCls, HTMLElementCssCls} from '@lib-utils/css_cls_helper';
 import EventsHelperMixin, {HTMLElementEvnts} from '@lib-utils/events_helper';
+
 
 export interface HTMLElementExt extends HTMLElement, HTMLElementCssCls, HTMLElementEvnts
 {}
@@ -36,8 +38,7 @@ export type BlockParams =
 }
 export interface BlockPropsEngine
 {
-    component : Block;
-    subComponents : Iterable< Block >;
+    childBlocks : Iterable< Block >;
     processProps () : void;
     compileWithProps (template : CompilableTemplate) : DocumentFragment;
 }
@@ -74,8 +75,8 @@ export default abstract class Block extends EventEmitter
         let id = makeUUID();
         this._key = props?.key || null; 
 
-        this._props = this._makePropsProxy(props);
-        this._propsEngine = new DefaultBlockProps(this);     
+        this._props = this._makePropsProxy(props);        
+        this._processPropsEngine();
         this._processProps();   
 
         this._lifecircle = new EventBus();
@@ -158,6 +159,7 @@ export default abstract class Block extends EventEmitter
     
     init () 
     {
+        
         this._initElement();
 
         this._processAttrs();
@@ -188,6 +190,10 @@ export default abstract class Block extends EventEmitter
     protected _processParams (params : BlockParams)
     {
         this._meta = this._params4meta(params); 
+    }
+    protected _processPropsEngine ()
+    {
+        this._propsEngine = new DefaultBlockProps(this); 
     }
     protected _params4meta (params : BlockParams)
     {

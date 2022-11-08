@@ -1,6 +1,6 @@
 {
 	"tooday-16:20": {
-		"msg": "Отсюда можно попасть на страницы <a class=\"link\" href=\"/?page=auth\">авторизации</a>, <a class=\"link\" href=\"/?page=reg\">регистрации</a>, <a class=\"link\" href=\"/?page=profile\">профиля</a>, ошибок <a class=\"link\" href=\"/?page=error404\">404</a> и <a class=\"link\" href=\"/?page=error500\">500</a>",
+		"msg": "Отсюда можно попасть на страницы <a class=\"link\" href=\"/?page=auth\">авторизации</a>, <a class=\"link\" href=\"/?page=reg\">регистрации</a>, <a class=\"link\" href=\"/?page=profile\">профиля</a>, <a class=\"link\" href=\"/?page=access\">настроки доступа</a>, ошибок <a class=\"link\" href=\"/?page=error404\">404</a> и <a class=\"link\" href=\"/?page=error500\">500</a>",
 	    "datetime": "16:20",    
 	    "of": "chat"
 	},

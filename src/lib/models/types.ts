@@ -49,4 +49,5 @@ export interface FormField
     get name () : string,    
     get label () : string,
     value? : string,
+    setValidationHandlers (lsnrs : SingleOrPlural< EventLsnr >) : void 
 }

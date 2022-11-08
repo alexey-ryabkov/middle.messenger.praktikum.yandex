@@ -15,13 +15,16 @@ export default class InputText extends FormFieldComponent
 {
     constructor (props : InputTextProps, events : BlockEvents = [])
     {
-        const {name, type = 'text', placeholder = '', autocomplete = 'off'} = props;
+        const {name, label, type = 'text', placeholder = '', autocomplete = 'off'} = props;
         
-        super({ bem: {
-            name: 'inputText', 
-            attrs: { elems: { 'input': {name, type, placeholder, autocomplete} }}, 
-            events: { elems: { 'input': events }} 
-        }});
+        super({ 
+            props: {name, label},
+            bem: {
+                name: 'inputText', 
+                
+                attrs: {elems: { 'input': {name, type, placeholder, autocomplete} }}, 
+                events: {elems: { 'input': events }} 
+            }});
 
         if (props.value)
         {
@@ -38,6 +41,9 @@ export default class InputText extends FormFieldComponent
     }
     protected get _input ()
     {
+        // FIXME 
+        this.processElems();
+
         const input = <unknown> this.elems['input'];
         return (input as HTMLInputElement);
     }

@@ -39,3 +39,8 @@ export function toArr<T> (item: Iterable<T>) : T[]
 {
     return [...item]; 
 }
+export function freezeEvent (event : Event) 
+{
+    event.preventDefault();
+    event.stopPropagation();
+}

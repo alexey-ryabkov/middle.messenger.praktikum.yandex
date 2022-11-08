@@ -252,7 +252,7 @@ export default abstract class Block extends EventEmitter
     protected _processDomEvents ()
     {
         const {events} = this._meta;
-        this.element.addEvntLsnrs(events);
+        this.element.addEventExtListeners(events);
     }
     protected _processProps = () => this._propsEngine.processProps();
 

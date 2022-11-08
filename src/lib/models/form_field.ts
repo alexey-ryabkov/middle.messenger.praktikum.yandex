@@ -15,13 +15,12 @@ export default abstract class FormFieldComponent extends ComponentBlock implemen
     }
     get label () : string 
     {
-        console.log(this.props);
         return this.props.label ? this.props.label : this.props.name;
     }
     setValidationHandlers (lsnrs : SingleOrPlural< EventLsnr >) : void 
     {
         const input = <unknown> this._input;
-        (input as HTMLElementExt).addEvntLsnrs(lsnrs);
+        (input as HTMLElementExt).addEventExtListeners(lsnrs);
     }
     abstract get value () : string;
     abstract set value (value : string); 

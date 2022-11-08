@@ -34,7 +34,7 @@ export default abstract class Layout extends ComponentBlock
         {
             plural2Arr(this._events).forEach(lsnr => 
             {
-                this.element.removeEvntLsnrs(lsnr);
+                this.element.removeEventExtListeners(lsnr);
             })
         } 
         this._container.workarea.innerHTML = '';

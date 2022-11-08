@@ -164,7 +164,7 @@ export default abstract class BemBlock extends Block implements BemEntity
 
         if (events?.block) // bem's block events override component's events
         {
-            this.element.addEvntLsnrs(events.block);
+            this.element.addEventExtListeners(events.block);
         }
         else
             super._processDomEvents();
@@ -252,7 +252,7 @@ export default abstract class BemBlock extends Block implements BemEntity
             {
                 if (name in this.elems)
                 {
-                    this.elems[name].addEvntLsnrs(lsnrs);
+                    this.elems[name].addEventExtListeners(lsnrs);
                 }
             });
         }

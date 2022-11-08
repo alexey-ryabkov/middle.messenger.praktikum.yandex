@@ -281,22 +281,29 @@ $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6
 
         &--bg_ {
             &glass {
-                .caption,
-    
+                .caption,    
                 .form__fieldLabel,
                 .notification { 
                     opacity: 0.75;
+                }
 
+                .form__fieldLabel {
                     &__icon {  
-                        fill: white;
+                        fill: white; 
                         opacity: 0.9;    
                     }
+                }
 
+                .notification {
                     &--lvl_ {
                         &error {
-                            color: white;
+                            color: white; 
                             opacity: 0.75;            
                         }
+                    }
+                    &__icon {  
+                        fill: white; 
+                        opacity: 0.9;    
                     }
                 }
 

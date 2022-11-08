@@ -247,6 +247,17 @@ $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6
         }    
     }
 
+    .inputImage {
+        border-color: 1px dashed $gray-90;
+    
+        &__desc {
+            font-weight: map.get($font-weights, 'Thin');
+        }
+        &--active {
+            border-color: $gray-90;
+        }
+    }
+
     .notification--lvl_ {
         &error {
             color: $red;            
@@ -286,6 +297,20 @@ $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6
                             color: white;
                             opacity: 0.75;            
                         }
+                    }
+                }
+
+                .inputImage {            
+                    border: 1px dashed rgba(white, 0.5);
+    
+                    &__desc { 
+                        color: white; 
+                        opacity: 0.75; 
+                    }
+    
+                    &--active {
+                        background: rgba(white, 0.15);
+                        border-color: white;
                     }
                 }
 

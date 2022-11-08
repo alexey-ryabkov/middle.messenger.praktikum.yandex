@@ -38,7 +38,7 @@ export default abstract class Layout extends ComponentBlock
             })
         } 
         this._container.workarea.innerHTML = '';
-        this._container.bemClear([this.bemName]);
+        this._container.bemUnmix([this.bemName]);
     }
     protected _render() 
     {

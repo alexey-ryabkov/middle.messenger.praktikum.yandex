@@ -54,17 +54,30 @@ export default abstract class BemBlock extends Block implements BemEntity
         return this._elems; 
     }
      
-    setBemMods (mods : BemModDef[])
+    addBemMods (mods : BemModDef[])
     {
         const cls = BemBlock.getModsCls(this._name, mods);
         this.element.addCssCls(cls);
     }
-    setElemBemMods (name : string, mods : BemModDef[])
+    delBemMods (mods : BemModDef[])
+    {
+        const cls = BemBlock.getModsCls(this._name, mods);
+        this.element.delCssCls(cls);
+    }
+    addElemBemMods (name : string, mods : BemModDef[])
     {
         if (name in this.elems)
         {
             const cls = BemBlock.getModsCls(BemBlock.getItemElemCls(this._name, name), mods);
             this.elems[name].addCssCls(cls);
+        }
+    }
+    delElemBemMods (name : string, mods : BemModDef[])
+    {
+        if (name in this.elems)
+        {
+            const cls = BemBlock.getModsCls(BemBlock.getItemElemCls(this._name, name), mods);
+            this.elems[name].delCssCls(cls);
         }
     }
     bemMix (itemDef : BemItemDef)
@@ -78,7 +91,7 @@ export default abstract class BemBlock extends Block implements BemEntity
             this.elems[name].addCssCls( BemBlock.getMixCls(itemDef) );
         }
     }
-    bemClear (itemDef : BemItemDef)
+    bemUnmix (itemDef : BemItemDef)
     {
         this.element.getCssClsArr().forEach(cls => 
         {
@@ -88,7 +101,7 @@ export default abstract class BemBlock extends Block implements BemEntity
             }
         });
     }
-    elemBemClear (name : string, itemDef : BemItemDef)
+    elemBemUnmix (name : string, itemDef : BemItemDef)
     {
         if (name in this.elems)
         {
@@ -127,7 +140,7 @@ export default abstract class BemBlock extends Block implements BemEntity
 
         if (mods?.block)
         {
-            this.setBemMods(mods.block);
+            this.addBemMods(mods.block);
         } 
         if (mix?.block)
         {
@@ -195,7 +208,7 @@ export default abstract class BemBlock extends Block implements BemEntity
             {
                 if (name in this.elems)
                 {
-                    this.setElemBemMods(name, mods);
+                    this.addElemBemMods(name, mods);
                 }
             });
         }      

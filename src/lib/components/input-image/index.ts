@@ -1,20 +1,18 @@
 import Templator from '@models/templator';
-import {BlockEvents} from '@models/block';
 import {BemParams} from '@models/bem_block';
 import FormFieldComponent, {FormFieldProps} from '@models/form_field';
 import Avatar from '@lib-components/avatar';
+import {freezeEvent} from '@lib-utils-kit';
 import tpl from './tpl.hbs';
 import './style.scss';
-import { freezeEvent } from '@lib-utils-kit';
 
 export type InputImageProps = FormFieldProps & {
     image? : string
 };
 export default class InputImage extends FormFieldComponent 
 {
-    constructor (props : InputImageProps) // , events : BlockEvents = []
+    constructor (props : InputImageProps)
     {
-        //const {name} = props;
         const bem : BemParams = { name: 'inputImage', mods: {block: []}, events: {block: []} };
 
         props.avatar = InputImage._processAvatar(props);
@@ -23,32 +21,6 @@ export default class InputImage extends FormFieldComponent
         {
             bem.mods.block.push(['empty']);
         }
-
-        // let avatar : Avatar | '' = '';
-
-        // if (image)
-        // {
-        //     avatar = new Avatar({ 
-        //         image, 
-        //         size: 'large'
-        //     });
-        //     avatar.bemMix(['inputImage', 'image']);
-        // }
-        // else if (bem?.mods?.block)
-        // {
-        //     bem.mods.block.push(['empty']);
-        // }
-
-        // function highlight () 
-        // {
-        //     // @todo как раз тут ситуация, когда нету удаления модификаци...
-        //     // к setBemMods нужен delMods. bemClear это unmix... (стоит его так и назвать)
-        //     this.element.classList.add('inputImage--active');
-        // }
-        // function unhighlight () 
-        // {
-        //     this.element.classList.remove('inputImage--active');
-        // }
 
         if (bem?.events?.block)
         {
@@ -129,17 +101,11 @@ export default class InputImage extends FormFieldComponent
         }
         else
             this.delBemMods([ ['active'] ]);
-
-        // flag
-        //     ? this.element.addCssCls('inputImage--active') 
-        //     : this.element.delCssCls('inputImage--active');
     }
     protected _previewFile (file : File)
     {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-
-        // let img : HTMLImageElement = this.elems['image'];
 
         reader.onloadend = () => 
         {
@@ -151,22 +117,11 @@ export default class InputImage extends FormFieldComponent
 
                 if (!avatar)
                 {
-                    // img = document.createElement('img');
-                    // img.className = 'avatar__image';
-
-                    // const imgBox = document.createElement('div'); 
-                    // imgBox.className = 'avatar avatar--size_large inputImage__imageBox';
-                    // imgBox.append(img);
-                    // this.element.prepend(imgBox);
-
                     avatar = new Avatar({ 
                         image,
                         size: 'large' 
                     });
 
-
-
-                    // @todo запустить processElems
                     this.delBemMods([ ['empty'] ]);
 
                     this.setProps({ avatar });
@@ -175,6 +130,14 @@ export default class InputImage extends FormFieldComponent
                     avatar.setProps({ image });
             }
         }                
+    }
+    protected get _input ()
+    {
+        // FIXME 
+        this.processElems();
+        
+        const input = <unknown> this.elems['input'];
+        return (input as HTMLInputElement);
     }
     protected _uploadFile (file : File)
     {

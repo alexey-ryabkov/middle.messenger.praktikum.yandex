@@ -1,38 +1,27 @@
 import Templator from '@models/templator';
 import ComponentBlock from '@models/component_block';
-import {BlockEvents, BlockProps} from '@models/block';
-//import {InputTextField} from '@models/types';
-import InputText from '@lib-components/input-text';
-import FormFieldWrap from './components/field-wrap';
+import {BlockProps} from '@models/block';
+import {EventLsnr, FormField} from '@models/types';
 import Button from '@lib-components/button';
-import {FieldValidatorDef_dep, FormFieldDef_dep, validateField} from '@lib-utils/form_validation';
+import FormFieldWrap from './components/field-wrap';
+import {FieldValidatorDef, FormFieldDef, validateField} from '@lib-utils/form_validation';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-export type FormField_depr = //InputTextField & 
-{
-    name : string,
-    type? : string,
-    placeholder? : string,
-    autocomplete? : 'on' | 'off'
-    label : string,
-    validatorDefs? : FieldValidatorDef_dep[] 
-}; 
 export type FormProps = BlockProps & 
 {
-    formFields : FormField_depr[],
+    formFields : FormFieldDef[],
     action? : string,
     method? : string,
     btnLabel : string,
     onSuccess? : () => void,
     link? : {url : string, title : string},    
 };
-//export type FormLinkDef = [string, string];
 
 function validate (
     fieldWrap : FormFieldWrap, 
-    fieldDef : FormFieldDef_dep,
-    validatorDefs : FieldValidatorDef_dep[])
+    fieldDef : FormField,
+    validatorDefs : FieldValidatorDef[])
 {
     const errors : string[] = [];
 
@@ -53,32 +42,31 @@ export default class Form extends ComponentBlock
         const {action = '#', method = 'post', onSuccess, link} = props;        
         const fields : Record< string, FormFieldWrap > = {};
 
-        props.formFields.forEach(formField => 
+        const formFields = props.formFields;
+        
+        formFields.forEach(formField => 
         {
-            const {label, validatorDefs} = formField;
+            const [field, validatorDefs] = formField;
+            const fieldWrap = new FormFieldWrap({ field });
 
-            let events : BlockEvents = [];
             if (validatorDefs)
             {
-                events = [
-                    // TODO видимо при фокусе нужно делать то же что при блюр 
-                    ['focus', (event : Event) => 
-                    {
-                        const fieldElement = <HTMLInputElement> event.target;
-    
-                        if (fieldElement.value.trim())
-                        {
-                            validate(fieldWrap, [fieldElement, label], validatorDefs);
-                        }
-                    }],
-                    ['blur', (event : Event) => validate(fieldWrap, [<HTMLInputElement> event.target, label], validatorDefs)]
-                ];
-            }
+                const validationHandlers : EventLsnr[] = [];
 
-            const field = new InputText(formField, events);
-            const fieldWrap = new FormFieldWrap({ field });
-    
-            fields[label] = fieldWrap;
+                validatorDefs.forEach(validatorDef => 
+                {
+                    const [fieldEvents] = validatorDef;
+
+                    fieldEvents.forEach(( event ) => 
+                    {
+                        validationHandlers.push([ event, () => validate(fieldWrap, field, validatorDefs) ]);
+                    });
+                    
+                    // TODO not all fields can be validatable 
+                    field.setValidationHandlers(validationHandlers);
+                });
+            }    
+            fields[field.label] = fieldWrap;
         });
 
         const button = new Button({ 
@@ -91,7 +79,7 @@ export default class Form extends ComponentBlock
 
         super({ 
             node: 'form', 
-            props: {fields : {...fields}, button, link},
+            props: {fields, button, link}, //  : {...fields}
             attrs: {action, method}, 
 
             events: ['submit', (event : Event) => 
@@ -105,17 +93,17 @@ export default class Form extends ComponentBlock
                 
                 Object.entries(fields).forEach(([label, fieldWrap ]) => 
                 {
-                    const fieldWrapProps = (fieldWrap as FormFieldWrap).props;
-                    const fieldComp = fieldWrapProps.field;
-                    // FIXME 
-                    fieldComp.processElems();
+                    const field = fieldWrap.props.field;
 
-                    const fieldElement = fieldComp.elems['input'];
-                    const validatorDefs = props.formFields[ i++ ].validatorDefs;
+                    // FIXME 
+                    field.processElems();
+
+                    const fieldElement = field.elems['input'];
+                    const [, validatorDefs] = formFields[ i++ ];
 
                     if (validatorDefs)
                     {
-                        errors = errors.concat(validate(<FormFieldWrap>fieldWrap, [fieldElement, label], validatorDefs));
+                        errors = errors.concat( validate(fieldWrap, field, validatorDefs) );
                         fieldValues[ fieldElement.name ] = fieldElement.value;
                     }
                 });
@@ -124,6 +112,7 @@ export default class Form extends ComponentBlock
                 {
                     if (onSuccess)
                     {
+                        console.log(fieldValues);
                         alert( Object.entries(fieldValues).map (([name, value]) => `${name}: ${value ? value : '–'}` ).join("\n") );
                         onSuccess();
                     }

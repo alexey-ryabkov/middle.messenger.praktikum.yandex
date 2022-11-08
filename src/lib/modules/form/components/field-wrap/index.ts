@@ -2,11 +2,13 @@ import Templator from '@models/templator';
 import ComponentBlock from '@models/component_block';
 import {BlockProps} from '@models/block';
 import Icon, { IconVar } from '@lib-components/icon';
-import InputText from '@lib-components/input-text';
+// import InputText from '@lib-components/input-text';
+import {FormField} from '@models/types';
 import tpl from './tpl.hbs';
 
+
 export type FormFieldWrapProps = BlockProps & {
-    field : InputText,
+    field : FormField,
     error? : string
 };
 export default class FormFieldWrap extends ComponentBlock 

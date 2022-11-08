@@ -1,4 +1,9 @@
 {
 	"image": "cat.jpg",
-	"name": "Фронтэнд Котэр"
+    "nickname": "Фронтэнд Котэр",
+    "login": "xelaris@ya.ru",
+    "first_name": "Алексей",
+    "last_name": "Рябков",
+    "phone": "89856331117",
+    "email": "xelaris@ya.ru"
 }

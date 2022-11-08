@@ -1,0 +1,37 @@
+.inputImage {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px dashed black;
+    min-height: 80px;
+
+    &__ {
+        &image {
+            flex-grow: 0;
+        }
+
+        &desc {
+            flex-grow: 1;
+            width: 140px;
+            font-size: 14px;
+            color: black;
+        }
+    }
+
+    &--active {
+        background: rgba(black, 0.15);
+        border-color: black;
+    }
+    
+    &--empty {
+        .inputImage__desc {
+            flex-grow: 0;
+        }
+    }
+}

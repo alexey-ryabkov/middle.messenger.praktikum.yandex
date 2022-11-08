@@ -1,3 +1,3 @@
 export default `
-<input class="inputText__input" bem-element="input" />
+<input class="inputText__input" />
 `.trim();

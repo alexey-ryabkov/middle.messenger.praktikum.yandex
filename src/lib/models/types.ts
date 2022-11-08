@@ -44,9 +44,9 @@ export interface BemEntity
     elemBemUnmix  (name : string, itemDef : BemItemDef) : void;
 }
 
-export type InputTextField = {
-    name : string,
-    type? : string,
-    placeholder? : string,
-    autocomplete? : 'on' | 'off'
+export interface FormField
+{ 
+    get name () : string,    
+    get label () : string,
+    value? : string,
 }

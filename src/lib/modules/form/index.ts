@@ -1,34 +1,38 @@
 import Templator from '@models/templator';
 import ComponentBlock from '@models/component_block';
 import {BlockEvents, BlockProps} from '@models/block';
-import {InputTextField} from '@models/types';
+//import {InputTextField} from '@models/types';
 import InputText from '@lib-components/input-text';
 import FormFieldWrap from './components/field-wrap';
 import Button from '@lib-components/button';
-import {FieldValidatorDef, FormFieldDef, validateField} from '@lib-utils/form_validation';
+import {FieldValidatorDef_dep, FormFieldDef_dep, validateField} from '@lib-utils/form_validation';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-export type FormField = InputTextField & 
+export type FormField_depr = //InputTextField & 
 {
+    name : string,
+    type? : string,
+    placeholder? : string,
+    autocomplete? : 'on' | 'off'
     label : string,
-    validatorDefs? : FieldValidatorDef[] 
+    validatorDefs? : FieldValidatorDef_dep[] 
 }; 
 export type FormProps = BlockProps & 
 {
-    formFields : FormField[],
+    formFields : FormField_depr[],
     action? : string,
     method? : string,
     btnLabel : string,
     onSuccess? : () => void,
     link? : {url : string, title : string},    
 };
-export type FormLinkDef = [string, string];
+//export type FormLinkDef = [string, string];
 
 function validate (
     fieldWrap : FormFieldWrap, 
-    fieldDef : FormFieldDef,
-    validatorDefs : FieldValidatorDef[])
+    fieldDef : FormFieldDef_dep,
+    validatorDefs : FieldValidatorDef_dep[])
 {
     const errors : string[] = [];
 
@@ -57,6 +61,7 @@ export default class Form extends ComponentBlock
             if (validatorDefs)
             {
                 events = [
+                    // TODO видимо при фокусе нужно делать то же что при блюр 
                     ['focus', (event : Event) => 
                     {
                         const fieldElement = <HTMLInputElement> event.target;

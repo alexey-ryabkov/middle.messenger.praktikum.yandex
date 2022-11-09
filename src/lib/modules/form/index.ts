@@ -79,7 +79,8 @@ export default class Form extends ComponentBlock
 
         super({ 
             node: 'form', 
-            props: {fields, button, link}, 
+            // FIXME now have to do copy of fields 
+            props: {fields : {...fields}, button, link}, 
             attrs: {action, method}, 
 
             events: ['submit', (event : Event) => 
@@ -95,7 +96,7 @@ export default class Form extends ComponentBlock
                 {
                     const field = fieldWrap.props.field;
 
-                    // FIXME 
+                    // FIXME now have to call it manually 
                     field.processElems();
 
                     const fieldElement = field.elems['input'];

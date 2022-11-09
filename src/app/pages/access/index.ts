@@ -25,39 +25,42 @@ if (user)
                 value: userProfile.login                 
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ],
-                [ ['focus', 'blur', 'keyup'], loginValidator ],
-                [ ['focus', 'blur'], lengthValidator, [3, 20] ],                
+                [ InputText.validationEvents, isEmptyValidator ],
+                [ InputText.validationEvents, loginValidator ],
+                [ InputText.validationEvents, lengthValidator, [3, 20] ],                
             ]
         ], [
             new InputText({
                 name: 'password_old',
-                label: 'Старый пароль'              
+                label: 'Старый пароль',
+                type: 'password'
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ],
-                [ ['focus', 'blur', 'keyup'], passwordValidator ],
-                [ ['focus', 'blur'], lengthValidator, [8, 40] ],
+                [ InputText.validationEvents, isEmptyValidator ],
+                [ InputText.validationEvents, passwordValidator ],
+                [ InputText.validationEvents, lengthValidator, [8, 40] ],
             ]
         ], [
             new InputText({
                 name: 'password',
-                label: 'Новый пароль'              
+                label: 'Новый пароль',
+                type: 'password'
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ],                
-                [ ['focus', 'blur', 'keyup'], passwordValidator ],
-                [ ['focus', 'blur'], lengthValidator, [8, 40] ],
+                [ InputText.validationEvents, isEmptyValidator ],                
+                [ InputText.validationEvents, passwordValidator ],
+                [ InputText.validationEvents, lengthValidator, [8, 40] ],
             ]  
         ], [
             new InputText({
                 name: 'password_confirm',
-                label: 'Пароль (еще раз)'             
+                label: 'Пароль (еще раз)',
+                type: 'password'
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ],
-                [ ['focus', 'blur', 'keyup'], passwordValidator ],
-                [ ['focus', 'blur'], lengthValidator, [8, 40] ],                
+                [ InputText.validationEvents, isEmptyValidator ],
+                [ InputText.validationEvents, passwordValidator ],
+                [ InputText.validationEvents, lengthValidator, [8, 40] ],                
             ]
         ]],
         btnLabel: 'Сохранить',

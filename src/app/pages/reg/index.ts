@@ -27,9 +27,9 @@ const page = new class extends Page
                     label: 'Логин'
                 }),
                 [
-                    [ ['focus', 'blur'], isEmptyValidator ],                    
-                    [ ['focus', 'blur', 'keyup'], loginValidator ],
-                    [ ['focus', 'blur'], lengthValidator, [3, 20] ],
+                    [ InputText.validationEvents, isEmptyValidator ],                    
+                    [ InputText.validationEvents, loginValidator ],
+                    [ InputText.validationEvents, lengthValidator, [3, 20] ],
                 ]
             ], [
                 new InputText({
@@ -37,9 +37,9 @@ const page = new class extends Page
                     label: 'Телефон'              
                 }),
                 [
-                    [ ['focus', 'blur'], isEmptyValidator ],                    
-                    [ ['focus', 'blur', 'keyup'], phoneValidator ],
-                    [ ['focus', 'blur'], lengthValidator, [10, 15] ],
+                    [ InputText.validationEvents, isEmptyValidator ],                    
+                    [ InputText.validationEvents, phoneValidator ],
+                    [ InputText.validationEvents, lengthValidator, [10, 15] ],
                 ]
             ], [
                 new InputText({
@@ -47,8 +47,8 @@ const page = new class extends Page
                     label: 'Почта'            
                 }),
                 [
-                    [ ['focus', 'blur'], isEmptyValidator ],
-                    [ ['focus', 'blur', 'keyup'], emailValidator ]
+                    [ InputText.validationEvents, isEmptyValidator ],
+                    [ InputText.validationEvents, emailValidator ]
                 ]
             ], [
                 new InputText({
@@ -56,8 +56,8 @@ const page = new class extends Page
                     label: 'Имя'             
                 }),
                 [
-                    [ ['focus', 'blur'], isEmptyValidator ],
-                    [ ['focus', 'blur', 'keyup'], nameValidator ],
+                    [ InputText.validationEvents, isEmptyValidator ],
+                    [ InputText.validationEvents, nameValidator ],
                 ]
             ], [
                 new InputText({
@@ -65,28 +65,30 @@ const page = new class extends Page
                     label: 'Фамилия'              
                 }),
                 [
-                    [ ['focus', 'blur'], isEmptyValidator ],
-                    [ ['focus', 'blur', 'keyup'], nameValidator ],
+                    [ InputText.validationEvents, isEmptyValidator ],
+                    [ InputText.validationEvents, nameValidator ],
                 ]
             ], [
                 new InputText({
                     name: 'password',
-                    label: 'Новый пароль'              
+                    label: 'Пароль',
+                    type: 'password'
                 }),
                 [
-                    [ ['focus', 'blur'], isEmptyValidator ],
-                    [ ['focus', 'blur', 'keyup'], passwordValidator ],
-                    [ ['focus', 'blur'], lengthValidator, [8, 40] ],
+                    [ InputText.validationEvents, isEmptyValidator ],
+                    [ InputText.validationEvents, passwordValidator ],
+                    [ InputText.validationEvents, lengthValidator, [8, 40] ],
                 ]  
             ], [
                 new InputText({
                     name: 'password_confirm',
-                    label: 'Пароль (еще раз)'             
+                    label: 'Пароль (еще раз)',
+                    type: 'password'
                 }),
                 [
-                    [ ['focus', 'blur'], isEmptyValidator ],                    
-                    [ ['focus', 'blur', 'keyup'], passwordValidator ],
-                    [ ['focus', 'blur'], lengthValidator, [8, 40] ],
+                    [ InputText.validationEvents, isEmptyValidator ],                    
+                    [ InputText.validationEvents, passwordValidator ],
+                    [ InputText.validationEvents, lengthValidator, [8, 40] ],
                 ]
             ]],
             btnLabel: 'Зарегистрироваться',

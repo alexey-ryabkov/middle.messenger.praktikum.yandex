@@ -32,7 +32,7 @@ if (user)
                 value: userProfile.nickname                 
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ],
+                [ InputText.validationEvents, isEmptyValidator ],
             ]
         ], [
             new InputText({
@@ -41,9 +41,9 @@ if (user)
                 value: userProfile.phone                 
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ],
-                [ ['focus', 'blur', 'keyup'], phoneValidator ],
-                [ ['focus', 'blur'], lengthValidator, [10, 15] ],
+                [ InputText.validationEvents, isEmptyValidator ],
+                [ InputText.validationEvents, phoneValidator ],
+                [ InputText.validationEvents, lengthValidator, [10, 15] ],
             ]
         ], [
             new InputText({
@@ -52,8 +52,8 @@ if (user)
                 value: userProfile.email                 
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ],
-                [ ['focus', 'blur', 'keyup'], emailValidator ],
+                [ InputText.validationEvents, isEmptyValidator ],
+                [ InputText.validationEvents, emailValidator ],
             ]
         ], [
             new InputText({
@@ -62,8 +62,8 @@ if (user)
                 value: userProfile.first_name                 
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ],
-                [ ['focus', 'blur', 'keyup'], nameValidator ],
+                [ InputText.validationEvents, isEmptyValidator ],
+                [ InputText.validationEvents, nameValidator ],
             ]
         ], [
             new InputText({
@@ -72,8 +72,8 @@ if (user)
                 value: userProfile.last_name                 
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ],
-                [ ['focus', 'blur', 'keyup'], nameValidator ],
+                [ InputText.validationEvents, isEmptyValidator ],
+                [ InputText.validationEvents, nameValidator ],
             ]
         ]],
         btnLabel: 'Сохранить',

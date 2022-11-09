@@ -25,19 +25,20 @@ const page = new class extends Page
                     label: 'Логин'             
                 }),
                 [
-                    [ ['focus', 'blur'], isEmptyValidator ],                    
-                    [ ['focus', 'blur', 'keyup'], loginValidator ],
-                    [ ['focus', 'blur'], lengthValidator, [3, 20] ],
+                    [ InputText.validationEvents, isEmptyValidator ],                    
+                    [ InputText.validationEvents, loginValidator ],
+                    [ InputText.validationEvents, lengthValidator, [3, 20] ],
                 ]
             ], [
                 new InputText({
                     name: 'password',
-                    label: 'Пароль'              
+                    label: 'Пароль',
+                    type: 'password'
                 }),
                 [
-                    [ ['focus', 'blur'], isEmptyValidator ],
-                    [ ['focus', 'blur', 'keyup'], passwordValidator ],
-                    [ ['focus', 'blur'], lengthValidator, [8, 40] ],
+                    [ InputText.validationEvents, isEmptyValidator ],
+                    [ InputText.validationEvents, passwordValidator ],
+                    [ InputText.validationEvents, lengthValidator, [8, 40] ],
                 ]  
             ]],
             btnLabel: 'Войти',

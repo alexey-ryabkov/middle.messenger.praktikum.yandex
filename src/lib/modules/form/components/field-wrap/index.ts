@@ -24,9 +24,45 @@ export default class FormFieldWrap extends ComponentBlock
     }
     setProps(nextProps: any): void 
     {
-        super.setProps( FormFieldWrap._prepareProps(nextProps) );    
-    }
-    
+        FormFieldWrap._prepareProps(nextProps);
+        
+        // TODO make notification subcomponent instead this 
+
+        const notificationProps = nextProps.notification;
+
+        let notificationElem = this.element.querySelector('.notification');
+        let notificationTxtElem = this.element.querySelector('.notification__text');
+      
+        if (notificationElem)
+        {
+            if (!notificationProps)
+            {
+                notificationElem.remove();
+            }
+            else if (notificationTxtElem)
+            {   
+                notificationTxtElem.textContent = notificationProps.text;
+            }
+        }
+        else
+        {
+            if (notificationProps)
+            {
+                notificationElem = document.createElement('div');
+                notificationElem.className = 'form__fieldNotification notification notification--lvl_error';
+
+                notificationTxtElem = document.createElement('div');
+                notificationTxtElem.className = 'notification__text';
+                notificationTxtElem.textContent = notificationProps.text;
+
+                notificationElem.append(notificationProps.icon.element);
+                notificationElem.append(notificationTxtElem);
+
+                this.element.append(notificationElem);
+            }
+        }
+        super.setProps(nextProps);  
+    }    
     protected static _prepareProps (props : any)
     {
         if (props.error)
@@ -44,7 +80,11 @@ export default class FormFieldWrap extends ComponentBlock
             props.notification = '';
 
         return props;
-    }   
+    } 
+    componentDidUpdate ()
+    {
+        return false;
+    }  
     protected get _template () 
     {
         return new Templator(tpl);

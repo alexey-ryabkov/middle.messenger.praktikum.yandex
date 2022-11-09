@@ -2,7 +2,7 @@ import SurChat from '@app';
 import Page from '@models/page';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
-import {isEmptyValidator, lengthValidator, phoneValidator} from '@lib-utils/form_validation';
+import {emailValidator, isEmptyValidator, lengthValidator, nameValidator, phoneValidator} from '@lib-utils/form_validation';
 import InputText from '@lib-components/input-text';
 import InputImage from '@lib-components/input-image';
 import go2page from '@app-utils/dummy_routing';
@@ -33,7 +33,6 @@ if (user)
             }),
             [
                 [ ['focus', 'blur'], isEmptyValidator ], 
-                [ ['focus', 'blur'], lengthValidator, [3, 20] ]
             ]
         ], [
             new InputText({
@@ -42,7 +41,7 @@ if (user)
                 value: userProfile.phone                 
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ], 
+                [ ['focus', 'blur'], lengthValidator, [10, 15] ],
                 [ ['focus', 'blur', 'keyup'], phoneValidator ]
             ]
         ], [
@@ -52,20 +51,29 @@ if (user)
                 value: userProfile.email                 
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ]
+                [ ['focus', 'blur'], isEmptyValidator ],
+                [ ['focus', 'blur', 'keyup'], emailValidator ]
             ]
         ], [
             new InputText({
                 name: 'first_name',
                 label: 'Имя',   
                 value: userProfile.first_name                 
-            })
+            }),
+            [
+                [ ['focus', 'blur'], isEmptyValidator ],
+                [ ['focus', 'blur', 'keyup'], nameValidator ]
+            ]
         ], [
             new InputText({
                 name: 'last_name',
                 label: 'Фамилия',   
                 value: userProfile.last_name                 
-            })
+            }),
+            [
+                [ ['focus', 'blur'], isEmptyValidator ],
+                [ ['focus', 'blur', 'keyup'], nameValidator ]
+            ]
         ]],
         btnLabel: 'Сохранить',
         onSuccess: () => go2page( Page.url('chats') ),

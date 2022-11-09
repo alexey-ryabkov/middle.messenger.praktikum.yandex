@@ -2,8 +2,8 @@ import SurChat from '@app';
 import Page from '@models/page';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
-import {isEmptyValidator, lengthValidator, phoneValidator} from '@lib-utils/form_validation';
 import InputText from '@lib-components/input-text';
+import {lengthValidator, loginValidator, passwordValidator} from '@lib-utils/form_validation';
 import go2page from '@app-utils/dummy_routing';
 
 const app = SurChat.instance;
@@ -25,29 +25,36 @@ if (user)
                 value: userProfile.login                 
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ],
-                [ ['focus', 'blur'], lengthValidator, [3, 20] ]
+                [ ['focus', 'blur'], lengthValidator, [3, 20] ],
+                [ ['focus', 'blur', 'keyup'], loginValidator ]
             ]
         ], [
             new InputText({
                 name: 'password_old',
                 label: 'Старый пароль'              
-            })
+            }),
+            [
+                [ ['focus', 'blur'], lengthValidator, [8, 40] ],
+                [ ['focus', 'blur', 'keyup'], passwordValidator ]
+            ]
         ], [
             new InputText({
-                name: 'password_new',
+                name: 'password',
                 label: 'Новый пароль'              
-            })  
-        ], [
-            new InputText({
-                name: 'password_confirm',
-                label: 'Новый пароль'              
-            })    
+            }),
+            [
+                [ ['focus', 'blur'], lengthValidator, [8, 40] ],
+                [ ['focus', 'blur', 'keyup'], passwordValidator ]
+            ]  
         ], [
             new InputText({
                 name: 'password_confirm',
                 label: 'Пароль (еще раз)'             
-            })
+            }),
+            [
+                [ ['focus', 'blur'], lengthValidator, [8, 40] ],
+                [ ['focus', 'blur', 'keyup'], passwordValidator ]
+            ]
         ]],
         btnLabel: 'Сохранить',
         onSuccess: () => go2page( Page.url('chats') ),

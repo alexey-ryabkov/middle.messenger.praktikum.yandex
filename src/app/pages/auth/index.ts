@@ -2,7 +2,8 @@ import SurChat from '@app';
 import Page from '@models/page';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
-import {isEmptyValidator, lengthValidator} from '@lib-utils/form_validation';
+import InputText from '@lib-components/input-text';
+import {lengthValidator, loginValidator, passwordValidator} from '@lib-utils/form_validation';
 import go2page from '@app-utils/dummy_routing';
 
 const blockName = '_pageAuth';
@@ -17,18 +18,26 @@ const page = new class extends Page
 
         const form = new Form(
         {
-            formFields: [{
+            formFields: [                
+            [
+                new InputText({
                     name: 'login',
-                    label: 'Логин',
-                    validatorDefs: [
-                        [isEmptyValidator],
-                        [lengthValidator, [3, 20]]
-                ]}, {
+                    label: 'Логин'             
+                }),
+                [
+                    [ ['focus', 'blur'], lengthValidator, [3, 20] ],
+                    [ ['focus', 'blur', 'keyup'], loginValidator ]
+                ]
+            ], [
+                new InputText({
                     name: 'password',
-                    label: 'Пароль',
-                    type: 'password',
-                    validatorDefs: [[isEmptyValidator]],
-                }],
+                    label: 'Пароль'              
+                }),
+                [
+                    [ ['focus', 'blur'], lengthValidator, [8, 40] ],
+                    [ ['focus', 'blur', 'keyup'], passwordValidator ]
+                ]  
+            ]],
             btnLabel: 'Войти',
             onSuccess: () => go2page( Page.url('chats') ),
             link: {

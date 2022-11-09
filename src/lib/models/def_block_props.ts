@@ -1,84 +1,77 @@
 import {CompilableTemplate} from '@models/types';
 import Block, {BlockPropsEngine} from '@models/block';
 
-type PropsSubComponents = Map< Block, {parent : any, prop : string | number} >;
-
 export default class DefaultBlockProps implements BlockPropsEngine
 {
-    protected _propsSubComponents : PropsSubComponents;
+    protected _propsChildBlocks : Record< string, Block >;
     protected _propsAndStubs : Record< string, any >;
     
-    constructor (protected _component : Block) 
+    constructor (protected _block : Block) 
     {
         this._propsAndStubs = {};
-        this._propsSubComponents = new Map();
+        this._propsChildBlocks = {};
     }
-    get component () 
+    get childBlocks () 
     {
-        return this._component;
+        return Object.values(this._propsChildBlocks);
     }
-    get subComponents () 
+    protected get _props () // every call gets block's props copy
     {
-        return this._propsSubComponents.keys();
-    }
-    protected get _props () // every call gets component's props copy
-    {
-        return {...this._component.props};
+        return {...this._block.props};
     }
     processProps () 
-    {
+    {   
+        this._propsChildBlocks = {};
         this._propsAndStubs = this._props;
-        this._propsSubComponents = new Map();
-        this._processProps(this._propsAndStubs, this._propsSubComponents);
+
+        Object.entries(this._props).forEach(([ prop, value ]) => 
+        {
+            if (value instanceof Block) 
+            {
+                this._propsChildBlocks[prop] = value;
+                this._propsAndStubs[prop] = DefaultBlockProps._makeStub(value);
+            }
+            else if (Array.isArray(value)) 
+            {
+                value.forEach((childVal, k) => 
+                {
+                    if (childVal instanceof Block) 
+                    {
+                        this._propsChildBlocks[`${prop}:${k}`] = childVal;
+                        this._propsAndStubs[prop][k] = DefaultBlockProps._makeStub(childVal);
+                    }
+                })
+            }
+            else if (value instanceof Object) 
+            {
+                Object.entries(value).forEach(([ childProp, childPropVal ]) => 
+                {
+                    if (childPropVal instanceof Block) 
+                    {
+                        this._propsChildBlocks[`${prop}:${childProp}`] = childPropVal;
+                        this._propsAndStubs[prop][childProp] = DefaultBlockProps._makeStub(childPropVal);
+                    }
+                });
+            }
+        });
     }
     compileWithProps (template : CompilableTemplate) : DocumentFragment
     {   
-        this._propsSubComponents.forEach( (inProps, subComponent) => 
-        {
-            // cause inProps is ref, it will replace in this._propsAndStubs 
-            inProps.parent[inProps.prop] = `<div ${Block.ID_ATTR}="${subComponent.id}"></div>`;
-        });
-
         const fragment = document.createElement('template');
         fragment.innerHTML = template.compile(this._propsAndStubs); 
 
-        for (const subComponent of this._propsSubComponents.keys()) 
+        for (const childBlock of this.childBlocks) 
         {
-            const stub = fragment.content.querySelector(`[${Block.ID_ATTR}="${subComponent.id}"]`);
+            const stub = DefaultBlockProps._getStub(fragment.content, childBlock);
             
             if (stub)
             {
-                stub.replaceWith(subComponent.element);
+                stub.replaceWith(childBlock.element);
             }  
         }
         return fragment.content; 
     }
-    protected _processProps (props : any, propsSubComponents : PropsSubComponents) 
-    {
-        Object.entries(props).forEach(([prop, value]) => 
-        {
-            if (value instanceof Block) 
-            {
-                propsSubComponents.set(value, {parent: props, prop});
-            }
-            else if (Array.isArray(value)) 
-            {
-                value.forEach(valueItem => 
-                {
-                    if (valueItem instanceof Object)
-                    {
-                        this._processProps(valueItem, propsSubComponents);
-                    }
-                    if (valueItem instanceof Block) 
-                    {
-                        propsSubComponents.set(valueItem, {parent: value, prop});
-                    }
-                });
-            }
-            else if (value instanceof Object) 
-            {
-                this._processProps(value, propsSubComponents);
-            }
-        });
-    }
+    protected static _makeStub = (block : Block) => `<div ${Block.ID_ATTR}="${block.id}"></div>`;
+
+    protected static _getStub = (element: DocumentFragment | Element, block : Block) => element.querySelector(`[${Block.ID_ATTR}="${block.id}"]`);
 }

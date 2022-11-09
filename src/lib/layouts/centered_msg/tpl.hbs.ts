@@ -1,9 +1,9 @@
 export default `
-<div class="_centeredMsgLayout__content" bem-element="content">
+<div class="_centeredMsgLayout__content">
     {{{caption}}}
     <div>
-        <div class="text _centeredMsgLayout__descPhrase" bem-element="descPhrase">{{msg}}</div>
-        <div class="text _centeredMsgLayout__awayPhrase" bem-element="awayPhrase">Перейти <a href="{{url}}" class="link">к чатам</a></div>
+        <div class="text _centeredMsgLayout__descPhrase">{{msg}}</div>
+        <div class="text _centeredMsgLayout__awayPhrase">Перейти <a href="{{url}}" class="link">к чатам</a></div>
     </div>
 </div>
 `.trim();

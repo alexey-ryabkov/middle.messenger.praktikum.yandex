@@ -2,7 +2,7 @@
 
 @import '../../scss/mixins';
 
-$avatar-sizes: ('small': 45px, 'regular': 75px);
+$avatar-sizes: ('small': 45px, 'regular': 75px, 'large': 120px);
 $avatar-size-default: map.get($avatar-sizes, 'regular');
 
 .avatar {
@@ -28,7 +28,7 @@ $avatar-size-default: map.get($avatar-sizes, 'regular');
 
     &__ {
         &image {
-            object-fit: contain;
+            object-fit: cover;
             width: 100%;
             height: 100%;
             border-radius: 6px;

@@ -24,17 +24,11 @@ export type HttpTranspOptsFull = HttpTranspOpts &
 
 export default class HttpTransport
 {
-    get = (url : string, options : HttpTranspOpts = {}) => this.request( url, {...options, method: Methods.GET} );    
-    put = (url : string, options : HttpTranspOpts = {}) => this.request(url, {...options, method: Methods.PUT});
-    post = (url : string, options : HttpTranspOpts = {}) => this.request(url, {...options, method: Methods.POST});
-    delete = (url : string, options : HttpTranspOpts = {}) => this.request(url, {...options, method: Methods.DELETE});
-
-    request = (url : string, options : HttpTranspOptsFull = {}) => 
+    get = (url : string, options : HttpTranspOpts = {}) => 
     {
-        const {method = Methods.GET, data, headers = {}, timeout = 5000} = options;
-        const isGetMethod = Methods.GET == method;
+        const {data} = options;
 
-        if (isGetMethod && typeof data == 'object') 
+        if (typeof data == 'object') 
         {
             const stringifiedQuery = httpQueryStringify( data as Record< string, any > );
 
@@ -42,7 +36,17 @@ export default class HttpTransport
             {
                 url += ( url.includes('?') ? '&' : '?' ) + stringifiedQuery;
             }
-        }
+        }        
+        this._request( url, {...options, method: Methods.GET} );    
+    }
+    put = (url : string, options : HttpTranspOpts = {}) => this._request(url, {...options, method: Methods.PUT});
+    post = (url : string, options : HttpTranspOpts = {}) => this._request(url, {...options, method: Methods.POST});
+    delete = (url : string, options : HttpTranspOpts = {}) => this._request(url, {...options, method: Methods.DELETE});
+
+    protected _request = (url : string, options : HttpTranspOptsFull = {}) => 
+    {
+        const {method = Methods.GET, data, headers = {}, timeout = 5000} = options;
+        const isGetMethod = Methods.GET == method;
 
         return new Promise((resolve, reject) => 
         {
@@ -65,7 +69,12 @@ export default class HttpTransport
                 xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
             }
 
-            isGetMethod ? xhr.send() : xhr.send(data);
+            if (!isGetMethod)
+            {
+                xhr.send(data);
+            } 
+            else
+                xhr.send();
         });      
     };
 }

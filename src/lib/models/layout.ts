@@ -34,11 +34,11 @@ export default abstract class Layout extends ComponentBlock
         {
             plural2Arr(this._events).forEach(lsnr => 
             {
-                this.element.removeEvntLsnrs(lsnr);
+                this.element.removeEventExtListeners(lsnr);
             })
         } 
         this._container.workarea.innerHTML = '';
-        this._container.bemClear([this.bemName]);
+        this._container.bemUnmix([this.bemName]);
     }
     protected _render() 
     {

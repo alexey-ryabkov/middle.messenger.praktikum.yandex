@@ -33,7 +33,7 @@ export default abstract class Page
     unmount ()
     {
         this._layout.unmount();
-        this._layout.bemClear([this._blockName]); 
+        this._layout.bemUnmix([this._blockName]); 
     }
     protected abstract get _layout () : Layout; 
 

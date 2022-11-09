@@ -2,7 +2,10 @@ import SurChat from '@app';
 import Page from '@models/page';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
-import {isEmptyValidator, lengthValidator, phoneValidator} from '@lib-utils/form_validation';
+import InputText from '@lib-components/input-text';
+import {emailValidator, isEmptyValidator, lengthValidator, 
+    loginValidator, nameValidator, passwordValidator,
+    phoneValidator} from '@lib-utils/form_validation';
 import go2page from '@app-utils/dummy_routing';
 
 const blockName = '_pageReg';
@@ -17,47 +20,81 @@ const page = new class extends Page
 
         const form = new Form(
         {
-            formFields: [{
-                    name: 'email',
-                    label: 'Почта',
-                    validatorDefs: [[isEmptyValidator]]
-                }, {
+            formFields: [
+            [
+                new InputText({
                     name: 'login',
-                    label: 'Логин',
-                    validatorDefs: [
-                        [isEmptyValidator],
-                        [lengthValidator, [3, 20]]
-                ]}, {
-                    name: 'first_name',
-                    label: 'Имя'
-                }, {
-                    name: 'second_name',
-                    label: 'Фамилия'
-                }, {
+                    label: 'Логин'
+                }),
+                [
+                    [ InputText.validationEvents, isEmptyValidator ],                    
+                    [ InputText.validationEvents, loginValidator ],
+                    [ InputText.validationEvents, lengthValidator, [3, 20] ],
+                ]
+            ], [
+                new InputText({
                     name: 'phone',
-                    label: 'Телефон',
-                    validatorDefs: [
-                        [isEmptyValidator],
-                        [phoneValidator]]
-                }, {
+                    label: 'Телефон'              
+                }),
+                [
+                    [ InputText.validationEvents, isEmptyValidator ],                    
+                    [ InputText.validationEvents, phoneValidator ],
+                    [ InputText.validationEvents, lengthValidator, [10, 15] ],
+                ]
+            ], [
+                new InputText({
+                    name: 'email',
+                    label: 'Почта'            
+                }),
+                [
+                    [ InputText.validationEvents, isEmptyValidator ],
+                    [ InputText.validationEvents, emailValidator ]
+                ]
+            ], [
+                new InputText({
+                    name: 'first_name',
+                    label: 'Имя'             
+                }),
+                [
+                    [ InputText.validationEvents, isEmptyValidator ],
+                    [ InputText.validationEvents, nameValidator ],
+                ]
+            ], [
+                new InputText({
+                    name: 'last_name',
+                    label: 'Фамилия'              
+                }),
+                [
+                    [ InputText.validationEvents, isEmptyValidator ],
+                    [ InputText.validationEvents, nameValidator ],
+                ]
+            ], [
+                new InputText({
                     name: 'password',
                     label: 'Пароль',
-                    type: 'password',
-                    validatorDefs: [
-                        [isEmptyValidator],
-                        [lengthValidator, [5, 20]]
-                ]}, {
-                    name: 'password',
+                    type: 'password'
+                }),
+                [
+                    [ InputText.validationEvents, isEmptyValidator ],
+                    [ InputText.validationEvents, passwordValidator ],
+                    [ InputText.validationEvents, lengthValidator, [8, 40] ],
+                ]  
+            ], [
+                new InputText({
+                    name: 'password_confirm',
                     label: 'Пароль (еще раз)',
-                    type: 'password_confirm',
-                    validatorDefs: [
-                        [isEmptyValidator],
-                        [lengthValidator, [5, 20]]
-                ]}],
+                    type: 'password'
+                }),
+                [
+                    [ InputText.validationEvents, isEmptyValidator ],                    
+                    [ InputText.validationEvents, passwordValidator ],
+                    [ InputText.validationEvents, lengthValidator, [8, 40] ],
+                ]
+            ]],
             btnLabel: 'Зарегистрироваться',
             onSuccess: () => go2page( Page.url('chats') ),
             link: {
-                url: Page.url('reg'),
+                url: Page.url('auth'),
                 title: 'войти'
             }
         });

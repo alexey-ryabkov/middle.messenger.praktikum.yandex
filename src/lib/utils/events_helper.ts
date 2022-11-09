@@ -1,17 +1,16 @@
 import {SingleOrPlural, EventLsnr} from '@models/types';
-import {plural2Arr} from '.';
 
 export interface HTMLElementEvnts 
 {
-    addEvntLsnrs : (lsnrs : SingleOrPlural<EventLsnr>) => void,
-    removeEvntLsnrs : (lsnrs : SingleOrPlural<EventLsnr>) => void,
-    clearEvnt : (name : string) => void,
-    clearEvntLsnrs : () => void
+    addEventExtListeners : (lsnrs : SingleOrPlural<EventLsnr>) => void,
+    removeEventExtListeners : (lsnrs : SingleOrPlural<EventLsnr>) => void,
+    clearEvent : (name : string) => void,
+    clearEventExtListeners : () => void
 }
 const EventsHelperMixin = 
 {
     _evntsCache: new Set<EventLsnr>(),
-    addEvntLsnrs (lsnrs : SingleOrPlural<EventLsnr>) 
+    addEventExtListeners (lsnrs : SingleOrPlural<EventLsnr>) 
     {
         if ('string' == typeof lsnrs[0])
         {
@@ -25,7 +24,7 @@ const EventsHelperMixin =
                 this._evntsCache.add(lsnr);
             });        
     },
-    removeEvntLsnrs (lsnrs : SingleOrPlural<EventLsnr>)
+    removeEventExtListeners (lsnrs : SingleOrPlural<EventLsnr>)
     {
         if ('string' == typeof lsnrs[0])
         {
@@ -39,7 +38,7 @@ const EventsHelperMixin =
                 this._evntsCache.delete(lsnr);
             }); 
     },
-    clearEvnt (name : string)
+    clearEvent (name : string)
     {
         this._evntsCache.forEach((lsnr : EventLsnr) => 
         {
@@ -49,7 +48,7 @@ const EventsHelperMixin =
             }
         });
     },
-    clearEvntLsnrs ()
+    clearEventExtListeners ()
     {
         this._evntsCache.forEach((lsnr : EventLsnr) => 
         {

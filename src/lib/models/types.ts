@@ -34,17 +34,20 @@ export type BemElemDef = [string, string, BemModDef[]?];
 export type BemItemDef = BemBlockDef | BemElemDef;
 export interface BemEntity
 {
-    setBemMods (mods : BemModDef[]) : void;
-    setElemBemMods (name : string, mods : BemModDef[]) : void;
+    addBemMods (mods : BemModDef[]) : void;
+    delBemMods (mods : BemModDef[]) : void;
+    addElemBemMods (name : string, mods : BemModDef[]) : void;
+    delElemBemMods (name : string, mods : BemModDef[]) : void;
     bemMix (itemDef : BemItemDef) : void;
     elemBemMix (name : string, itemDef : BemItemDef) : void;
-    bemClear (itemDef : BemItemDef) : void;
-    elemBemClear  (name : string, itemDef : BemItemDef) : void;
+    bemUnmix (itemDef : BemItemDef) : void;
+    elemBemUnmix  (name : string, itemDef : BemItemDef) : void;
 }
 
-export type InputTextField = {
-    name : string,
-    type? : string,
-    placeholder? : string,
-    autocomplete? : 'on' | 'off'
+export interface FormField
+{ 
+    get name () : string,    
+    get label () : string,
+    value? : string,
+    setValidationHandlers (lsnrs : SingleOrPlural< EventLsnr >) : void 
 }

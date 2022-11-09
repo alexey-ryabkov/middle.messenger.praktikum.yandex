@@ -39,6 +39,10 @@ export default class InputText extends FormFieldComponent
     {
         this._input.value = value;
     }
+    static get validationEvents ()
+    {
+        return ['focus', 'blur', 'keyup'];
+    }
     protected get _input ()
     {
         // FIXME 

@@ -1,7 +1,6 @@
-import { v4 as makeUUID } from 'uuid';
+import {v4 as makeUUID} from 'uuid';
 import EventEmitter from '@models/event_emitter';
 import EventBus from '@models/event_bus';
-import MapBlockProps from '@models/map_block_props';
 import DefaultBlockProps from '@models/def_block_props';
 import {Nullable, SingleOrPlural, EventLsnr, CompilableTemplate} from '@models/types';
 import CssClsHelperMixin, {CssCls, HTMLElementCssCls} from '@lib-utils/css_cls_helper';

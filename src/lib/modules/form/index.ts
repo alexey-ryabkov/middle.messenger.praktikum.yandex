@@ -79,7 +79,7 @@ export default class Form extends ComponentBlock
 
         super({ 
             node: 'form', 
-            props: {fields, button, link}, //  : {...fields}
+            props: {fields, button, link}, 
             attrs: {action, method}, 
 
             events: ['submit', (event : Event) => 
@@ -91,7 +91,7 @@ export default class Form extends ComponentBlock
                 let i = 0;
                 let errors : string[] = [];
                 
-                Object.entries(fields).forEach(([label, fieldWrap ]) => 
+                Object.entries(fields).forEach(([, fieldWrap ]) => 
                 {
                     const field = fieldWrap.props.field;
 

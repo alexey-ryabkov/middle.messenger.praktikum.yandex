@@ -32,7 +32,7 @@ if (user)
                 value: userProfile.nickname                 
             }),
             [
-                [ ['focus', 'blur'], isEmptyValidator ], 
+                [ ['focus', 'blur'], isEmptyValidator ],
             ]
         ], [
             new InputText({
@@ -41,8 +41,9 @@ if (user)
                 value: userProfile.phone                 
             }),
             [
+                [ ['focus', 'blur'], isEmptyValidator ],
+                [ ['focus', 'blur', 'keyup'], phoneValidator ],
                 [ ['focus', 'blur'], lengthValidator, [10, 15] ],
-                [ ['focus', 'blur', 'keyup'], phoneValidator ]
             ]
         ], [
             new InputText({
@@ -52,7 +53,7 @@ if (user)
             }),
             [
                 [ ['focus', 'blur'], isEmptyValidator ],
-                [ ['focus', 'blur', 'keyup'], emailValidator ]
+                [ ['focus', 'blur', 'keyup'], emailValidator ],
             ]
         ], [
             new InputText({
@@ -62,7 +63,7 @@ if (user)
             }),
             [
                 [ ['focus', 'blur'], isEmptyValidator ],
-                [ ['focus', 'blur', 'keyup'], nameValidator ]
+                [ ['focus', 'blur', 'keyup'], nameValidator ],
             ]
         ], [
             new InputText({
@@ -72,7 +73,7 @@ if (user)
             }),
             [
                 [ ['focus', 'blur'], isEmptyValidator ],
-                [ ['focus', 'blur', 'keyup'], nameValidator ]
+                [ ['focus', 'blur', 'keyup'], nameValidator ],
             ]
         ]],
         btnLabel: 'Сохранить',

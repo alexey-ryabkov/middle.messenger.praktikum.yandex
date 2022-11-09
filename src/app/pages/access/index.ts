@@ -3,7 +3,7 @@ import Page from '@models/page';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
 import InputText from '@lib-components/input-text';
-import {lengthValidator, loginValidator, passwordValidator} from '@lib-utils/form_validation';
+import {isEmptyValidator, lengthValidator, loginValidator, passwordValidator} from '@lib-utils/form_validation';
 import go2page from '@app-utils/dummy_routing';
 
 const app = SurChat.instance;
@@ -25,8 +25,9 @@ if (user)
                 value: userProfile.login                 
             }),
             [
-                [ ['focus', 'blur'], lengthValidator, [3, 20] ],
-                [ ['focus', 'blur', 'keyup'], loginValidator ]
+                [ ['focus', 'blur'], isEmptyValidator ],
+                [ ['focus', 'blur', 'keyup'], loginValidator ],
+                [ ['focus', 'blur'], lengthValidator, [3, 20] ],                
             ]
         ], [
             new InputText({
@@ -34,8 +35,9 @@ if (user)
                 label: 'Старый пароль'              
             }),
             [
+                [ ['focus', 'blur'], isEmptyValidator ],
+                [ ['focus', 'blur', 'keyup'], passwordValidator ],
                 [ ['focus', 'blur'], lengthValidator, [8, 40] ],
-                [ ['focus', 'blur', 'keyup'], passwordValidator ]
             ]
         ], [
             new InputText({
@@ -43,8 +45,9 @@ if (user)
                 label: 'Новый пароль'              
             }),
             [
+                [ ['focus', 'blur'], isEmptyValidator ],                
+                [ ['focus', 'blur', 'keyup'], passwordValidator ],
                 [ ['focus', 'blur'], lengthValidator, [8, 40] ],
-                [ ['focus', 'blur', 'keyup'], passwordValidator ]
             ]  
         ], [
             new InputText({
@@ -52,8 +55,9 @@ if (user)
                 label: 'Пароль (еще раз)'             
             }),
             [
-                [ ['focus', 'blur'], lengthValidator, [8, 40] ],
-                [ ['focus', 'blur', 'keyup'], passwordValidator ]
+                [ ['focus', 'blur'], isEmptyValidator ],
+                [ ['focus', 'blur', 'keyup'], passwordValidator ],
+                [ ['focus', 'blur'], lengthValidator, [8, 40] ],                
             ]
         ]],
         btnLabel: 'Сохранить',

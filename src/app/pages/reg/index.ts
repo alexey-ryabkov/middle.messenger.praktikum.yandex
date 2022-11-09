@@ -27,8 +27,9 @@ const page = new class extends Page
                     label: 'Логин'
                 }),
                 [
+                    [ ['focus', 'blur'], isEmptyValidator ],                    
+                    [ ['focus', 'blur', 'keyup'], loginValidator ],
                     [ ['focus', 'blur'], lengthValidator, [3, 20] ],
-                    [ ['focus', 'blur', 'keyup'], loginValidator ]
                 ]
             ], [
                 new InputText({
@@ -36,8 +37,9 @@ const page = new class extends Page
                     label: 'Телефон'              
                 }),
                 [
+                    [ ['focus', 'blur'], isEmptyValidator ],                    
+                    [ ['focus', 'blur', 'keyup'], phoneValidator ],
                     [ ['focus', 'blur'], lengthValidator, [10, 15] ],
-                    [ ['focus', 'blur', 'keyup'], phoneValidator ]
                 ]
             ], [
                 new InputText({
@@ -55,7 +57,7 @@ const page = new class extends Page
                 }),
                 [
                     [ ['focus', 'blur'], isEmptyValidator ],
-                    [ ['focus', 'blur', 'keyup'], nameValidator ]
+                    [ ['focus', 'blur', 'keyup'], nameValidator ],
                 ]
             ], [
                 new InputText({
@@ -64,7 +66,7 @@ const page = new class extends Page
                 }),
                 [
                     [ ['focus', 'blur'], isEmptyValidator ],
-                    [ ['focus', 'blur', 'keyup'], nameValidator ]
+                    [ ['focus', 'blur', 'keyup'], nameValidator ],
                 ]
             ], [
                 new InputText({
@@ -72,8 +74,9 @@ const page = new class extends Page
                     label: 'Новый пароль'              
                 }),
                 [
+                    [ ['focus', 'blur'], isEmptyValidator ],
+                    [ ['focus', 'blur', 'keyup'], passwordValidator ],
                     [ ['focus', 'blur'], lengthValidator, [8, 40] ],
-                    [ ['focus', 'blur', 'keyup'], passwordValidator ]
                 ]  
             ], [
                 new InputText({
@@ -81,8 +84,9 @@ const page = new class extends Page
                     label: 'Пароль (еще раз)'             
                 }),
                 [
+                    [ ['focus', 'blur'], isEmptyValidator ],                    
+                    [ ['focus', 'blur', 'keyup'], passwordValidator ],
                     [ ['focus', 'blur'], lengthValidator, [8, 40] ],
-                    [ ['focus', 'blur', 'keyup'], passwordValidator ]
                 ]
             ]],
             btnLabel: 'Зарегистрироваться',

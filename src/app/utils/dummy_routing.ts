@@ -4,6 +4,8 @@ import pages from '../pages';
 
 // const defaultPage = pages['auth'];
 const defaultPage = pages['profile'];
+// const defaultPage = pages['access'];
+// const defaultPage = pages['reg'];
 const fallbackPage = pages['error404'];
 
 export const getPage = (pageName : string, defPage : Page = defaultPage) : Page => pageName in pages ? pages[pageName] : defPage; 

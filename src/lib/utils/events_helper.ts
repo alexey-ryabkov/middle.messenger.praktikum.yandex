@@ -1,5 +1,4 @@
 import {SingleOrPlural, EventLsnr} from '@models/types';
-import {plural2Arr} from '.';
 
 export interface HTMLElementEvnts 
 {

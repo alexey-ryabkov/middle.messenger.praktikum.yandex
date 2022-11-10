@@ -1,0 +1,24 @@
+@import '../../modules/main/vars';
+
+._pageChat {
+    .inputText--iconed .inputText__icon {
+        fill: $gray-dark;
+    }
+
+    .profileCard {
+        height: 62px;
+    }
+}
+
+._userProfile {
+    border-right: 1px solid $gray;
+    margin-left: -22px;
+}
+
+._chatsProfile {
+    margin-right: -22px;
+}
+
+.badge {
+    background: $primary-color;
+}

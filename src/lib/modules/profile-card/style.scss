@@ -1,0 +1,22 @@
+.profileCard {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    &__ {
+        &name {
+            padding: 0;
+            margin-right: 3px;
+        }
+
+        &avatar {
+            margin-right: 13px;
+        }
+
+        &iconButton {
+            position: relative;
+            top: 1px;
+        }
+    }
+}

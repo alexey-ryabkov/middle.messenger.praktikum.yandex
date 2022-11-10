@@ -1,0 +1,25 @@
+._centeredFormLayout {
+    min-width: 520px;
+
+    &__ {
+        &content {
+            width: 480px;
+        }
+
+        &caption {
+            text-align: center;
+        }
+
+        &form.form {
+            width: 320px;
+            display: flex;
+            align-items: stretch;
+            margin: 0 auto;
+            text-align: center;
+        }
+    }
+}
+
+.caption._centeredFormLayout__caption { 
+    padding: 15px 0 10px;
+}

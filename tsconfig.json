@@ -1,0 +1,39 @@
+{
+    "compilerOptions": {
+        "module": "esnext",
+        "moduleResolution": "node",
+        "target": "ES2015",
+        "lib": ["DOM", "ESNext"],
+        
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "sourceMap": true,
+        "allowSyntheticDefaultImports": true,
+
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strictNullChecks": true,
+
+        "baseUrl": "./src",
+        "paths": {
+            "@app": ["app"],
+            "@data/*": ["app/dummy_data/*"],
+            "@models/*": ["lib/models/*", "app/models/*"],
+            "@pages/*": ["app/pages/*"],
+            "@lib-layouts/*": ["lib/layouts/*"],
+            "@app-layouts/*": ["app/layouts/*"],
+            "@lib-modules/*": ["lib/modules/*"],
+            "@app-modules/*": ["app/modules/*"],
+            "@lib-components/*": ["lib/components/*"],
+            "@app-components/*": ["app/components/*"],
+            "@lib-utils-kit": ["lib/utils"],
+            "@lib-utils/*": ["lib/utils/*"],
+            "@app-utils-kit": ["app/utils"],
+            "@app-utils/*": ["app/utils/*"]
+        } 
+    },
+    "exclude": [
+        "node_modules"
+    ]    
+}

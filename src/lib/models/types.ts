@@ -51,3 +51,12 @@ export interface FormField
     value? : string,
     setValidationHandlers (lsnrs : SingleOrPlural< EventLsnr >) : void 
 }
+
+export interface Routable
+{
+    // get pathname () : string;    
+    get title () : string;
+    isPathnameMatch (pathname : string) : boolean;
+    mount () : Routable;
+    unmount () : void;
+}

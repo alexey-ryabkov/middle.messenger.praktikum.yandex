@@ -1,6 +1,7 @@
+import {Routable} from '@models/types';
 import Layout from '@models/layout';
 
-export default abstract class Page 
+export default abstract class Page implements Routable 
 {   
     constructor (
         protected _name : string, 
@@ -22,7 +23,11 @@ export default abstract class Page
     }
     get url ()
     {
-        return Page.url(this._name)
+        return Page.url(this._name);
+    }
+    isPathnameMatch (pathname : string)
+    {
+        return pathname == this.url;
     }
     mount ()
     {
@@ -41,16 +46,5 @@ export default abstract class Page
     {
         this._layout.bemMix([this._blockName]);
     } 
-    static nameFromUrl (url : string)
-    {
-        let pageName = '';
-        const pageMatch = url.match(/^.*?page=(\w+).*?$/i);
-
-        if (pageMatch)
-        {
-            pageName = pageMatch[1];
-        }
-        return pageName;
-    }
-    static url = (pageName : string) => `/?page=${pageName}`;    
+    static url = (pageName : string) => `/${pageName}`;      
 }

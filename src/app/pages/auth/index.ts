@@ -4,11 +4,11 @@ import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
 import InputText from '@lib-components/input-text';
 import {isEmptyValidator, lengthValidator, loginValidator, passwordValidator} from '@lib-utils/form_validation';
-import go2page from '@app-utils/dummy_routing';
 
+const app = SurChat.instance;
 const blockName = '_pageAuth';
 const pageName = 'Авторизация';
-const layout = new CenteredFormLayout(SurChat.instance, {title: pageName});
+const layout = new CenteredFormLayout(app, {title: pageName});
 
 const page = new class extends Page
 {
@@ -42,7 +42,7 @@ const page = new class extends Page
                 ]  
             ]],
             btnLabel: 'Войти',
-            onSuccess: () => go2page( Page.url('chats') ),
+            onSuccess: () => app.go2page('chats'),
             link: {
                 url: Page.url('reg'),
                 title: 'создать аккаунт'

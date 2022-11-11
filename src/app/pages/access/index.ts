@@ -4,7 +4,6 @@ import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
 import InputText from '@lib-components/input-text';
 import {isEmptyValidator, lengthValidator, loginValidator, passwordValidator} from '@lib-utils/form_validation';
-import go2page from '@app-utils/dummy_routing';
 
 const app = SurChat.instance;
 const user = app.user;
@@ -64,7 +63,7 @@ if (user)
             ]
         ]],
         btnLabel: 'Сохранить',
-        onSuccess: () => go2page( Page.url('chats') ),
+        onSuccess: () => app.go2page('chats'),
         link: {
             url: Page.url('chats'),
             title: 'к чатам'

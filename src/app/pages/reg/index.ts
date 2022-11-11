@@ -6,8 +6,8 @@ import InputText from '@lib-components/input-text';
 import {emailValidator, isEmptyValidator, lengthValidator, 
     loginValidator, nameValidator, passwordValidator,
     phoneValidator} from '@lib-utils/form_validation';
-import go2page from '@app-utils/dummy_routing';
 
+const app = SurChat.instance;
 const blockName = '_pageReg';
 const pageName = 'Регистрация';
 const layout = new CenteredFormLayout(SurChat.instance, {title: pageName});
@@ -92,7 +92,7 @@ const page = new class extends Page
                 ]
             ]],
             btnLabel: 'Зарегистрироваться',
-            onSuccess: () => go2page( Page.url('chats') ),
+            onSuccess: () => app.go2page('chats'),
             link: {
                 url: Page.url('auth'),
                 title: 'войти'

@@ -5,7 +5,6 @@ import CenteredFormLayout from '@lib-layouts/centered_form';
 import {emailValidator, isEmptyValidator, lengthValidator, nameValidator, phoneValidator} from '@lib-utils/form_validation';
 import InputText from '@lib-components/input-text';
 import InputImage from '@lib-components/input-image';
-import go2page from '@app-utils/dummy_routing';
 
 const app = SurChat.instance;
 const user = app.user;
@@ -77,7 +76,7 @@ if (user)
             ]
         ]],
         btnLabel: 'Сохранить',
-        onSuccess: () => go2page( Page.url('chats') ),
+        onSuccess: () => app.go2page('chats'),
         link: {
             url: Page.url('chats'),
             title: 'к чатам'

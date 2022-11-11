@@ -1,19 +1,7 @@
-import go2page, {renderCurPage} from '@app-utils/dummy_routing';
+import SurChat from '@app';
+import * as pages from '@pages';
 
-renderCurPage();
+const app = SurChat.instance;
 
-document.body.addEventListener('click', event =>
-{
-    const element = event.target as Element;
-
-    if ('A' == element.tagName) 
-    {
-        event.preventDefault();
-
-        const href = element.getAttribute('href');
-        if (href)
-        {
-            go2page(href);
-        }        
-    }
-});
+app.pages = Object.values( pages );
+SurChat.instance.init();

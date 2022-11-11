@@ -1,5 +1,6 @@
 import MainContainer from '@app-modules/main';
 import Page from '@models/page';
+import Router from '@models/router';
 import ChatList from '@models/chat_list';
 import User from '@models/user';
 import {App, AppContainer, Nullable} from '@models/types';
@@ -7,11 +8,14 @@ import {App, AppContainer, Nullable} from '@models/types';
 export default class SurChat implements App
 {
     static readonly NAME = 'Sur chat';
+
+    protected static readonly DEFAULT_PAGE = 'auth';
+    protected static readonly FALLBACK_PAGE = 'error404';
     protected static readonly INITIALIZE_MSG = 'Загрузка приложения...';
     
     protected _root : HTMLElement;
     protected _container : AppContainer; 
-    protected _page : Page;
+    protected _router : Router;
     protected _chatsList : ChatList;
     protected _user : Nullable< User > = null;
 
@@ -23,6 +27,7 @@ export default class SurChat implements App
         this._container = new MainContainer(this._root, SurChat.INITIALIZE_MSG).mount(); 
         this.title = SurChat.INITIALIZE_MSG;
 
+        this._router = new Router();
         this._user = new User();
         this._chatsList = new ChatList();
     }
@@ -51,17 +56,30 @@ export default class SurChat implements App
     {
         return this._user;
     }
-    set page (page : Page)
-    {
-        if (this._page)
-        {
-            this._page.unmount();
-        }
-        this._page = page.mount();
-        this.title = this._page.title;
-    }
     get page ()
     {
-        return this._page;
+        return this._router.currentRoute;
+    }
+    set pages (pages : Page[])
+    {
+       pages.forEach( page => this._router.use(page) );
+    }
+    init ()
+    {
+        if (!this._router.start())
+        {
+            this._router.go( Page.url( SurChat.DEFAULT_PAGE ));
+        }
+    }
+    go2url (url : string)
+    {
+        if (!this._router.go(url))
+        {
+            this._router.go( Page.url( SurChat.FALLBACK_PAGE ));
+        }
+    }
+    go2page (name : string) 
+    {
+        this.go2url( Page.url(name) );
     }
 }

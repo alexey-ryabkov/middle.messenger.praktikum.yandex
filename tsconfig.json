@@ -20,7 +20,7 @@
             "@app": ["app"],
             "@data/*": ["app/dummy_data/*"],
             "@models/*": ["lib/models/*", "app/models/*"],
-            "@pages/*": ["app/pages/*"],
+            "@pages": ["app/pages"],
             "@lib-layouts/*": ["lib/layouts/*"],
             "@app-layouts/*": ["app/layouts/*"],
             "@lib-modules/*": ["lib/modules/*"],

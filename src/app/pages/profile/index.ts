@@ -76,9 +76,9 @@ if (user)
             ]
         ]],
         btnLabel: 'Сохранить',
-        onSuccess: () => app.go2page('chats'),
+        onSuccess: () => app.go2page('messenger'),
         link: {
-            url: Page.url('chats'),
+            url: Page.url('messenger'),
             title: 'к чатам'
         }
     });
@@ -102,6 +102,6 @@ const page = new class extends Page
     {
         return layout;
     }
-} ('profile', pageName, blockName);
+} ('settings', pageName, blockName);
 
 export default page;

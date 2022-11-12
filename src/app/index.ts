@@ -62,13 +62,13 @@ export default class SurChat implements App
     }
     set pages (pages : Page[])
     {
-       pages.forEach( page => this._router.use(page) );
+        pages.forEach( page => this._router.use(page) );
     }
     init ()
     {
         if (!this._router.start())
         {
-            this._router.go( Page.url( SurChat.DEFAULT_PAGE ));
+            this._router.go( Page.url( SurChat.FALLBACK_PAGE ));
         }
     }
     go2url (url : string)

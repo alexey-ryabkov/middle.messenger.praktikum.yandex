@@ -92,7 +92,7 @@ const page = new class extends Page
                 ]
             ]],
             btnLabel: 'Зарегистрироваться',
-            onSuccess: () => app.go2page('chats'),
+            onSuccess: () => app.go2page('messenger'),
             link: {
                 url: Page.url('auth'),
                 title: 'войти'
@@ -108,6 +108,6 @@ const page = new class extends Page
     {
         return layout;
     }
-} ('reg', pageName, blockName);
+} ('sign-up', pageName, blockName);
 
 export default page;

@@ -42,9 +42,9 @@ const page = new class extends Page
                 ]  
             ]],
             btnLabel: 'Войти',
-            onSuccess: () => app.go2page('chats'),
+            onSuccess: () => app.go2page('messenger'),
             link: {
-                url: Page.url('reg'),
+                url: Page.url('sign-up'),
                 title: 'создать аккаунт'
             }
         });
@@ -53,6 +53,10 @@ const page = new class extends Page
 
         this._layout.areas = {form};
         this._layout.elemBemMix('content', [blockName, 'content']); 
+    }
+    isPathnameMatch (pathname : string)
+    {
+        return '/' == pathname || super.isPathnameMatch(pathname);
     }
     protected get _layout () 
     {

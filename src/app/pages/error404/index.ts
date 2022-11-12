@@ -6,7 +6,7 @@ const layout = new CenteredMsgLayout(SurChat.instance,
 {    
     title: '404',
     msg: 'Кажется, вы не туда попали...',   
-    url: Page.url('chats') 
+    url: Page.url('messenger') 
 });
 const page = new class extends Page
 {

@@ -1,9 +1,8 @@
 import SurChat from '@app';
-import User from '@models/user';
 import Templator from '@models/templator';
 import Page from '@models/page';
 import ContainerBlock from '@models/container_block';
-import ProfileCard from '@lib-modules/profile-card';
+import ProfileCard, { ProfileCardProps } from '@lib-modules/profile-card';
 import ChatsModule from '@app-modules/chats_list';
 import MessagesModule from '@app-modules/messages';
 import {MessageProps} from '@app-modules/messages/components/message';
@@ -30,7 +29,7 @@ if (user)
     {
         constructor ()
         {
-            const userProfileCard = new ProfileCard( (user as User).profile,  [ 'click', () => console.log('show user menu') ] );  
+            const userProfileCard = new ProfileCard( user?.profile as ProfileCardProps,  [ 'click', () => console.log('show user menu') ] );  
 
             userProfileCard.bemMix(['_userProfile']);
 
@@ -74,6 +73,6 @@ const page = new class extends Page
     {
         return layout;
     }
-} ('chats', 'Чаты', blockName);
+} ('messenger', 'Чаты', blockName);
 
 export default page;

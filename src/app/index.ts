@@ -3,6 +3,7 @@ import Page from '@models/page';
 import Router from '@models/router';
 import ChatList from '@models/chat_list';
 import User from '@models/user';
+import Store from '@models/store';
 import {App, AppContainer, Nullable} from '@models/types';
 
 export default class SurChat implements App
@@ -16,6 +17,7 @@ export default class SurChat implements App
     protected _root : HTMLElement;
     protected _container : AppContainer; 
     protected _router : Router;
+    protected _store : Store;
     protected _chatsList : ChatList;
     protected _user : Nullable< User > = null;
 
@@ -30,6 +32,7 @@ export default class SurChat implements App
         this._router = new Router();
         this._user = new User();
         this._chatsList = new ChatList();
+        this._store = new Store();
     }
     static get instance ()
     {
@@ -56,6 +59,11 @@ export default class SurChat implements App
     {
         return this._user;
     }
+    get store ()
+    {
+        return this._store;
+    }
+    // TODO убрать весь сахар, который не используется по факту, итак класс объемный по функционалу 
     get page ()
     {
         return this._router.currentRoute;

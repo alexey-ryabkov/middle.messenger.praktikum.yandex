@@ -4,6 +4,10 @@ export type ResourceLocation = string;
 export type Label = { title : string, image? : ResourceImage };
 
 export type Nullable<T> = T | null;
+export type Indexed< T = unknown > = 
+{
+    [key in string]: T;
+};
 
 export type Plural<T> = Array<T> | ArrayLike<T>;
 export type SingleOrPlural<T> = T | Plural<T>;

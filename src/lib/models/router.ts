@@ -1,4 +1,3 @@
-// import Block from "@models/block";
 import {Routable, Nullable} from "@models/types";
 
 export default class Router 
@@ -34,11 +33,11 @@ export default class Router
     {
         window.onpopstate = ( (event : PopStateEvent) => this._onRoute(event.state.url) ).bind(this);
 
-        const d = this._onRoute(location.pathname);
+        // const d = this._onRoute(location.pathname);
+        // console.log(d, location.pathname);
+        // return d;
 
-        console.log(d, location.pathname);
-
-        return d;
+        return this._onRoute(location.pathname);
     }    
     go (pathname: string, state : object = {}) 
     {
@@ -52,11 +51,11 @@ export default class Router
     }
     back () 
     {
-      this._history.back();
+        this._history.back();
     }
     forward() 
     {
-      this._history.forward();
+        this._history.forward();
     }    
     protected _onRoute (pathname : string) 
     {

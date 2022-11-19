@@ -1,5 +1,6 @@
 import {CompilableTemplate} from '@models/types';
 import Block, {BlockPropsEngine} from '@models/block';
+import {cloneDeep} from '@lib-utils-kit';
 
 export default class DefaultBlockProps implements BlockPropsEngine
 {
@@ -15,9 +16,9 @@ export default class DefaultBlockProps implements BlockPropsEngine
     {
         return Object.values(this._propsChildBlocks);
     }
-    protected get _props () // every call gets block's props copy
+    protected get _props () 
     {
-        return {...this._block.props};
+        return cloneDeep(this._block.props);
     }
     processProps () 
     {   

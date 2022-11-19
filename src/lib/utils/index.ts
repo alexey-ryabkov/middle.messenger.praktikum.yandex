@@ -59,13 +59,13 @@ export function freezeEvent (event : Event)
     event.preventDefault();
     event.stopPropagation();
 }
-export function objFromPropPath (propPath : string, value? : unknown) : object
+export function objFromPropPath (propPath : string, value : unknown = {}) : object
 {
 	if (!propPath)
     {
         return {};
     }
-    if (!value)
+    if (typeof value == 'undefined')
     {
         value = {};
     }
@@ -95,7 +95,7 @@ export function merge (lhs : PlainObject, rhs : PlainObject) : PlainObject
     });
     return lhs;
 }
-export function set (obj: PlainObject | unknown, path: string, value: unknown): PlainObject | unknown 
+export function setValInPath (obj: PlainObject | unknown, path: string, value: unknown): PlainObject | unknown 
 {
     if (!(obj instanceof Object))
     {
@@ -131,8 +131,7 @@ export function trim (str : string, trimSymbols? : string)
 
     return str.replace(new RegExp(`(?:^[${trimRegexpClsSymbols}]*)|(?:[${trimRegexpClsSymbols}]*$)`), '');
 }
-// TODO прочие типы объектов 
-function isEqual (a: PlainObject, b: PlainObject): boolean 
+export function isEqual (a: PlainObject, b: PlainObject): boolean 
 {
     if (String(Object.keys(a)) != String(Object.keys(b)))
     {
@@ -159,10 +158,9 @@ function isEqual (a: PlainObject, b: PlainObject): boolean
             return false;
     });
 }
-// TODO делать дженериком, разные типы объектов 
-function cloneDeep (obj : [] | PlainObject = {}) 
+export function cloneDeep (obj : [] | PlainObject = {}) 
 {
-    let cloned : unknown[] | PlainObject; // = isPlainObject(obj) ? {} : []
+    let cloned : unknown[] | PlainObject; 
    
     if (isPlainObject(obj))
     {
@@ -193,36 +191,3 @@ function cloneDeep (obj : [] | PlainObject = {})
     }
     return cloned;
 }
-// function cloneDeep (obj : [] | PlainObject = {}) 
-// {
-//     let cloned : [] | PlainObject;
-
-//     if (isPlainObject(obj))
-//     {
-//         cloned = {};
-//         for (const [key, value] of Object.entries(obj)) 
-//         {
-//             if (isArrayOrObject(value)) 
-//             {
-//                 cloned[key] = cloneDeep(value);
-//             }
-//             else
-//                 cloned[key] = value;
-               
-//         }
-//     }
-//     else if (isArray(obj))
-//     {
-//         cloned = [];
-//         for (const [key, value] of Object.entries(obj)) 
-//         {
-//             if (isArrayOrObject(value)) 
-//             {
-//                 cloned.push(cloneDeep(value));
-//             }
-//             else
-//                 cloned.push(value);
-//         }
-//     }
-//     return cloned;
-// }

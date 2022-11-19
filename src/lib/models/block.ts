@@ -5,6 +5,7 @@ import DefaultBlockProps from '@models/def_block_props';
 import {Nullable, SingleOrPlural, EventLsnr, CompilableTemplate} from '@models/types';
 import CssClsHelperMixin, {CssCls, HTMLElementCssCls} from '@lib-utils/css_cls_helper';
 import EventsHelperMixin, {HTMLElementEvnts} from '@lib-utils/events_helper';
+import {isEqual} from '@lib-utils-kit';
 
 
 export interface HTMLElementExt extends HTMLElement, HTMLElementCssCls, HTMLElementEvnts
@@ -172,13 +173,15 @@ export default abstract class Block extends EventEmitter
     }
     componentDidUpdate (oldProps : BlockProps, newProps : BlockProps) 
     {
-        let didUpd = !this._key;
-        if (newProps?.key && newProps.key !== this._key)
-        {
-            this._key = newProps.key;
-            didUpd = true;
-        }
-        return didUpd; 
+        // let didUpd = !this._key;
+        // if (newProps?.key && newProps.key !== this._key)
+        // {
+        //     this._key = newProps.key;
+        //     didUpd = true;
+        // }
+        // return didUpd; 
+
+        return !isEqual(oldProps, newProps);
     }
     abstract render () : DocumentFragment | HTMLElement;
 

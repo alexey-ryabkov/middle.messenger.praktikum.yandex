@@ -30,7 +30,7 @@ export function lengthValidator (field : Field, errorStack : string[] = [], leng
 
     if (!isValid)
     {
-        errorStack.push(`Длина значения для поля "${field.label}" некорректна, диапазон ${ String(length).replace(',', '-') }}`);
+        errorStack.push(`Длина значения для поля "${field.label}" некорректна, диапазон ${ String(length).replace(',', '-') }`);
     }
     return isValid;
 }

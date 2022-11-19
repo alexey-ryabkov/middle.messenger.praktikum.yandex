@@ -1,6 +1,14 @@
 import SurChat from '@app';
 import Templator from '@models/templator';
 import Page from '@models/page';
+
+import '@api/user'; // UserApi from
+import '@api/chats';
+import '@api/messages';
+
+import {isJsonString} from '@lib-utils-kit';
+// import {StoreEvents} from '@models/store';
+
 import ContainerBlock from '@models/container_block';
 import ProfileCard, { ProfileCardProps } from '@lib-modules/profile-card';
 import ChatsModule from '@app-modules/chats_list';
@@ -10,6 +18,7 @@ import {ChatProps} from '@app-modules/chats_list/components/chat';
 import LeftcolWindowLayout from '@lib-layouts/leftcol_window';
 import leftcolTpl from './leftcol.hbs';
 import workareaTpl from './workarea.hbs';
+
 
 const blockName = '_pageChat';
 const layout = new LeftcolWindowLayout(SurChat.instance);
@@ -29,7 +38,35 @@ if (user)
     {
         constructor ()
         {
+            // TODO тут запрос или берем из локала? 
+
+            // TODO нужен будет какой-то типа декоратор @handleError(handler) над родительским методом _request 
+            // TODO также во все запросы нужно будет указывать xhr.responseType = 'json'; 
+            // UserApi.getInfo()
+            //     .catch(error => 
+            //     {            
+            //         console.log(error, error.cause);
+            //     });
+
+            // if (error?.cause?.code)
+            // {
+            //     // if (400 == error.cause.code)
+            //     // {
+            //     // }                        
+            //     if (error?.cause?.response && isJsonString(error.cause.response))
+            //     {
+            //         const response = JSON.parse(error.cause.response);
+            //         console.error(response.reason);
+            //     }                        
+            // }  
+
             const userProfileCard = new ProfileCard( user?.profile as ProfileCardProps,  [ 'click', () => console.log('show user menu') ] );  
+
+            // app.store.on(StoreEvents.Updated, () => 
+            // {
+            //     // TODO мапить свойства 
+            //     this.setProps({...app.store.state});
+            // });
 
             userProfileCard.bemMix(['_userProfile']);
 

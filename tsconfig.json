@@ -20,6 +20,7 @@
             "@app": ["app"],
             "@data/*": ["app/dummy_data/*"],
             "@models/*": ["lib/models/*", "app/models/*"],
+            "@api/*": ["app/api/*"],
             "@pages": ["app/pages"],
             "@lib-layouts/*": ["lib/layouts/*"],
             "@app-layouts/*": ["app/layouts/*"],

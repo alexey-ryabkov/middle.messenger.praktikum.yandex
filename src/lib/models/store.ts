@@ -1,15 +1,22 @@
 // import EventEmitter from "@models/event_emitter";
 import EventBus from "@models/event_bus";
-import {Indexed} from "@models/types";
+import {PlainObject} from "@models/types";
+import {setValInPath} from "@lib-utils-kit";
 
-export enum StoreEvents {
-    Updated = 'updated',
+export interface Stateful 
+{
+    get state () : PlainObject;
+    set (path: string, value: unknown) : void;
 }
-
-export default class Store extends EventBus // EventEmitter
+export enum StoreEvents {
+    added = 'added',
+    updated = 'updated',
+    deleted = 'deleted',
+}
+export class Store extends EventBus implements Stateful // EventEmitter
 {
     constructor (
-        protected _state : Indexed = {}
+        protected _state : PlainObject = {}
     ) {
         super();
     }
@@ -19,7 +26,18 @@ export default class Store extends EventBus // EventEmitter
     }
     set (path: string, value: unknown)
     {
-        // @todo слитие объектов 
-        this.emit(StoreEvents.Updated);
+        setValInPath(this._state, path, value);
+
+        let partOfPath = '';
+        path.split('.').forEach(part => 
+        {
+            partOfPath = !partOfPath ? part : `${partOfPath}.${part}`;
+
+            this.emit( Store.getEventName4path(partOfPath) );
+        });
+    }
+    static getEventName4path (path: string, event : StoreEvents = StoreEvents.updated)
+    {
+        return `${event}:${path}`;
     }
 }

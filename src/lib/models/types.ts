@@ -4,7 +4,7 @@ export type ResourceLocation = string;
 export type Label = { title : string, image? : ResourceImage };
 
 export type Nullable<T> = T | null;
-export type Indexed< T = unknown > = 
+export type PlainObject< T = unknown > = 
 {
     [key in string]: T;
 };
@@ -32,6 +32,7 @@ export interface AppContainer extends BemEntity
     get workarea () : HTMLElement;
     mount () : AppContainer;
 }
+
 export type BemModDef = [string, string?];
 export type BemBlockDef = [string, BemModDef[]?];
 export type BemElemDef = [string, string, BemModDef[]?];
@@ -48,13 +49,21 @@ export interface BemEntity
     elemBemUnmix  (name : string, itemDef : BemItemDef) : void;
 }
 
-export interface FormField
-{ 
+export interface Field
+{
     get name () : string,    
     get label () : string,
     value? : string,
+    validators? : FieldValidatorDef[],
+} 
+export interface FormField extends Field
+{ 
+    // TODO что-то не так с этим методом... 
     setValidationHandlers (lsnrs : SingleOrPlural< EventLsnr >) : void 
 }
+export type FieldValidator = (field : Field, errorStack? : string[], params? : object) => boolean;
+
+export type FieldValidatorDef = [FieldValidator, object?]; // [validatorFunc, validatorParams]
 
 export interface Routable
 {

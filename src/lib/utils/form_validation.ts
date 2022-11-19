@@ -1,12 +1,10 @@
-import {FormField} from "@models/types";
+import {FormField, Field, FieldValidator} from "@models/types";
 
-export type FieldValidator = (field : FormField, errorStack? : string[], params? : object) => boolean;
+export type FormFieldValidatorDef = [string[], FieldValidator, object?]; // [events, validatorFunc, validatorParams]
 
-export type FieldValidatorDef = [string[], FieldValidator, object?]; // [events, validatorFunc, validatorParams]
+export type FormFieldDef = [FormField, FormFieldValidatorDef[]?]; 
 
-export type FormFieldDef = [FormField, FieldValidatorDef[]?]; 
-
-export function validateField (field : FormField, validatorDefs : FieldValidatorDef[], errorStack : string[] = [])
+export function validateField (field : Field, validatorDefs : FormFieldValidatorDef[], errorStack : string[] = [])
 {
     return validatorDefs.every(validatorDef => 
     {
@@ -15,7 +13,7 @@ export function validateField (field : FormField, validatorDefs : FieldValidator
         return validator(field, errorStack, params);
      });
 }
-export function isEmptyValidator (field : FormField, errorStack : string[] = []) : boolean
+export function isEmptyValidator (field : Field, errorStack : string[] = []) : boolean
 {
     const isValid = !!field.value?.trim();
 
@@ -25,7 +23,7 @@ export function isEmptyValidator (field : FormField, errorStack : string[] = [])
     }
     return isValid;
 }
-export function lengthValidator (field : FormField, errorStack : string[] = [], length : [number, number]) : boolean // length : [min, max]
+export function lengthValidator (field : Field, errorStack : string[] = [], length : [number, number]) : boolean // length : [min, max]
 {
     const value = field.value?.trim();
     const isValid = !!value && value.length >= length[0] && value.length <= length[1];
@@ -36,7 +34,7 @@ export function lengthValidator (field : FormField, errorStack : string[] = [], 
     }
     return isValid;
 }
-export function regexpValidator (field : FormField, errorStack : string[] = [], params : { regexp: RegExp, error?: string }) : boolean 
+export function regexpValidator (field : Field, errorStack : string[] = [], params : { regexp: RegExp, error?: string }) : boolean 
 {
     const value = field.value?.trim();
     const {
@@ -51,23 +49,23 @@ export function regexpValidator (field : FormField, errorStack : string[] = [], 
     }
     return isValid;
 }
-export function nameValidator (field : FormField, errorStack : string[] = []) 
+export function nameValidator (field : Field, errorStack : string[] = []) 
 {
     return regexpValidator(field, errorStack, { regexp: /^[A-ZА-Я][a-zA-Zа-яА-Я-]+$/ });
 }
-export function loginValidator (field : FormField, errorStack : string[] = []) 
+export function loginValidator (field : Field, errorStack : string[] = []) 
 {
     return regexpValidator(field, errorStack, { regexp: /^[a-z_-]*[0-9]?[a-z_-]+$/i });
 }
-export function phoneValidator (field : FormField, errorStack : string[] = []) 
+export function phoneValidator (field : Field, errorStack : string[] = []) 
 {
     return regexpValidator(field, errorStack, { regexp: /^\+?[0-9]+$/ });
 }
-export function emailValidator (field : FormField, errorStack : string[] = [])
+export function emailValidator (field : Field, errorStack : string[] = [])
 {
     return regexpValidator(field, errorStack, { regexp: /^[\w-]+@[\w-]+\.[a-z]+$/i });
 }
-export function passwordValidator (field : FormField, errorStack : string[] = [])
+export function passwordValidator (field : Field, errorStack : string[] = [])
 {
     return regexpValidator(field, errorStack, { regexp: /(?:[0-9].*[A-Z])|(?:[A-Z].*[0-9])/ });
 }

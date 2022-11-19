@@ -4,7 +4,7 @@ import {BlockProps} from '@models/block';
 import {EventLsnr, FormField} from '@models/types';
 import Button from '@lib-components/button';
 import FormFieldWrap from './components/field-wrap';
-import {FieldValidatorDef, FormFieldDef, validateField} from '@lib-utils/form_validation';
+import {FormFieldValidatorDef, FormFieldDef, validateField} from '@lib-utils/form_validation';
 import tpl from './tpl.hbs';
 import './style.scss';
 
@@ -21,7 +21,7 @@ export type FormProps = BlockProps &
 function validate (
     fieldWrap : FormFieldWrap, 
     fieldDef : FormField,
-    validatorDefs : FieldValidatorDef[])
+    validatorDefs : FormFieldValidatorDef[])
 {
     const errors : string[] = [];
 

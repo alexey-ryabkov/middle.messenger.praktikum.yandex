@@ -1,17 +1,21 @@
-import MainContainer from '@app-modules/main';
-import Page from '@core/page';
+
+import {App, AppContainer, Nullable} from '@core/types';
+import Page, {PageAccess} from '@core/page';
 import Router from '@core/router';
 import ChatList from '@models/chat_list';
 import User from '@models/user';
-import { Store } from '@core/state/store';
-import {App, AppContainer, Nullable} from '@core/types';
+import {Store} from '@core/state/store';
+import userApi from '@api/user';
+import MainContainer from '@app-modules/main';
 
 export default class SurChat implements App
 {
     static readonly NAME = 'Sur chat';
+    static readonly AUTH_PAGE_NAME = 'sign-in';
+    static readonly CHAT_PAGE_NAME = 'messenger';
+    static readonly FALLBACK_PAGE_NAME = 'error404';
+    static readonly ERROR_PAGE_NAME = 'error500';
 
-    protected static readonly DEFAULT_PAGE = 'auth';
-    protected static readonly FALLBACK_PAGE = 'error404';
     protected static readonly INITIALIZE_MSG = 'Загрузка приложения...';
     
     protected _root : HTMLElement;
@@ -59,6 +63,19 @@ export default class SurChat implements App
     {
         return this._user;
     }
+    logoutUser ()
+    {
+        this._user = null;
+        // TODO тогда chatList, котором передается пользователь также обнуляется? 
+
+        // userApi.getProfile() 
+        //     .then(profile => 
+        //     {
+        //         profile;
+        //     });
+
+        this.go2page( SurChat.AUTH_PAGE_NAME );
+    }
     // get store ()
     // {
     //     return this._store;
@@ -74,20 +91,36 @@ export default class SurChat implements App
     }
     init ()
     {
-        if (!this._router.start())
+        if (!this.redirectIfNoAccess(this._router.curPathname) && !this._router.start())
         {
-            this._router.go( Page.url( SurChat.FALLBACK_PAGE ));
+            this._router.go( Page.url( SurChat.FALLBACK_PAGE_NAME ));
         }
     }
     go2url (url : string)
-    {
-        if (!this._router.go(url))
+    {        
+        if (!this.redirectIfNoAccess(url) && !this._router.go(url))
         {
-            this._router.go( Page.url( SurChat.FALLBACK_PAGE ));
+            this._router.go( Page.url( SurChat.FALLBACK_PAGE_NAME ));
         }
     }
     go2page (name : string) 
     {
         this.go2url( Page.url(name) );
+    }
+    protected redirectIfNoAccess (url : string)
+    {   
+        const page = this._router.getRoute(url) as Page;
+
+        console.log(`check access, has user ${!!this._user}, access ${page.access}`);
+
+        if (!this._user && page.access == PageAccess.authorized)
+        {
+            return this._router.go( Page.url( SurChat.AUTH_PAGE_NAME ));
+        }
+        else if (this._user && page.access == PageAccess.nonAuthorized)
+        {
+            return this._router.go( Page.url( SurChat.CHAT_PAGE_NAME ));
+        }
+        return false;
     }
 }

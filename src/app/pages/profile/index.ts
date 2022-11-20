@@ -1,5 +1,5 @@
 import SurChat from '@app';
-import Page from '@core/page';
+import Page, {PageAccess} from '@core/page';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
 import {emailValidator, isEmptyValidator, lengthValidator, nameValidator, phoneValidator} from '@lib-utils/form_validation';
@@ -102,6 +102,6 @@ const page = new class extends Page
     {
         return layout;
     }
-} ('settings', pageName, blockName);
+} ('settings', pageName, blockName, PageAccess.authorized);
 
 export default page;

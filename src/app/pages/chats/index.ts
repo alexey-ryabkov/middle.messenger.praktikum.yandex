@@ -1,6 +1,6 @@
 import SurChat from '@app';
 import Templator from '@core/templator';
-import Page from '@core/page';
+import Page, {PageAccess} from '@core/page';
 
 import '@api/user'; // UserApi from
 import '@api/chats';
@@ -110,6 +110,6 @@ const page = new class extends Page
     {
         return layout;
     }
-} ('messenger', 'Чаты', blockName);
+} (SurChat.CHAT_PAGE_NAME, 'Чаты', blockName, PageAccess.authorized);
 
 export default page;

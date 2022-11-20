@@ -1,12 +1,19 @@
 import {Routable} from '@core/types';
 import Layout from '@core/layout';
 
+export enum PageAccess 
+{
+    authorized = 'authorized',
+    nonAuthorized = 'nonAuthorized',
+    anyone = 'anyone',
+}
 export default abstract class Page implements Routable 
 {   
     constructor (
         protected _name : string, 
         protected _title : string = '',
-        protected _blockName : string = '') 
+        protected _blockName : string = '',
+        protected _access : PageAccess = PageAccess.anyone) 
     {
         if (!this._blockName)
         {
@@ -20,6 +27,10 @@ export default abstract class Page implements Routable
     get title ()
     {
         return this._title;
+    }
+    get access ()
+    {
+        return this._access;
     }
     get url ()
     {

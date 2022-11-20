@@ -67,7 +67,6 @@ export type FieldValidatorDef = [FieldValidator, object?]; // [validatorFunc, va
 
 export interface Routable
 {
-    // get pathname () : string;    
     get title () : string;
     isPathnameMatch (pathname : string) : boolean;
     mount () : Routable;

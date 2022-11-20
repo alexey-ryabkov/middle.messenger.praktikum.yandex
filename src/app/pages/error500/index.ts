@@ -14,6 +14,6 @@ const page = new class extends Page
     {
         return layout;
     }
-} ('error500', 'Ошибка 500');
+} (SurChat.ERROR_PAGE_NAME, 'Ошибка 500');
 
 export default page;

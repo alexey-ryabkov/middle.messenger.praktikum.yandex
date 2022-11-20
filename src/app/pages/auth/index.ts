@@ -1,5 +1,5 @@
 import SurChat from '@app';
-import Page from '@core/page';
+import Page, {PageAccess} from '@core/page';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
 import InputText from '@lib-components/input-text';
@@ -62,6 +62,6 @@ const page = new class extends Page
     {
         return layout;
     }
-} ('auth', pageName, blockName);
+} (SurChat.AUTH_PAGE_NAME, pageName, blockName, PageAccess.nonAuthorized);
 
 export default page;

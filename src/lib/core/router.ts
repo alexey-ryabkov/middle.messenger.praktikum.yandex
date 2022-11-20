@@ -12,6 +12,10 @@ export default class Router
         this._routes = new Set();
         this._currentRoute = null;
     }
+    get curPathname ()
+    {
+        return location.pathname;
+    }
     get routes ()
     {
         return this._routes;
@@ -37,7 +41,7 @@ export default class Router
         // console.log(d, location.pathname);
         // return d;
 
-        return this._onRoute(location.pathname);
+        return this._onRoute(this.curPathname);
     }    
     go (pathname: string, state : object = {}) 
     {

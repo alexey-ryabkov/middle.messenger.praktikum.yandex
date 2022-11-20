@@ -14,6 +14,6 @@ const page = new class extends Page
     {
         return layout;
     }
-} ('error404', 'Ошибка 404');
+} (SurChat.FALLBACK_PAGE_NAME, 'Ошибка 404');
 
 export default page;

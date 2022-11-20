@@ -4,4 +4,4 @@ import * as pages from '@pages';
 const app = SurChat.instance;
 
 app.pages = Object.values( pages );
-SurChat.instance.init();
+app.init();

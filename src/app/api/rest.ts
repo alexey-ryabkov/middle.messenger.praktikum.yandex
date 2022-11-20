@@ -1,5 +1,5 @@
-import Http, {HttpOptsFull, Methods} from "@models/http";
-import {PlainObject} from "@models/types";
+import Http, {HttpOptsFull, Methods} from "@core/http";
+import {PlainObject} from "@core/types";
 // import {isJsonString} from "@lib-utils-kit";
 
 const API_HOST = 'https://ya-praktikum.tech';

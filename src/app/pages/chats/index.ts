@@ -1,6 +1,6 @@
 import SurChat from '@app';
-import Templator from '@models/templator';
-import Page from '@models/page';
+import Templator from '@core/templator';
+import Page from '@core/page';
 
 import '@api/user'; // UserApi from
 import '@api/chats';
@@ -9,8 +9,8 @@ import '@api/messages';
 import {isJsonString} from '@lib-utils-kit';
 // import {StoreEvents} from '@models/store';
 
-import ContainerBlock from '@models/container_block';
-import ProfileCard, { ProfileCardProps } from '@lib-modules/profile-card';
+import ContainerBlock from '@core/block/container';
+import ProfileCard, { ProfileCardProps } from '@lib-modules/profile_card';
 import ChatsModule from '@app-modules/chats_list';
 import MessagesModule from '@app-modules/messages';
 import {MessageProps} from '@app-modules/messages/components/message';

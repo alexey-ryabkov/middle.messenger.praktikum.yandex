@@ -1,8 +1,8 @@
-import {App, AppContainer} from '@models/types';
-import {BlockProps, BlockEvents} from '@models/block';
-import {BemCompParams} from '@models/bem_block';
-import ComponentBlock from '@models/component_block';
-import Block from '@models/block';
+import {App, AppContainer} from '@core/types';
+import {BlockProps, BlockEvents} from '@core/block';
+import {BemCompParams} from '@core/block/bem';
+import ComponentBlock from '@core/block/component';
+import Block from '@core/block';
 import {plural2Arr} from '@lib-utils-kit';
 
 export type LayoutProps = BlockProps & {areas? : Record< string, Block >};

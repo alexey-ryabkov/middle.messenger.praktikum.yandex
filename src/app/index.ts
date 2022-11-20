@@ -1,10 +1,10 @@
 import MainContainer from '@app-modules/main';
-import Page from '@models/page';
-import Router from '@models/router';
+import Page from '@core/page';
+import Router from '@core/router';
 import ChatList from '@models/chat_list';
 import User from '@models/user';
-import { Store } from '@models/store';
-import {App, AppContainer, Nullable} from '@models/types';
+import { Store } from '@core/state/store';
+import {App, AppContainer, Nullable} from '@core/types';
 
 export default class SurChat implements App
 {

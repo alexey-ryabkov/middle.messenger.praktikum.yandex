@@ -1,7 +1,7 @@
-import Templator from '@models/templator';
-import ComponentBlock from '@models/component_block';
-import {BlockProps} from '@models/block';
-import {EventLsnr, FormField} from '@models/types';
+import Templator from '@core/templator';
+import ComponentBlock from '@core/block/component';
+import {BlockProps} from '@core/block';
+import {EventLsnr, FormField} from '@core/types';
 import Button from '@lib-components/button';
 import FormFieldWrap from './components/field-wrap';
 import {FormFieldValidatorDef, FormFieldDef, validateField} from '@lib-utils/form_validation';

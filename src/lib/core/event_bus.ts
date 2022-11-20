@@ -1,4 +1,4 @@
-import {Handler} from '@models/types';
+import {Handler} from '@core/types';
 
 export default class EventBus
 {

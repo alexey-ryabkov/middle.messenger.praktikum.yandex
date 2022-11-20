@@ -1,6 +1,6 @@
 import userProfile from '@data/user.json'; 
 // import { FieldValidator } from '@lib-utils/form_validation';
-import {Stateful} from '@models/store';
+import {Stateful} from '@core/state/store';
 
 let profile : Record< string, string > = userProfile;
 

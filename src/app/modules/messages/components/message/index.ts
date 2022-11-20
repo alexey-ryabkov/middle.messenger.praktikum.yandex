@@ -1,7 +1,7 @@
-import Templator from '@models/templator';
-import ComponentBlock from '@models/component_block';
-import {BemParams} from '@models/bem_block';
-import {BlockProps} from '@models/block';
+import Templator from '@core/templator';
+import ComponentBlock from '@core/block/component';
+import {BemParams} from '@core/block/bem';
+import {BlockProps} from '@core/block';
 import tpl from './tpl.hbs';
 import './style.scss';
 

@@ -1,6 +1,6 @@
-import ComponentBlock from "@models/component_block";
-import {BlockProps, HTMLElementExt} from "@models/block";
-import {EventLsnr, FormField, SingleOrPlural} from "@models/types";
+import ComponentBlock from "@core/block/component";
+import {BlockProps, HTMLElementExt} from "@core/block";
+import {EventLsnr, FormField, SingleOrPlural} from "@core/types";
 
 export type FormFieldProps = BlockProps & { 
     name : string,    

@@ -1,4 +1,4 @@
-import {SingleOrPlural, EventLsnr} from '@models/types';
+import {SingleOrPlural, EventLsnr} from '@core/types';
 
 export interface HTMLElementEvnts 
 {

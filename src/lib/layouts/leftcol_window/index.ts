@@ -1,6 +1,6 @@
-import {App} from '@models/types';
-import Templator from '@models/templator';
-import Layout from '@models/layout';
+import {App} from '@core/types';
+import Templator from '@core/templator';
+import Layout from '@core/layout';
 import tpl from './tpl.hbs';
 import './style.scss';
 

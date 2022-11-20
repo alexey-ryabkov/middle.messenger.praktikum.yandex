@@ -1,6 +1,6 @@
 // import EventEmitter from "@models/event_emitter";
-import EventBus from "@models/event_bus";
-import {PlainObject} from "@models/types";
+import EventBus from "@core/event_bus";
+import {PlainObject} from "@core/types";
 import {setValInPath} from "@lib-utils-kit";
 
 export interface Stateful 

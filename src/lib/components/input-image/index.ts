@@ -1,6 +1,6 @@
-import Templator from '@models/templator';
-import {BemParams} from '@models/bem_block';
-import FormFieldComponent, {FormFieldProps} from '@models/form_field';
+import Templator from '@core/templator';
+import {BemParams} from '@core/block/bem';
+import FormFieldComponent, {FormFieldProps} from '@core/block/form_field';
 import Avatar from '@lib-components/avatar';
 import {freezeEvent} from '@lib-utils-kit';
 import tpl from './tpl.hbs';

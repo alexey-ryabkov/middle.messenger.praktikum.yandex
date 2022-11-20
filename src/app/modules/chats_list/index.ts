@@ -1,7 +1,7 @@
-import Templator from '@models/templator';
-import ComponentBlock from '@models/component_block';
+import Templator from '@core/templator';
+import ComponentBlock from '@core/block/component';
 import ChatComponent, { ChatProps } from './components/chat';
-import IconButton from '@lib-components/icon-button';
+import IconButton from '@lib-components/icon_button';
 import Icon, {IconVar} from '@lib-components/icon';
 import SearchComponent from './components/search';
 import tpl from './tpl.hbs';

@@ -1,5 +1,5 @@
-import {CompilableTemplate} from '@models/types';
-import Block from './block';
+import {CompilableTemplate} from '@core/types';
+import Block from '@core/block';
 
 export default abstract class ContainerBlock extends Block
 {

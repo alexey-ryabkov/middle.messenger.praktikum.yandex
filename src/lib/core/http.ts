@@ -1,4 +1,4 @@
-import {isJsonString} from '../utils'
+import {isJsonString} from '@lib-utils-kit'
 
 export function httpQueryStringify (data : Record< string, any >) 
 {

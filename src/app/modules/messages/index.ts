@@ -1,8 +1,8 @@
-import Templator from '@models/templator';
-import ComponentBlock from '@models/component_block';
+import Templator from '@core/templator';
+import ComponentBlock from '@core/block/component';
 import MessageComponent, { MessageProps } from './components/message';
 import InputText from '@lib-components/input-text';
-import IconButton from '@lib-components/icon-button';
+import IconButton from '@lib-components/icon_button';
 import Icon, {IconVar} from '@lib-components/icon';
 import tpl from './tpl.hbs';
 import './style.scss';

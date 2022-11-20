@@ -1,5 +1,5 @@
 import SurChat from '@app';
-import Page from '@models/page';
+import Page from '@core/page';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
 import InputText from '@lib-components/input-text';

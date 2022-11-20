@@ -1,6 +1,6 @@
 // import Http from "@models/http";
 // TODO для типов дублируется название файлов и поэтому для них нужны отдельные пути или по другому их нужно называть
-import {ChatUserProfile, ChatUserFields, CurrentUserFields} from "@models/types-app"; 
+import {ChatUserProfile, ChatUserFields, CurrentUserFields} from "@models/types"; 
 import {restAuthApi, restUsersApi} from "@api/rest";
 // import {AllFields, ProfileFields, UserApi} from "@models/user";
 

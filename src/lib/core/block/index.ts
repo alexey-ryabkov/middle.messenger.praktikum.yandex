@@ -1,8 +1,8 @@
 import {v4 as makeUUID} from 'uuid';
-import EventEmitter from '@models/event_emitter';
-import EventBus from '@models/event_bus';
-import DefaultBlockProps from '@models/def_block_props';
-import {Nullable, SingleOrPlural, EventLsnr, CompilableTemplate} from '@models/types';
+import EventEmitter from '@core/block/event_emitter';
+import EventBus from '@core/event_bus';
+import DefaultBlockProps from '@core/block/def_props';
+import {Nullable, SingleOrPlural, EventLsnr, CompilableTemplate} from '@core/types';
 import CssClsHelperMixin, {CssCls, HTMLElementCssCls} from '@lib-utils/css_cls_helper';
 import EventsHelperMixin, {HTMLElementEvnts} from '@lib-utils/events_helper';
 import {isEqual} from '@lib-utils-kit';

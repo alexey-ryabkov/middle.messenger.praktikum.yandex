@@ -1,4 +1,4 @@
-import {ChatUserFields} from "@models/types-app";
+import {ChatUserFields} from "@models/types";
 
 export default class ChatUser implements ChatUserFields
 {

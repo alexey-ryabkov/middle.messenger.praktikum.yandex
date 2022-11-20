@@ -1,4 +1,4 @@
-import {ChatUserProfile, ChatUserFields, CurrentUserFields} from "@models/types-app"; 
+import {ChatUserProfile, ChatUserFields, CurrentUserFields} from "@models/types"; 
 import {restAuthApi, restUsersApi, restChatsApi} from "@api/rest";
 
 // работу с чатами (список чатов пользователя, создать новый чат, добавить пользователя в чат, удалить пользователя из чата).

@@ -19,19 +19,17 @@
         "paths": {
             "@app": ["app"],
             "@data/*": ["app/dummy_data/*"],
-            "@models/*": ["lib/models/*", "app/models/*"],
-            "@api/*": ["app/api/*"],
             "@pages": ["app/pages"],
-            "@lib-layouts/*": ["lib/layouts/*"],
-            "@app-layouts/*": ["app/layouts/*"],
-            "@lib-modules/*": ["lib/modules/*"],
+            "@api/*": ["app/api/*"],
+            "@models/*": ["app/models/*"],
+            "@core/block": ["lib/core/block"],
+            "@core/*": ["lib/core/*"],
             "@app-modules/*": ["app/modules/*"],
-            "@lib-components/*": ["lib/components/*"],
-            "@app-components/*": ["app/components/*"],
+            "@lib-modules/*": ["lib/modules/*"],
+            "@lib-layouts/*": ["lib/layouts/*"],
+            "@lib-components/*": ["lib/components/*"],                  
             "@lib-utils-kit": ["lib/utils"],
-            "@lib-utils/*": ["lib/utils/*"],
-            "@app-utils-kit": ["app/utils"],
-            "@app-utils/*": ["app/utils/*"]
+            "@lib-utils/*": ["lib/utils/*"]
         } 
     },
     "exclude": [

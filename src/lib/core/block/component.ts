@@ -1,5 +1,5 @@
-import {CompilableTemplate} from '@models/types';
-import BemBlock from '@models/bem_block';
+import {CompilableTemplate} from '@core/types';
+import BemBlock from '@core/block/bem';
 
 export default abstract class ComponentBlock extends BemBlock 
 {

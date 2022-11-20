@@ -1,10 +1,10 @@
-import Templator from '@models/templator';
-import ComponentBlock from '@models/component_block';
-import {BemParams} from '@models/bem_block';
-import {BlockEvents, BlockProps} from '@models/block';
+import Templator from '@core/templator';
+import ComponentBlock from '@core/block/component';
+import {BemParams} from '@core/block/bem';
+import {BlockEvents, BlockProps} from '@core/block';
 import Avatar from '@lib-components/avatar';
 import Caption, {CaptionSize, CaptionWeight} from '@lib-components/caption';
-import IconButton from '@lib-components/icon-button';
+import IconButton from '@lib-components/icon_button';
 import Icon, {IconVar} from '@lib-components/icon';
 import tpl from './tpl.hbs';
 import './style.scss';

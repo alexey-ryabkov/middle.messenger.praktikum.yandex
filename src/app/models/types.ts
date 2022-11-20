@@ -1,4 +1,4 @@
-import { Field } from "@models/types";
+import { Field } from "@core/types";
 
 export type ChatUserProfile =
 {

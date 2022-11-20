@@ -1,5 +1,5 @@
-import {CompilableTemplate} from '@models/types';
-import Block, {BlockPropsEngine} from '@models/block';
+import {CompilableTemplate} from '@core/types';
+import Block, {BlockPropsEngine} from '@core/block';
 import {cloneDeep} from '@lib-utils-kit';
 
 export default class DefaultBlockProps implements BlockPropsEngine

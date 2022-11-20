@@ -1,8 +1,8 @@
-import {App} from '@models/types';
-import Templator from '@models/templator';
-import Layout, {LayoutProps} from '@models/layout';
+import {App} from '@core/types';
+import Templator from '@core/templator';
+import Layout, {LayoutProps} from '@core/layout';
 import Caption, {CaptionSize} from '@lib-components/caption';
-import { BlockEvents } from '@models/block';
+import { BlockEvents } from '@core/block';
 import tpl from './tpl.hbs';
 import './style.scss';
 

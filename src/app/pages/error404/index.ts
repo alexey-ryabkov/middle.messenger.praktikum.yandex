@@ -1,5 +1,5 @@
 import SurChat from '@app';
-import Page from '@models/page';
+import Page from '@core/page';
 import CenteredMsgLayout from '@lib-layouts/centered_msg';
 
 const layout = new CenteredMsgLayout(SurChat.instance, 

@@ -1,5 +1,5 @@
-import {Routable} from '@models/types';
-import Layout from '@models/layout';
+import {Routable} from '@core/types';
+import Layout from '@core/layout';
 
 export default abstract class Page implements Routable 
 {   

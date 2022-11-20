@@ -1,4 +1,4 @@
-import {FormField, Field, FieldValidator} from "@models/types";
+import {FormField, Field, FieldValidator} from "@core/types";
 
 export type FormFieldValidatorDef = [string[], FieldValidator, object?]; // [events, validatorFunc, validatorParams]
 

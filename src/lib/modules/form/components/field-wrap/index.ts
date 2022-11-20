@@ -1,8 +1,8 @@
-import Templator from '@models/templator';
-import ComponentBlock from '@models/component_block';
-import {BlockProps} from '@models/block';
+import Templator from '@core/templator';
+import ComponentBlock from '@core/block/component';
+import {BlockProps} from '@core/block';
 import Icon, { IconVar } from '@lib-components/icon';
-import {FormField} from '@models/types';
+import {FormField} from '@core/types';
 import tpl from './tpl.hbs';
 
 export type FormFieldWrapProps = BlockProps & {

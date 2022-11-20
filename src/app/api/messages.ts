@@ -1,4 +1,4 @@
-import EventBus from "@models/event_bus";
+import EventBus from "@core/event_bus";
 
 const API_HOST = 'wss://ya-praktikum.tech';
 const API_BASE_URL = `${API_HOST}/ws/chats`;

@@ -1,4 +1,4 @@
-import {SingleOrPlural, Plural, PlainObject} from '@models/types';
+import {SingleOrPlural, Plural, PlainObject} from '@core/types';
 
 export const unique = (item : any[]) : any[] => [...new Set(item)];
 

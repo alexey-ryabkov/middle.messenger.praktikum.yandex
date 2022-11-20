@@ -1,4 +1,4 @@
-import {Routable, Nullable} from "@models/types";
+import {Routable, Nullable} from "@core/types";
 
 export default class Router 
 {

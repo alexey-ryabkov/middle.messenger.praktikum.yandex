@@ -1,6 +1,6 @@
-import Templator from '@models/templator';
-import {BlockEvents} from '@models/block';
-import FormFieldComponent, {FormFieldProps} from '@models/form_field';
+import Templator from '@core/templator';
+import {BlockEvents} from '@core/block';
+import FormFieldComponent, {FormFieldProps} from '@core/block/form_field';
 import tpl from './tpl.hbs';
 import './style.scss';
 

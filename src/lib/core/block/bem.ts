@@ -1,6 +1,6 @@
-import Block, {BlockAttrs, BlockParams, HTMLElementExt, makeHTMLElementExt} from '@models/block';
+import Block, {BlockAttrs, BlockParams, HTMLElementExt, makeHTMLElementExt} from '@core/block';
 import {CssCls} from '@lib-utils/css_cls_helper';
-import {SingleOrPlural, EventLsnr, BemModDef, BemBlockDef, BemElemDef, BemItemDef, BemEntity} from '@models/types';
+import {SingleOrPlural, EventLsnr, BemModDef, BemBlockDef, BemElemDef, BemItemDef, BemEntity} from '@core/types';
 
 export function isItemElem (item : BemItemDef) : item is BemElemDef
 {

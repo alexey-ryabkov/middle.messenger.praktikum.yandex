@@ -80,7 +80,7 @@ export default class Form extends ComponentBlock
         super({ 
             node: 'form', 
             // FIXME now have to do copy of fields 
-            props: {fields : {...fields}, button, link}, 
+            props: {submitNotification: null, fields : {...fields}, button, link}, 
             attrs: {action, method}, 
 
             events: ['submit', (event : Event) => 

@@ -1,4 +1,7 @@
 export default `
+{{#if submitNotification}}
+{{{submitNotification}}}
+{{/if}}
 {{#each fields}}
 <div class="form__fieldBox">
     <div class="form__fieldLabelWrap">

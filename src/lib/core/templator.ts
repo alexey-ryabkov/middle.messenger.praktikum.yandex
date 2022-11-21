@@ -1,9 +1,19 @@
 import Handlebars from 'handlebars';
 import {CompilableTemplate} from './types';
 
-Handlebars.registerHelper ('ifEquals', function (arg1 : any, arg2 : any, options) 
+Handlebars.registerHelper('ifEquals', function (arg1 : any, arg2 : any, options) 
 {
     return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+});
+Handlebars.registerHelper('times', function (n, block) 
+{
+    let accum = '';
+
+    for (let i = 0; i < n; ++i)
+    {
+        accum += block.fn(i);
+    }        
+    return accum;
 });
 
 export default class Templator implements CompilableTemplate 

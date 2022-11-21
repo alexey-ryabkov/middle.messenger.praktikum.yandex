@@ -1,0 +1,21 @@
+.notification {
+    font-size: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+
+    &__ {
+        &icon {  
+            fill: inherit;
+        }
+    }
+
+    &-- {
+        &lvl_ {
+            &error {
+                color: red;
+            }
+        }
+    }
+}

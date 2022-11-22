@@ -3,10 +3,12 @@ import {App, AppContainer, Nullable} from '@core/types';
 import Page, {PageAccess} from '@core/page';
 import Router from '@core/router';
 import ChatList from '@models/chat_list';
-import User from '@models/user';
+import CurrentUser from '@models/user';
 import {Store} from '@core/state/store';
 import userApi from '@api/user';
 import MainContainer from '@app-modules/main';
+import ChatUser from '@models/chat_user';
+import Spinner from '@lib-components/spinner';
 
 export default class SurChat implements App
 {
@@ -15,7 +17,6 @@ export default class SurChat implements App
     static readonly CHAT_PAGE_NAME = 'messenger';
     static readonly FALLBACK_PAGE_NAME = 'error404';
     static readonly ERROR_PAGE_NAME = 'error500';
-
     protected static readonly INITIALIZE_MSG = 'Загрузка приложения...';
     
     protected _root : HTMLElement;
@@ -23,19 +24,30 @@ export default class SurChat implements App
     protected _router : Router;
     protected _store : Store;
     protected _chatsList : ChatList;
-    protected _user : Nullable< User > = null;
+    protected _user : Nullable< CurrentUser > = null;
 
     private static _instance: SurChat;
 
     private constructor()
     {
-        this._root = document.body;         
-        this._container = new MainContainer(this._root, SurChat.INITIALIZE_MSG).mount(); 
+        this._root = document.body;    
+        
+        // const spinner = new Spinner({ size: 'large' });
+        // console.log(spinner, spinner.element);
+
+        this._container = new MainContainer( this._root, new Spinner({ size: 'large' }) ).mount(); 
         this.title = SurChat.INITIALIZE_MSG;
 
         this._router = new Router();
         this._store = new Store();
-        this._user = new User(this._store);
+
+        userApi.getProfile() 
+            .then(profile => 
+            {
+                // new ChatUser(profile);
+            });
+
+        this._user = new CurrentUser(this._store);
         this._chatsList = new ChatList();        
     }
     static get instance ()
@@ -68,11 +80,7 @@ export default class SurChat implements App
         this._user = null;
         // TODO тогда chatList, котором передается пользователь также обнуляется? 
 
-        // userApi.getProfile() 
-        //     .then(profile => 
-        //     {
-        //         profile;
-        //     });
+        
 
         this.go2page( SurChat.AUTH_PAGE_NAME );
     }
@@ -110,8 +118,6 @@ export default class SurChat implements App
     protected redirectIfNoAccess (url : string)
     {   
         const page = this._router.getRoute(url) as Page;
-
-        console.log(`check access, has user ${!!this._user}, access ${page.access}`);
 
         if (!this._user && page.access == PageAccess.authorized)
         {

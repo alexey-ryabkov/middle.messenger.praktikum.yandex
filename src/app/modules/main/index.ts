@@ -1,17 +1,19 @@
 import {AppContainer} from '@core/types';
 import Templator from '@core/templator';
+import Block from '@core/block';
 import ComponentBlock from '@core/block/component';
 import tpl from './tpl.hbs';
 import './style.scss';
 
+
 export default class MainContainer extends ComponentBlock implements AppContainer
 {
-    constructor (root : HTMLElement, pageHolder : HTMLElement | string) 
+    constructor (root : HTMLElement, workareaHolder : Block | HTMLElement | string) 
     {   
         super({
             node: root, 
             props: {                
-                page: pageHolder,
+                workarea: workareaHolder,
             },
             bem: {
                 name: '_surApp',

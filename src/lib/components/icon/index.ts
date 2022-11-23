@@ -23,9 +23,13 @@ export enum IconVar {
     checkmark = 'checkmark',
     circle_dots = 'circle_dots',
     paperclip = 'paperclip',
-    circle_cross = 'circle_cross'
+    circle_cross = 'circle_cross',
+    circle_plus = 'circle_plus',
+    circle_smile = 'circle_smile',
+    shield = 'shield',
+    x_mark = 'x_mark',
 }
-const iconSizes : Record< string, [number, number] > = {
+const iconSizes : Record< IconVar, [number, number] > = {
     plus: [14, 15],
     search: [17, 16],
     images: [22, 18],
@@ -44,6 +48,10 @@ const iconSizes : Record< string, [number, number] > = {
     circle_dots: [18, 18],
     paperclip: [18, 20],
     circle_cross: [18, 18],
+    circle_plus: [18, 18],
+    circle_smile: [18, 18],
+    shield: [14, 18],
+    x_mark: [18, 18],
 }
 export type IconProps = BlockProps & 
 {

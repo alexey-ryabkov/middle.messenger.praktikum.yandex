@@ -1,14 +1,35 @@
-import {FormField, Field, FieldValidator} from "@core/types";
+import {FormField, Field, FieldValidator, FieldValidatorDef} from "@core/types";
 
 export type FormFieldValidatorDef = [string[], FieldValidator, object?]; // [events, validatorFunc, validatorParams]
 
 export type FormFieldDef = [FormField, FormFieldValidatorDef[]?]; 
 
-export function validateField (field : Field, validatorDefs : FormFieldValidatorDef[], errorStack : string[] = [])
+export function fieldValidators2formFieldValidators (formFieldEvent : string[], validators : FieldValidatorDef[]) : FormFieldValidatorDef[]
+{
+    const formFieldValidators : FormFieldValidatorDef[] = [];
+
+    validators.forEach(validator => 
+    {
+        const [validatorFunc, validatorParams] = validator;
+
+        formFieldValidators.push( [formFieldEvent, validatorFunc, validatorParams] );
+    });
+    return formFieldValidators;
+}
+export function validateFromField (field : Field, validatorDefs : FormFieldValidatorDef[], errorStack : string[] = [])
 {
     return validatorDefs.every(validatorDef => 
     {
         const [, validator, params] = validatorDef;
+        
+        return validator(field, errorStack, params);
+     });
+}
+export function validateField (field : Field, validatorDefs : FieldValidatorDef[], errorStack : string[] = [])
+{
+    return validatorDefs.every(validatorDef => 
+    {
+        const [validator, params] = validatorDef;
         
         return validator(field, errorStack, params);
      });

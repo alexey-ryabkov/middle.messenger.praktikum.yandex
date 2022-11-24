@@ -3,10 +3,12 @@ import ComponentBlock from '@core/block/component';
 import {BlockProps} from '@core/block';
 import {EventLsnr, FormField} from '@core/types';
 import Button from '@lib-components/button';
-import FormFieldWrap from './components/field-wrap';
-import {FormFieldValidatorDef, FormFieldDef, validateField} from '@lib-utils/form_validation';
+import NotificationMsg, {NotificationLevel} from '@lib-components/notification';
+import FormFieldWrap from './components/field_wrap';
+import {FormFieldValidatorDef, FormFieldDef, validateFromField} from '@lib-utils/form_validation';
 import tpl from './tpl.hbs';
 import './style.scss';
+
 
 export type FormProps = BlockProps & 
 {
@@ -14,8 +16,9 @@ export type FormProps = BlockProps &
     action? : string,
     method? : string,
     btnLabel : string,
-    onSuccess? : () => void,
-    link? : {url : string, title : string},    
+    onSubmit : (data : FormData) => void,
+    link? : {url : string, title : string},
+    error? : string,
 };
 
 function validate (
@@ -25,7 +28,7 @@ function validate (
 {
     const errors : string[] = [];
 
-    if (!validateField( fieldDef, validatorDefs, errors ))
+    if (!validateFromField( fieldDef, validatorDefs, errors ))
     {
         fieldWrap.setProps({ error: errors.join(' / ') })
     }
@@ -39,7 +42,9 @@ export default class Form extends ComponentBlock
 {
     constructor (props : FormProps)
     {
-        const {action = '#', method = 'post', onSuccess, link} = props;        
+        Form._prepareProps(props);
+
+        const {action = '#', method = 'post', onSubmit, link, notification} = props;        
         const fields : Record< string, FormFieldWrap > = {};
 
         const formFields = props.formFields;
@@ -80,14 +85,14 @@ export default class Form extends ComponentBlock
         super({ 
             node: 'form', 
             // FIXME now have to do copy of fields 
-            props: {submitNotification: null, fields : {...fields}, button, link}, 
+            props: {notification, fields : {...fields}, button, link}, 
             attrs: {action, method}, 
 
             events: ['submit', (event : Event) => 
             {
                 event.preventDefault();
 
-                const fieldValues : Record< string, string > = {};
+                // const fieldValues : Record< string, string > = {};
                 
                 let i = 0;
                 let errors : string[] = [];
@@ -105,25 +110,42 @@ export default class Form extends ComponentBlock
                     if (validatorDefs)
                     {
                         errors = errors.concat( validate(fieldWrap, field, validatorDefs) );
-                        fieldValues[ fieldElement.name ] = fieldElement.value;
+                        // fieldValues[ fieldElement.name ] = fieldElement.value;
                     }
                 });
 
+                const formData = new FormData(this._formElement);
+
                 if (!errors.length)
                 {
-                    if (onSuccess)
-                    {
-                        console.log(fieldValues);
-                        alert( Object.entries(fieldValues).map (([name, value]) => `${name}: ${value ? value : '–'}` ).join("\n") );
-                        onSuccess();
-                    }
-                    else
-                        console.log(fieldValues);                   
+                    onSubmit(formData);     
                 }
             }],
             bem: {name: 'form'} 
         });
-    }
+    }    
+    setProps (nextProps: Partial< FormProps >)
+    {
+        Form._prepareProps(nextProps);
+        super.setProps(nextProps);  
+    } 
+    protected get _formElement ()
+    {
+        const element = <unknown>this._element;
+        return element as HTMLFormElement;
+    } 
+    protected static _prepareProps (props : Partial< FormProps >)
+    {
+        if (props.error)
+        {
+            props.notification = new NotificationMsg({ text: props.error, level: NotificationLevel.error });
+            props.notification.bemMix(['form', 'submitNotification']);
+        }
+        else
+            props.notification = null;
+
+        return props;
+    }   
     protected get _template () 
     {
         return new Templator(tpl);

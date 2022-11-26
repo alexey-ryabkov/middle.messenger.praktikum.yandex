@@ -4,11 +4,12 @@ import Page, {PageAccess} from '@core/page';
 import Router from '@core/router';
 import ChatList from '@models/chat_list';
 import CurrentUser from '@models/user';
-import {Store} from '@core/state/store';
+import Store from '@core/state/store';
 import userApi from '@api/user';
 import MainContainer from '@app-modules/main';
 import ChatUser from '@models/chat_user';
 import Spinner from '@lib-components/spinner';
+import { ProfileData } from '@models/types';
 
 export default class SurChat implements App
 {
@@ -17,38 +18,67 @@ export default class SurChat implements App
     static readonly CHAT_PAGE_NAME = 'messenger';
     static readonly FALLBACK_PAGE_NAME = 'error404';
     static readonly ERROR_PAGE_NAME = 'error500';
-    protected static readonly INITIALIZE_MSG = 'Загрузка приложения...';
-    
-    protected _root : HTMLElement;
+
+    protected static readonly _INITIALIZE_MSG = 'Загрузка приложения...';    
+    protected static readonly _ROOT_NODE = document.body;
+
     protected _container : AppContainer; 
     protected _router : Router;
     protected _store : Store;
     protected _chatsList : ChatList;
     protected _user : Nullable< CurrentUser > = null;
+    // TODO isUserAuthorized 
+    protected _isUserDefined = false;
 
-    private static _instance: SurChat;
+    private static _instance : SurChat;
 
     private constructor()
     {
-        this._root = document.body;    
+        // FIXME 
+        // console.log(Math.random());
         
-        // const spinner = new Spinner({ size: 'large' });
-        // console.log(spinner, spinner.element);
-
-        this._container = new MainContainer( this._root, new Spinner({ size: 'large' }) ).mount(); 
-        this.title = SurChat.INITIALIZE_MSG;
+        this._container = new MainContainer( SurChat._ROOT_NODE, new Spinner({ size: 'large' }) ).mount(); 
+        this.title = SurChat._INITIALIZE_MSG;
 
         this._router = new Router();
         this._store = new Store();
 
-        userApi.getProfile() 
-            .then(profile => 
-            {
-                // new ChatUser(profile);
-            });
+        // TODO привести к единообразию - где-то currentUser ге-то profile         
+        this._store.oneTime('updated:current_user', currentUser => 
+        {
+            console.log('oneTime updated:current_user', currentUser);
+            return this._isUserDefined = !!currentUser
+        });
 
-        this._user = new CurrentUser(this._store);
-        this._chatsList = new ChatList();        
+        this._user = new CurrentUser();
+        this._chatsList = new ChatList();    
+
+        // window.addEventListener('popstate', ((event : PopStateEvent) => 
+        // {
+        //     console.log('onpopstate in app', event.state, event);
+
+        //     const url = (event.currentTarget as Window).location.pathname;
+
+        //     this._redirectIfNoAccess(url);
+        // })
+        // .bind(this));
+
+        // TODO неплохо бы убирать в подметоды 
+        SurChat._ROOT_NODE.addEventListener('click', event =>
+        {
+            const element = event.target as Element;
+
+            if ('A' == element.tagName) 
+            {
+                event.preventDefault();
+
+                const url = element.getAttribute('href');
+                if (url)
+                {
+                    this.go2url(url);
+                }        
+            }
+        }); 
     }
     static get instance ()
     {
@@ -61,7 +91,7 @@ export default class SurChat implements App
     }
     get root ()
     {
-        return this._root;
+        return SurChat._ROOT_NODE;
     }
     get container ()
     {
@@ -75,18 +105,21 @@ export default class SurChat implements App
     {
         return this._user;
     }
-    logoutUser ()
+    get store ()
     {
-        this._user = null;
-        // TODO тогда chatList, котором передается пользователь также обнуляется? 
-
-        
-
-        this.go2page( SurChat.AUTH_PAGE_NAME );
+        return this._store;
     }
-    // get store ()
+    // get router ()
     // {
-    //     return this._store;
+    //     return this._router;
+    // }
+    // logoutUser ()
+    // {
+    //     this._user = null;
+    //     // TODO тогда chatList, котором передается пользователь также обнуляется? 
+
+
+    //     this.go2page( SurChat.AUTH_PAGE_NAME );
     // }
     // TODO убрать весь сахар, который не используется по факту, итак класс объемный по функционалу 
     get page ()
@@ -99,14 +132,29 @@ export default class SurChat implements App
     }
     init ()
     {
-        if (!this.redirectIfNoAccess(this._router.curPathname) && !this._router.start())
+        if (!this._redirectIfNoAccess(this._router.curPathname) && !this._router.start())
         {
             this._router.go( Page.url( SurChat.FALLBACK_PAGE_NAME ));
         }
+
+        this._store.on('updated:current_user', currentUser => 
+        {
+            console.log('on updated:current_user', currentUser);
+            if (this._isUserDefined && null === currentUser)
+            {
+                this._router.go( Page.url( SurChat.AUTH_PAGE_NAME ));
+            }
+            else if (!this._isUserDefined && currentUser)
+            {
+                this._router.go( Page.url( SurChat.CHAT_PAGE_NAME ));
+            }
+            this._isUserDefined = !!currentUser;
+        });
     }
     go2url (url : string)
-    {        
-        if (!this.redirectIfNoAccess(url) && !this._router.go(url))
+    {      
+        // TODO по идее нужно показывать 403 ошибку...  
+        if (!this._redirectIfNoAccess(url) && !this._router.go(url))
         {
             this._router.go( Page.url( SurChat.FALLBACK_PAGE_NAME ));
         }
@@ -115,18 +163,25 @@ export default class SurChat implements App
     {
         this.go2url( Page.url(name) );
     }
-    protected redirectIfNoAccess (url : string)
-    {   
-        const page = this._router.getRoute(url) as Page;
 
-        if (!this._user && page.access == PageAccess.authorized)
+    // TODO checkAccess methid for Page, need public isUserDefined 
+    protected _redirectIfNoAccess (url : string)
+    {   
+        const page = this._router.getRoute(url) as Page | null;
+
+        if (!page)
+        {
+            return false;
+        } 
+        if (!this._isUserDefined && page.access == PageAccess.authorized)
         {
             return this._router.go( Page.url( SurChat.AUTH_PAGE_NAME ));
         }
-        else if (this._user && page.access == PageAccess.nonAuthorized)
+        else if (this._isUserDefined && page.access == PageAccess.nonAuthorized)
         {
             return this._router.go( Page.url( SurChat.CHAT_PAGE_NAME ));
         }
         return false;
     }
 }
+window.app = SurChat.instance;

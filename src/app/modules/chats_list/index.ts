@@ -1,4 +1,5 @@
 import Templator from '@core/templator';
+import {BemParams} from '@core/block/bem';
 import ComponentBlock from '@core/block/component';
 import ChatComponent, { ChatProps } from './components/chat';
 import IconButton from '@lib-components/icon_button';
@@ -35,13 +36,12 @@ export default class ChatsModule extends ComponentBlock
 
         }, [ 'click', () => console.log('add chat') ]);
 
-        const props = {
-            chats, 
-            search,
-            buttonAdd
-        };
-
-        super({ props, bem: {name: '_chats'} });
+        super({ chats, search, buttonAdd });
+    }
+    protected _prepareBemParams ()
+    {
+        const bem : BemParams = {name: '_chats'};
+        return bem;
     }
     protected get _template () 
     {

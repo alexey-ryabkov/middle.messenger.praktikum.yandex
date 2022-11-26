@@ -1,6 +1,6 @@
 import Templator from '@core/templator';
 import ComponentBlock from '@core/block/component';
-import {BemParams} from '@core/block/bem';
+import {BemCompParams, BemParams} from '@core/block/bem';
 import {BlockProps} from '@core/block';
 import tpl from './tpl.hbs';
 import './style.scss';
@@ -62,7 +62,11 @@ export default class Icon extends ComponentBlock
 {
     constructor (props : IconProps)
     {
-        const node = 'span';
+        super(props, [], {node: 'span'});
+    }
+    protected _prepareBemParams (params : BemCompParams)
+    {
+        const props = params.props as IconProps;
         const bem : BemParams = { 
             name: 'icon', 
             mods: { elems: { 'icnImg': [] }},
@@ -81,7 +85,7 @@ export default class Icon extends ComponentBlock
         {
             bem.mods.elems['icnImg'].push([ 'size', props.size ]);
         }
-        super({ node, props, bem });
+        return bem;
     }
     protected get _template () 
     {

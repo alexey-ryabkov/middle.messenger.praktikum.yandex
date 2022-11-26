@@ -1,5 +1,5 @@
 import Templator from '@core/templator';
-import {BemParams} from '@core/block/bem';
+import {BemCompParams, BemParams} from '@core/block/bem';
 import FormFieldComponent, {FormFieldProps} from '@core/block/form_field';
 import Avatar from '@lib-components/avatar';
 import {freezeEvent} from '@lib-utils-kit';
@@ -13,15 +13,22 @@ export default class InputImage extends FormFieldComponent
 {
     constructor (props : InputImageProps)
     {
-        const bem : BemParams = { name: 'inputImage', mods: {block: []}, events: {block: []} };
-
         props.avatar = InputImage._processAvatar(props);
 
+        super(props);
+    }
+    protected _prepareBemParams (params : BemCompParams)
+    {
+        const props = params.props as InputImageProps;
+        const bem : BemParams = { 
+            name: 'inputImage', 
+            mods: {block: []}, 
+            events: {block: []} 
+        };
         if (!props.avatar && bem?.mods?.block)
         {
             bem.mods.block.push(['empty']);
         }
-
         if (bem?.events?.block)
         {
             bem.events.block = 
@@ -62,9 +69,9 @@ export default class InputImage extends FormFieldComponent
                 }],
             ];
         }
-        super({ props, bem });
+        return bem;
     }
-    setProps (nextProps: any): void 
+    setProps (nextProps: Partial< InputImageProps >): void 
     {
         if (InputImage._processAvatar(nextProps))
         {

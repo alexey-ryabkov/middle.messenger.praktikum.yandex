@@ -1,6 +1,7 @@
 import Templator from '@core/templator';
-import ComponentBlock from '@core/block/component';
 import {BlockProps} from '@core/block';
+import {BemParams} from '@core/block/bem';
+import ComponentBlock from '@core/block/component';
 import {EventLsnr, FormField} from '@core/types';
 import Button from '@lib-components/button';
 import NotificationMsg, {NotificationLevel} from '@lib-components/notification';
@@ -82,13 +83,11 @@ export default class Form extends ComponentBlock
         });
         button.bemMix(['form', 'submitButton']);
 
-        super({ 
-            node: 'form', 
+        super(
             // FIXME now have to do copy of fields 
-            props: {notification, fields : {...fields}, button, link}, 
-            attrs: {action, method}, 
+            {notification, fields : {...fields}, button, link}, 
 
-            events: ['submit', (event : Event) => 
+            ['submit', (event : Event) => 
             {
                 event.preventDefault();
 
@@ -104,7 +103,7 @@ export default class Form extends ComponentBlock
                     // FIXME now have to call it manually 
                     field.processElems();
 
-                    const fieldElement = field.elems['input'];
+                    // const fieldElement = field.elems['input'];
                     const [, validatorDefs] = formFields[ i++ ];
 
                     if (validatorDefs)
@@ -121,9 +120,16 @@ export default class Form extends ComponentBlock
                     onSubmit(formData);     
                 }
             }],
-            bem: {name: 'form'} 
-        });
-    }    
+            {
+                node: 'form', 
+                attrs: {action, method}, 
+            });
+    }
+    protected _prepareBemParams ()
+    {
+        const bem : BemParams = {name: 'form'} ;   
+        return bem;
+    }
     setProps (nextProps: Partial< FormProps >)
     {
         Form._prepareProps(nextProps);

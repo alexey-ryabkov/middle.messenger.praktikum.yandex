@@ -1,5 +1,6 @@
 import {AppContainer} from '@core/types';
 import Templator from '@core/templator';
+import {BemParams} from '@core/block/bem';
 import Block from '@core/block';
 import ComponentBlock from '@core/block/component';
 import tpl from './tpl.hbs';
@@ -10,20 +11,19 @@ export default class MainContainer extends ComponentBlock implements AppContaine
 {
     constructor (root : HTMLElement, workareaHolder : Block | HTMLElement | string) 
     {   
-        super({
-            node: root, 
-            props: {                
-                workarea: workareaHolder,
-            },
-            bem: {
-                name: '_surApp',
-                mods: {
-                    elems: {
-                        background: [['bg', 'image']] 
-                    }
+        super({ workarea: workareaHolder }, [], { node: root });
+    }
+    protected _prepareBemParams ()
+    {
+        const bem : BemParams = {
+            name: '_surApp',
+            mods: {
+                elems: {
+                    background: [['bg', 'image']] 
                 }
             }
-        });
+        };   
+        return bem;
     }
     get workarea ()
     {

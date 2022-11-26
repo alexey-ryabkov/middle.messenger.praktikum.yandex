@@ -18,8 +18,6 @@ export default class ProfileCard extends ComponentBlock
 {
     constructor (props : ProfileCardProps, btnEvents? : BlockEvents)
     {
-        const bem : BemParams = {name: 'profileCard'};
-        
         const avatar = new Avatar({ 
             image: props.image, 
             size: 'small'
@@ -40,7 +38,12 @@ export default class ProfileCard extends ComponentBlock
         caption.bemMix(['profileCard', 'name']); 
         button.bemMix(['profileCard', 'button']);
 
-        super({props: {avatar, caption, button}, bem});
+        super({avatar, caption, button});
+    }
+    protected _prepareBemParams ()
+    {
+        const bem : BemParams = {name: 'profileCard'};
+        return bem;
     }
     protected get _template () 
     {

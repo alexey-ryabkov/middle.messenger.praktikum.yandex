@@ -1,6 +1,6 @@
 import Templator from '@core/templator';
 import ComponentBlock from '@core/block/component';
-import {BemParams} from '@core/block/bem';
+import {BemCompParams, BemParams} from '@core/block/bem';
 import {BlockProps} from '@core/block';
 import Avatar from '@lib-components/avatar';
 import Caption, {CaptionSize, CaptionWeight} from '@lib-components/caption';
@@ -22,23 +22,6 @@ export default class ChatComponent extends ComponentBlock
 {
     constructor (props : ChatProps)
     {
-        const node = props?.tag ?? 'div';
-        const bem : BemParams = { 
-            name: 'chat', 
-            mix: { block: [[ 'icontainer', [['size', 'small']] ]] }, 
-            mods: { block: [] }
-        };  
-
-        if (props.isActive)
-        {
-            bem?.mods?.block?.push(['active']);
-            
-            bem?.mix?.block?.push([ 'icontainer', [['bg', 'grayLight']] ]);
-            bem?.mix?.block?.push([ 'icontainer', [['dropshadow']] ]);
-        }
-        else
-            bem?.mix?.block?.push([ 'icontainer', [['bg', 'glass']] ]);
-
         if (props.author)
         {
             props.msgAuthor = 'Вы';
@@ -52,13 +35,30 @@ export default class ChatComponent extends ComponentBlock
             size: CaptionSize.h3, 
             weight: CaptionWeight.Regular
         });
-
-        const chatProps = {avatar, caption, ...props};
-
         avatar.bemMix([ 'chat', 'avatar' ]);
         caption.bemMix([ 'chat', 'name' ]); 
 
-        super({ node, props: chatProps, bem });
+        super( {avatar, caption, ...props}, [], { node : props?.tag ?? 'div' });
+    }
+    protected _prepareBemParams (params : BemCompParams)
+    {
+        const props = params.props as ChatProps;
+        const bem : BemParams = { 
+            name: 'chat', 
+            mix: { block: [[ 'icontainer', [['size', 'small']] ]] }, 
+            mods: { block: [] }
+        };  
+        if (props.isActive)
+        {
+            bem?.mods?.block?.push(['active']);
+            
+            bem?.mix?.block?.push([ 'icontainer', [['bg', 'grayLight']] ]);
+            bem?.mix?.block?.push([ 'icontainer', [['dropshadow']] ]);
+        }
+        else
+            bem?.mix?.block?.push([ 'icontainer', [['bg', 'glass']] ]); 
+
+        return bem;
     }
     protected get _template () 
     {

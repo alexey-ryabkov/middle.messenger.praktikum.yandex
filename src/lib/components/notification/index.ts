@@ -1,7 +1,7 @@
 import Templator from '@core/templator';
 // import {BlockEvents} from '@core/block';
 import {BlockProps} from '@core/block';
-import {BemParams} from '@core/block/bem';
+import {BemCompParams, BemParams} from '@core/block/bem';
 import ComponentBlock from '@core/block/component';
 import Icon, {IconVar} from '@lib-components/icon';
 import tpl from './tpl.hbs';
@@ -33,22 +33,30 @@ export default class NotificationMsg extends ComponentBlock
 {
     constructor (props : NotificationProps)
     {
-        const bem : BemParams = { name: 'notification', mods: {block: []} };
-
         const {text, level} = props;
-
         let icon : Icon | null = null;
+
         if (level)
         {
             icon = new Icon({ variant: level2icon[level] }); 
             icon.bemMix([ 'notification', 'icon' ]);    
-            
-            if (bem?.mods?.block)
-            {
-                bem.mods.block.push([ 'lvl', level ]);
-            }
-        }        
-        super({ props: {text, icon}, bem });
+        }    
+        super({text, level, icon});
+    }
+    protected _prepareBemParams (params : BemCompParams)
+    {
+        const props = params.props as NotificationProps;
+        const {level} = props;
+
+        const bem : BemParams = { 
+            name: 'notification', 
+            mods: {block: []} 
+        };        
+        if (level && bem?.mods?.block)
+        {
+            bem.mods.block.push([ 'lvl', level ]);
+        }
+        return bem;
     }
     protected get _template () 
     {

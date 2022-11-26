@@ -1,6 +1,6 @@
 import Templator from '@core/templator';
 import ComponentBlock from '@core/block/component';
-import {BemParams} from '@core/block/bem';
+import {BemCompParams, BemParams} from '@core/block/bem';
 import {BlockProps, BlockEvents} from '@core/block';
 import tpl from './tpl.hbs';
 import './style.scss';
@@ -19,9 +19,7 @@ export default class Button extends ComponentBlock
 {
     constructor (props : ButtonProps, events? : BlockEvents)
     {
-        const attrs : { href? : string, name? : string} = {};
-        const bem : BemParams = { name: 'button', mods: {block: []} };
-
+        const attrs : { href? : string, name? : string} = {};        
         let node = 'button';
 
         if (props.isLink)
@@ -32,15 +30,24 @@ export default class Button extends ComponentBlock
         else if (props.name)
         {
             attrs.name = props.name;
-        }
+        }    
+        super(props, events, {node, attrs});
+    }
+    protected _prepareBemParams (params : BemCompParams)
+    {
+        const props = params.props as ButtonProps;
+        const bem : BemParams = { 
+            name: 'button', 
+            mods: {block: []} 
+        };
         ['importance', 'size', 'width'].forEach(mod => 
         {
             if (mod in props && bem?.mods?.block)
             {
                 bem.mods.block.push([ mod, props[mod] ]);
             }
-        });        
-        super({node, props, attrs, events, bem});
+        });   
+        return bem;
     }
     protected get _template () 
     {

@@ -1,6 +1,7 @@
 import Templator from '@core/templator';
-import ComponentBlock from '@core/block/component';
 import {BlockProps} from '@core/block';
+import ComponentBlock from '@core/block/component';
+import {BemCompParams, BemParams} from '@core/block/bem';
 import NotificationMsg, {NotificationLevel} from '@lib-components/notification';
 import {FormField} from '@core/types';
 import tpl from './tpl.hbs';
@@ -14,12 +15,15 @@ export default class FormFieldWrap extends ComponentBlock
 {
     constructor (props : FormFieldWrapProps)
     {
-        super({ 
-            props: FormFieldWrap._prepareProps(props), 
-            bem: { 
-                name: '_formFieldWrap', 
-                mix: { block: [['form', 'fieldWrap']] }
-            }});
+        super( FormFieldWrap._prepareProps(props) );
+    }
+    protected _prepareBemParams ()
+    {
+        const bem : BemParams = { 
+            name: '_formFieldWrap', 
+            mix: { block: [['form', 'fieldWrap']] }
+        };
+        return bem;
     }
     setProps (nextProps: Partial< FormFieldWrapProps >)
     {

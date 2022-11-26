@@ -1,6 +1,7 @@
 import Templator from '@core/templator';
+import {BemCompParams, BemParams} from '@core/block/bem';
 import ComponentBlock from '@core/block/component';
-import MessageComponent, { MessageProps } from './components/message';
+import MessageComponent, {MessageProps} from './components/message';
 import InputText from '@lib-components/input-text';
 import IconButton from '@lib-components/icon_button';
 import Icon, {IconVar} from '@lib-components/icon';
@@ -39,22 +40,26 @@ export default class MessagesModule extends ComponentBlock
         
         const inputSend = new InputText({ 
             name: 'message', 
-            placeholder: 'Сообщение' 
-
+            placeholder: 'Сообщение',
+            label: '', 
         }, [ 'keyup', () => console.log('type in message') ]);
 
-        const props = {
+        inputSend.bemMix([ '_messages', 'messageField' ]);
+        buttonSend.bemMix([ '_messages', 'messageSubmit' ]);
+        buttonAttach.bemMix([ '_messages', 'attachmentButton' ]);
+
+        super({
             messagesDay: 'Сегодня',
             messages, 
             inputSend, 
             buttonSend, 
             buttonAttach
-        };
-        inputSend.bemMix([ '_messages', 'messageField' ]);
-        buttonSend.bemMix([ '_messages', 'messageSubmit' ]);
-        buttonAttach.bemMix([ '_messages', 'attachmentButton' ]);
-
-        super({ props, bem: {name: '_messages'} });
+        });
+    }
+    protected _prepareBemParams ()
+    {
+        const bem : BemParams = {name: '_messages'};
+        return bem;
     }
     protected get _template () 
     {

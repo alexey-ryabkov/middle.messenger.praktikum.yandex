@@ -1,6 +1,6 @@
 import Templator from '@core/templator';
 import {BlockProps} from '@core/block';
-import {BemParams} from '@core/block/bem';
+import {BemCompParams, BemParams} from '@core/block/bem';
 import ComponentBlock from '@core/block/component';
 import tpl from './tpl.hbs';
 import './style.scss';
@@ -17,8 +17,16 @@ export default class Spinner extends ComponentBlock
 {
     constructor (props : SpinnerProps = {})
     {
+        super(props);
+    }
+    protected _prepareBemParams (params : BemCompParams)
+    {
+        const props = params.props as SpinnerProps;
+        const bem : BemParams = { 
+            name: 'spinner', 
+            mods: {block: []}
+        };
         const {size, color = 'light', centered} = props;
-        const bem : BemParams = { name: 'spinner', mods: {block: []} };
 
         if (bem?.mods?.block)
         {
@@ -31,8 +39,8 @@ export default class Spinner extends ComponentBlock
                 bem.mods.block.push([ 'centered' ]);
             }
             bem.mods.block.push([ 'color', color ]);
-        }
-        super({ bem });
+        } 
+        return bem;
     }
     protected get _template () 
     {

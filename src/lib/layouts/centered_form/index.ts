@@ -1,10 +1,12 @@
 import {App} from '@core/types';
 import Templator from '@core/templator';
+import {BemParams} from '@core/block/bem';
 import Layout, {LayoutProps} from '@core/layout';
 import Caption, {CaptionSize} from '@lib-components/caption';
 import { BlockEvents } from '@core/block';
 import tpl from './tpl.hbs';
 import './style.scss';
+
 
 export type CenteredFormLayoutProps = LayoutProps & 
 {
@@ -19,12 +21,13 @@ export default class CenteredFormLayout extends Layout
         caption.bemMix(['_centeredFormLayout', 'caption']);
         props.caption = caption;
 
-        super(app, { 
-            props, 
-            events, 
-            bem: {name: '_centeredFormLayout'} 
-        });
-    } 
+        super(app, props, events);
+    }
+    protected _prepareBemParams ()
+    {
+        const bem : BemParams = {name: '_centeredFormLayout'};
+        return bem;
+    }
     protected get _template () 
     {
         return new Templator(tpl); 

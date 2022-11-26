@@ -1,7 +1,6 @@
 import {App, AppContainer} from '@core/types';
 import {BlockProps, BlockEvents} from '@core/block';
-import {BemCompParams} from '@core/block/bem';
-import ComponentBlock from '@core/block/component';
+import ComponentBlock, {ComponentParams} from '@core/block/component';
 import Block from '@core/block';
 import {plural2Arr} from '@lib-utils-kit';
 
@@ -12,19 +11,21 @@ export default abstract class Layout extends ComponentBlock
     protected _container : AppContainer;
     protected _events : BlockEvents;
     
-    constructor (app : App, params : BemCompParams)
+    constructor (
+        app : App, 
+        props? : LayoutProps, 
+        events : BlockEvents = [], 
+        params : ComponentParams = {})
     {
         params.node = app.root; 
-        super(params);
+
+        super(props, events, params);
 
         this._container = app.container;
-
-        if (params.events)
-        {
-            this._events = params.events;
-        }
+        this._events = events;
     }
-    set areas (areas : Record< string, Block | string >) // layout areas, for example {content: ..., sidebar: ...}
+    // layout areas, for example {content: ..., sidebar: ...}
+    set areas (areas : Record< string, Block | string >) 
     {
         this.setProps({areas}); 
     }

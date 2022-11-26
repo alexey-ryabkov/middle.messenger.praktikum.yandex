@@ -1,5 +1,6 @@
 import {App} from '@core/types';
 import Templator from '@core/templator';
+import {BemParams} from '@core/block/bem';
 import Layout, {LayoutProps} from '@core/layout';
 import Caption from '@lib-components/caption';
 import tpl from './tpl.hbs';
@@ -23,8 +24,13 @@ export default class CenteredMsgLayout extends Layout
 
         props.caption = caption;
 
-        super(app, { props, bem: {name: '_centeredMsgLayout'} });
+        super(app, props);
     } 
+    protected _prepareBemParams ()
+    {
+        const bem : BemParams = {name: '_centeredMsgLayout'};
+        return bem;
+    }
     protected get _template () 
     {
         return template; 

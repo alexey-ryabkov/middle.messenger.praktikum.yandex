@@ -1,9 +1,20 @@
-import { Field } from "@core/types";
+import EventBus from "@core/event_bus";
+import { Field, PlainObject } from "@core/types";
+
+export type AppStoreScheme = 
+{    
+    currentUser: ChatUserFields | null,
+    chats: PlainObject< ChatFields >, 
+    openedChat: number | null
+    chatUsers: PlainObject< ChatUserFields >,
+};
+
+// ----------- user
 
 export type ChatUserProfile =
 {
     login : string,
-    avatar : string,
+    avatar : string | null,
     nickname : string,
     first_name : string,
     second_name : string,    
@@ -20,106 +31,132 @@ export type CurrentUserFields = ChatUserFields &
 };
 export type UserField = Field &
 {
-    name : keyof Exclude< CurrentUserFields, 'id' >,
+    name : keyof Omit< CurrentUserFields, 'id' >,
 }; 
-export const userFields : UserField[] = [
-    {
-        name: 'nickname',
-        label: 'Никнейм'
-    }
-];
 
+export type RegistrateData = Omit< CurrentUserFields, 'avatar' | 'nickname' | 'id' >;
+export type AuthorizeData = { login: string, password: string };
+export type ChangeAuthData = { login: string, oldPassword: string, newPassword: string };
+export type ProfileData = Omit< ChatUserProfile, 'login' >;
 
-// export interface UserApi
-// {
-//     registrate (data : Exclude< ProfileFields, 'avatar' >) : number | null;
-//     setProfile (data : ProfileFields) : void; // только тут без пароля и логина. получается тип нужно назвать InfoFields
+export interface AuthUserApi
+{
+    registrate (data : RegistrateData) : Promise< number >;
+    authorize (data : AuthorizeData) : Promise< void >;
+    changeAuthData (data : ChangeAuthData) : Promise< void >;
+    logout () : Promise< void >;
+}
+export interface ChatUserApi
+{
+    search (login : string) : Promise< ChatUserFields[] >;
+    getProfileByID (userID : number) : Promise< ChatUserFields >;
+}
+export interface UserProfileApi
+{
+    setProfile (data : ProfileData) : Promise< void >;
+    getProfile () : Promise< ChatUserFields >;
+}
 
-//     authorize (data : Pick< AllFields, 'login' | 'password' >) : void; // login : string, password : string
-//     changeAuthData () : void;
-//     logout () : void;
+// ----------- messages
 
-//     getInfo () : AllFields;   
-//     // // или сделать 2 типа с наследованием один от другого
-//     search (phrase : string) : void;
+/* {
+    image : string,
+    name : string,
+    isOpened : boolean,
+    datetime? : string,
+    msg? : string,
+    author : 'you' | null,
+    tag? : string,
+    newMsgCnt? : number
+}; */
 
-//     // TODO а что насчет прочих пользователей 
-// }
-/*
+/* {
+    msg : string,
+    datetime : string,    
+    of : 'you' | 'chat',
+    type? : MessageTypes,
+}; */
 
-AuthUserApi
--regisrate
--authorize
--changeAuthData
--logout
-ChatUserApi
--search
--getInfo
-UserInfoApi
--setProfile
--getProfile
+export type MessageFile = {
+    id : number,
+    user_id : number,
+    path : string,
+    filename : string,
+    content_type : string,
+    content_size : number,
+    upload_date : string,
+};
+
+export type MessageType = 'message' | 'file' | 'sticker';
+export type Message = 
+{
+    id : number,
+    userId : number,
+    datetime : Date,
+    type?: MessageType,
+    content : string,   
+    file? : MessageFile | null,      
+}; 
+export type ChatMessage = Message &
+{
+    chatId : number,
+    isRead: boolean,
+};
+
+export interface MessengerApi extends EventBus
+{
+    send (content : string, type : MessageType) : Promise< void >;
+    getHistory (offset : number) : Promise< ChatMessage[] >;
+}
+
+export enum MessengerEvents {
+    opened = 'opened',
+    userConnected = 'userConnected',
+    message = 'message',
+    history = 'history',
+    // msgError = 'msgError',
+    closed = 'closed',
+    error = 'error',
+}
+
+// ----------- chat
+
+export type ChatFields = 
+{
+    id : number,
+    createdBy : number,
+    avatar : string | null,
+    title : string,
+    unreadCnt : number,
+    lastMessage : Message | null,
+    members: number[],
+}
+export interface ChatsListApi
+{
+    addUserChat (userId : number, name : string) : Promise< number >;
+    addGroupChat (name : string) : Promise< number >;
+    deleteChat (id : number) :  Promise< void >; // Pick< ChatFields, 'id' | 'userId' >
+    getChatsList () : Promise< ChatFields[] >;
+}
+export interface ChatApi
+{
+    getUsers (chatId : number) : Promise< ChatUserFields[] >;
+    getChatToken (chatId : number) : Promise< string >;
+    getNewMsgCnt (chatId : number) : Promise< number >;
+}
+
+/* 
+для юзер чатов если изменился пользователь, то меняется и инфа по чату (картинка, название)
 
 */
 
 
-// formFields: [                
-//     [
-//         new InputImage({
-//             name: 'avatar',
-//             label: 'Аватар',
-//             image: userProfile.image
-//         })
-//     ], [
-//         new InputText({
-//             name: 'nickname',
-//             label: 'Никнейм',   
-//             value: userProfile.nickname                 
-//         }),
-//         [
-//             [ InputText.validationEvents, isEmptyValidator ],
-//         ]
-//     ], [
-//         new InputText({
-//             name: 'phone',
-//             label: 'Телефон',   
-//             value: userProfile.phone                 
-//         }),
-//         [
-//             [ InputText.validationEvents, isEmptyValidator ],
-//             [ InputText.validationEvents, phoneValidator ],
-//             [ InputText.validationEvents, lengthValidator, [10, 15] ],
-//         ]
-//     ], [
-//         new InputText({
-//             name: 'email',
-//             label: 'Почта',   
-//             value: userProfile.email                 
-//         }),
-//         [
-//             [ InputText.validationEvents, isEmptyValidator ],
-//             [ InputText.validationEvents, emailValidator ],
-//         ]
-//     ], [
-//         new InputText({
-//             name: 'first_name',
-//             label: 'Имя',   
-//             value: userProfile.first_name                 
-//         }),
-//         [
-//             [ InputText.validationEvents, isEmptyValidator ],
-//             [ InputText.validationEvents, nameValidator ],
-//         ]
-//     ], [
-//         new InputText({
-//             name: 'last_name',
-//             label: 'Фамилия',   
-//             value: userProfile.last_name                 
-//         }),
-//         [
-//             [ InputText.validationEvents, isEmptyValidator ],
-//             [ InputText.validationEvents, nameValidator ],
-//         ]
-//     ]],
+
+// MsgWsApi
+
+
+
+
 
 /* 
 

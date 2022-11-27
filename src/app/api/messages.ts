@@ -1,69 +1,10 @@
 import EventBus from "@core/event_bus";
+import { ChatMessage, Message, MessageType, MessengerApi, MessengerEvents } from "@models/types";
 
 const API_HOST = 'wss://ya-praktikum.tech';
 const API_BASE_URL = `${API_HOST}/ws/chats`;
 
-/* {
-    image : string,
-    name : string,
-    isOpened : boolean,
-    datetime? : string,
-    msg? : string,
-    author : 'you' | null,
-    tag? : string,
-    newMsgCnt? : number
-}; */
-
-/* {
-    msg : string,
-    datetime : string,    
-    of : 'you' | 'chat',
-    type? : MessageTypes,
-}; */
-
-type MessageFile = {
-    id : number,
-    user_id : number,
-    path : string,
-    filename : string,
-    content_type : string,
-    content_size : number,
-    upload_date : string,
-};
-
-type MessageType = 'message' | 'file' | 'sticker';
-type Message = 
-{
-    id : number,
-    userId : number,
-    datetime : Date,
-    type: MessageType,
-    content : string,   
-    file? : MessageFile | null,      
-}; 
-type HistoryMessage = Message &
-{
-    chatId : number,
-    isRead: boolean,
-};
-
-export interface MsgApi extends EventBus
-{
-    send (content : string, type : MessageType) : Promise< void >;
-    getHistory (offset : number) : Promise< HistoryMessage[] >;
-}
-
-export enum MsgApiEvents {
-    opened = 'opened',
-    userConnected = 'userConnected',
-    message = 'message',
-    history = 'history',
-    // msgError = 'msgError',
-    closed = 'closed',
-    error = 'error',
-}
-// MsgWsApi
-export default class MessagesApi extends EventBus implements MsgApi
+export default class Messenger extends EventBus implements MessengerApi
 {
     protected static readonly MANUALLY_CLOSE_CODE = 1000;    
     protected static readonly AWAIT_WS_RESULT_TIME = 3000;
@@ -112,10 +53,10 @@ export default class MessagesApi extends EventBus implements MsgApi
     {
         if (this.isOpened) 
         {   
-            let resolver : (history : HistoryMessage[]) => void;
+            let resolver : (history : ChatMessage[]) => void;
             let rejecter : (error : string) => void;
 
-            const history = new Promise< HistoryMessage[] >((resolve, reject) => 
+            const history = new Promise< ChatMessage[] >((resolve, reject) => 
             {
                 this._socket.send(JSON.stringify(
                 {
@@ -126,18 +67,18 @@ export default class MessagesApi extends EventBus implements MsgApi
                 rejecter = reject;
             });
             
-            const historyHandler = (history : HistoryMessage[]) =>
+            const historyHandler = (history : ChatMessage[]) =>
             {
                 resolver(history);
             };
-            this.oneTime(MsgApiEvents.history, historyHandler);
+            this.oneTime(MessengerEvents.history, historyHandler);
 
             setTimeout(() => 
             {
                 rejecter('get-history timeout');
-                this.off(MsgApiEvents.history, historyHandler);
+                this.off(MessengerEvents.history, historyHandler);
             }, 
-            MessagesApi.AWAIT_WS_RESULT_TIME);
+            Messenger.AWAIT_WS_RESULT_TIME);
 
             return history;
         }
@@ -151,14 +92,14 @@ export default class MessagesApi extends EventBus implements MsgApi
 
         if (this.isOpened) 
         {
-            this._socket.close(MessagesApi.MANUALLY_CLOSE_CODE, 'manually closed');
+            this._socket.close(Messenger.MANUALLY_CLOSE_CODE, 'manually closed');
         }
     }    
     protected _setupEvents ()
     {
         this._socket.addEventListener('open', () => 
         {
-            this.emit(MsgApiEvents.opened);
+            this.emit(MessengerEvents.opened);
         }); 
         this._socket.addEventListener('message', event => 
         {
@@ -170,28 +111,28 @@ export default class MessagesApi extends EventBus implements MsgApi
 
                 if (Array.isArray(data))
                 {
-                    const messages : HistoryMessage[] = [];
+                    const messages : ChatMessage[] = [];
 
-                    data.forEach( dataItem => messages.push( MessagesApi._processHistoryMessage(dataItem) as HistoryMessage ));
+                    data.forEach( dataItem => messages.push( Messenger._processChatMessage(dataItem) ));
 
-                    this.emit(MsgApiEvents.history, messages);
+                    this.emit(MessengerEvents.history, messages);
                 }
                 else
                     switch (data.type)
                     {
                         case 'user connected':
-                            this.emit(MsgApiEvents.userConnected, {userId: +data.content});    
+                            this.emit(MessengerEvents.userConnected, {userId: +data.content});    
                             break;
 
                         case 'message':
                         case 'file':
                         case 'sticker':
                             // console.log(data);
-                            this.emit( MsgApiEvents.message, MessagesApi._processMessage(data) as Message );                          
+                            this.emit( MessengerEvents.message, Messenger.processMessage(data) );                          
                             break;
 
                         case 'error':
-                            this.emit(MsgApiEvents.error, data.content);
+                            this.emit(MessengerEvents.error, data.content);
                             break;
 
                         case 'pong':
@@ -203,26 +144,26 @@ export default class MessagesApi extends EventBus implements MsgApi
                             break;
                     }
             } catch {
-                this.emit(MsgApiEvents.error, 'bad json message recieved');
+                this.emit(MessengerEvents.error, 'bad json message recieved');
             }
         });  
         this._socket.addEventListener('close', event => 
         {
             if (!event.wasClean) 
             {
-                console.warn(`Disconnected. Code: ${event.code}, reason: ${event.reason}. Restart in ${MessagesApi.RECONNECT_DELAY}ms`);
-                this._restartTimer = window.setTimeout(() => this.open(), MessagesApi.RECONNECT_DELAY);
+                console.warn(`Disconnected. Code: ${event.code}, reason: ${event.reason}. Restart in ${Messenger.RECONNECT_DELAY}ms`);
+                this._restartTimer = window.setTimeout(() => this.open(), Messenger.RECONNECT_DELAY);
             } 
             else
             {
                 console.log('closed', event); // 
-                this.emit(MsgApiEvents.closed);
+                this.emit(MessengerEvents.closed);
             }
         });
         this._socket.addEventListener('error', error => 
         {
             console.log('error', error); // 
-            this.emit(MsgApiEvents.error, error);
+            this.emit(MessengerEvents.error, error);
         });
     }
     protected _ping ()
@@ -236,24 +177,24 @@ export default class MessagesApi extends EventBus implements MsgApi
                 }));
                 this._ping();
             }, 
-            MessagesApi.PING_DELAY);
+            Messenger.PING_DELAY);
         }
     }
-    protected static _processMessage (data : any)
+    static processMessage (data : any)
     {
         const {user_id: userId, time, ...messageData} = data;
         const datetime = new Date(time);
 
-        return {...messageData, userId, datetime};
+        return {...messageData, userId, datetime} as Message;
     }
-    protected static _processHistoryMessage (data : any)
+    protected static _processChatMessage (data : any)
     {
-        const {chat_id: chatId, is_read: isRead, ...messageData} = MessagesApi._processMessage(data);
+        const {chat_id: chatId, is_read: isRead, ...messageData} = data;
 
-        return {...messageData, chatId, isRead};
+        return {...Messenger.processMessage(messageData), chatId, isRead} as ChatMessage;
     }
 }
-window.messagesApi = MessagesApi;
+window.messagesApi = Messenger;
 
 
 // Promise ((resolve, reject)

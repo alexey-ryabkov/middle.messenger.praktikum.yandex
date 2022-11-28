@@ -2,7 +2,7 @@ import {ChatUserFields} from "@models/types";
 
 export default class ChatUser implements ChatUserFields
 {
-    avatar : string;    
+    avatar : string | null;    
     first_name : string;
     second_name : string;    
     email : string;
@@ -17,12 +17,13 @@ export default class ChatUser implements ChatUserFields
         ({
             id : this._id,
             login : this._login,
-            avatar : this.avatar = '',            
+            avatar : this.avatar = null,            
             first_name : this.first_name = '',
             second_name : this.second_name = '',
             email : this.email = '',
             phone : this.phone = '',
             nickname : this._nickname = '',
+            
         } = fields);
     }
     get id ()

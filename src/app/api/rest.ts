@@ -1,28 +1,23 @@
-import SurChat from "@app";
-import Http, {HttpOptsFull, Methods} from "@core/http";
 import {PlainObject} from "@core/types";
-// import {ApiError} from "@models/types";
-// import {isJsonString} from "@lib-utils-kit";
+import Http, {HttpOptsFull, Methods} from "@core/http";
+import SurChat from "@app";
+import {AppError} from "@models/types";
+import {createAppError} from "@app-utils-kit"
 
 const API_HOST = 'https://ya-praktikum.tech';
 const API_BASE_URL = `${API_HOST}/api/v2`;
 
-export type RestApiError = Error &
-{
-    cause: {code : number, msg : string}
-}
-export function apiErrorHandler (error : RestApiError) 
+export function apiErrorHandler (error : AppError) 
 {
     const {code, msg} = error.cause;
 
     if (401 == code)
     {
-        SurChat.instance.store.set('current_user', null); 
+        SurChat.instance.store.set('currentUser', null); 
     }
     else 
         console.error(code, `rest api: ${msg}`);
 }
-// export default 
 class RestApi extends Http
 {
     constructor (apiPath = '') 
@@ -41,24 +36,25 @@ class RestApi extends Http
             responseType: 'json',
             headers: {}
         }
-        // options.headers['accept'] = 'application/json';
+        // TODO form data for avatar
+        // TODO options.headers['accept'] = 'application/json';
 
         if (data)
         {
             if (!isFormData)
             {
                 options.data = JSON.stringify(data);
+                // TODO
                 options.headers['content-type'] = 'application/json; charset=utf-8';
             }
             else
                 options.data = data;
         }
-
         return super._request(url, options)
                         .then(xhr => xhr.response)
                         .catch(error => 
                         {
-                            // TODO в эту конструкцию также вещи типа http request aborted 
+                            // TODO use createAppError for http request aborted 
                             let code = error.cause?.code || 0;
                             let msg = error?.cause?.response?.reason;
                             const addError = error?.cause?.response?.error;
@@ -89,9 +85,10 @@ class RestApi extends Http
                             {
                                 msg += ` (${addError})`;
                             }
+                            // TODO get out this after dbg
                             console.error(code, `(temporary console error) rest api: ${msg}`);
 
-                            throw new Error(`rest api: ${msg}`, {cause: {code, msg}}) as RestApiError;
+                            throw createAppError(msg, code, 'rest api');
                         });
     }
 }

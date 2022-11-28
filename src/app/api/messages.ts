@@ -1,8 +1,18 @@
+import {AppError, AppErrorCode, ChatMessage, Message, MessageType, MessengerApi} from "@models/types";
 import EventBus from "@core/event_bus";
-import { ChatMessage, Message, MessageType, MessengerApi, MessengerEvents } from "@models/types";
+import {createAppError} from "@app-utils-kit";
 
 const API_HOST = 'wss://ya-praktikum.tech';
 const API_BASE_URL = `${API_HOST}/ws/chats`;
+
+export enum MessengerEvents {
+    opened = 'opened',
+    userConnected = 'userConnected',
+    message = 'message',
+    history = 'history',
+    closed = 'closed',
+    error = 'error',
+}
 
 export default class Messenger extends EventBus implements MessengerApi
 {
@@ -47,6 +57,7 @@ export default class Messenger extends EventBus implements MessengerApi
         {
             this._socket.send( JSON.stringify({ content, type }) );
         }
+        // TODO check success by message event 
         return Promise.resolve();
     }
     getHistory (offset = 0)
@@ -54,7 +65,7 @@ export default class Messenger extends EventBus implements MessengerApi
         if (this.isOpened) 
         {   
             let resolver : (history : ChatMessage[]) => void;
-            let rejecter : (error : string) => void;
+            let rejecter : (error : AppError) => void;
 
             const history = new Promise< ChatMessage[] >((resolve, reject) => 
             {
@@ -75,15 +86,15 @@ export default class Messenger extends EventBus implements MessengerApi
 
             setTimeout(() => 
             {
-                rejecter('get-history timeout');
-                this.off(MessengerEvents.history, historyHandler);
+                rejecter( createAppError('get-history timeout', AppErrorCode.wsApi, 'Messenger api') );
+                this.off( MessengerEvents.history, historyHandler );
             }, 
             Messenger.AWAIT_WS_RESULT_TIME);
 
             return history;
         }
         else
-            return Promise.reject('no active socket for get-history');
+            return Promise.reject( createAppError('no active socket for get-history', AppErrorCode.wsApi, 'Messenger api') );
     }
     close ()
     {
@@ -195,19 +206,3 @@ export default class Messenger extends EventBus implements MessengerApi
     }
 }
 window.messagesApi = Messenger;
-
-
-// Promise ((resolve, reject)
-// {
-//     MessagesApi.send();
-//     MessagesApi
-//         .on('message', ()
-//         {
-//             // проверяем соответствие контента 
-//             // и тогда ресолвим как отправленное
-//         })
-//         .on('msgError', ()
-//         {
-//             // если приходит такая отбивка и сообщение не приходит как доставленное
-//         })
-// })

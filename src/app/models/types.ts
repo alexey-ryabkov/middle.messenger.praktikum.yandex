@@ -1,15 +1,13 @@
+import {Field, PlainObject} from "@core/types";
 import EventBus from "@core/event_bus";
-import { Field, PlainObject } from "@core/types";
 
 export type AppStoreScheme = 
 {    
     currentUser: ChatUserFields | null,
     chats: PlainObject< ChatFields >, 
-    openedChat: number | null
+    openedChat: string | null,
     chatUsers: PlainObject< ChatUserFields >,
 };
-
-// ----------- user
 
 export type ChatUserProfile =
 {
@@ -33,7 +31,6 @@ export type UserField = Field &
 {
     name : keyof Omit< CurrentUserFields, 'id' >,
 }; 
-
 export type RegistrateData = Omit< CurrentUserFields, 'avatar' | 'nickname' | 'id' >;
 export type AuthorizeData = { login: string, password: string };
 export type ChangeAuthData = { login: string, oldPassword: string, newPassword: string };
@@ -57,26 +54,6 @@ export interface UserProfileApi
     getProfile () : Promise< ChatUserFields >;
 }
 
-// ----------- messages
-
-/* {
-    image : string,
-    name : string,
-    isOpened : boolean,
-    datetime? : string,
-    msg? : string,
-    author : 'you' | null,
-    tag? : string,
-    newMsgCnt? : number
-}; */
-
-/* {
-    msg : string,
-    datetime : string,    
-    of : 'you' | 'chat',
-    type? : MessageTypes,
-}; */
-
 export type MessageFile = {
     id : number,
     user_id : number,
@@ -86,7 +63,6 @@ export type MessageFile = {
     content_size : number,
     upload_date : string,
 };
-
 export type MessageType = 'message' | 'file' | 'sticker';
 export type Message = 
 {
@@ -102,24 +78,11 @@ export type ChatMessage = Message &
     chatId : number,
     isRead: boolean,
 };
-
 export interface MessengerApi extends EventBus
 {
     send (content : string, type : MessageType) : Promise< void >;
     getHistory (offset : number) : Promise< ChatMessage[] >;
 }
-
-export enum MessengerEvents {
-    opened = 'opened',
-    userConnected = 'userConnected',
-    message = 'message',
-    history = 'history',
-    // msgError = 'msgError',
-    closed = 'closed',
-    error = 'error',
-}
-
-// ----------- chat
 
 export type ChatFields = 
 {
@@ -129,74 +92,31 @@ export type ChatFields =
     title : string,
     unreadCnt : number,
     lastMessage : Message | null,
-    members: number[],
+    members : number[],
+    token : string,
 }
 export interface ChatsListApi
 {
     addUserChat (userId : number, name : string) : Promise< number >;
     addGroupChat (name : string) : Promise< number >;
-    deleteChat (id : number) :  Promise< void >; // Pick< ChatFields, 'id' | 'userId' >
+    deleteChat (id : number) :  Promise< void >;
     getChatsList () : Promise< ChatFields[] >;
 }
 export interface ChatApi
 {
     getUsers (chatId : number) : Promise< ChatUserFields[] >;
-    getChatToken (chatId : number) : Promise< string >;
     getNewMsgCnt (chatId : number) : Promise< number >;
 }
 
-/* 
-для юзер чатов если изменился пользователь, то меняется и инфа по чату (картинка, название)
-
-*/
-
-
-
-// MsgWsApi
-
-
-
-
-
-/* 
-
-@todo надо связать это с уже написанными валидаторами
-только теперь значение берется не из поля
-а из объекта
-
-type ProfileFields
+export enum AppErrorCode
 {
-    first_name : string,
-    phone : string,
-    ...
+    default = 666,
+    restApi,
+    wsApi,
+    user,
+    // TODO 
 }
-этот тип в интерфейс UserApi
-
-type FieldDef
+export type AppError = Error &
 {
-    name : string, in ProfileFields
-    label : string,
-    validators : () => boolean,
-    value : string
-} 
-отличается от FormField который интерфейс для блоков полей формы 
-является для него родителем 
-
-ниже прописать статикой (или в json вынести)
-UserFields
-
-это использовать на page-ах 
-user.getField('login').validators
-
-для возврата profile
-getFields(['nickname', ...])
-а модуль сам сможет взять 
-nickname, avatar
-
-только берет он из стора 
-
-оптимизировать не только обновление пропсов но и запросы к апи чтоб не шли при каждой отрисовке 
-
-*/
-
-// Pick< ProfileFields, 'login' | 'password' >
+    cause: {code : number, msg : string}
+}

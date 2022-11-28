@@ -1,10 +1,7 @@
-import {isJsonString} from '@lib-utils-kit'
-
 export function httpQueryStringify (data : Record< string, any >) 
 {
     return Object.entries(data).map( ([key, value]) => `${key}=${value}` ).join('&');
 }
-
 export enum Methods {
     GET = 'GET',
     PUT = 'PUT',
@@ -16,7 +13,6 @@ export type HttpOpts =
     data? : any,
     headers? : Record< string, string >,
     timeout? : number,
-    // dataType?: 'json' | 'formdata',
     responseType?: 'json' | 'text' | 'document' | 'blob' | 'arraybuffer',
     credentials?: boolean,
 }
@@ -73,13 +69,8 @@ export default class Http
             xhr.responseType = responseType;
             xhr.withCredentials = credentials;
 
-            //  'accept: application/json'
-            // TODO
-
             xhr.onload = () => 
             {
-                // console.log(xhr);                
-
                 if (xhr.status >= 400)
                 {
                     const errorText = xhr.statusText;
@@ -98,19 +89,6 @@ export default class Http
             {
                 Object.entries(headers).forEach(([name, value]) => xhr.setRequestHeader(name, value));
             }
-
-            // if ('json' == dataType)
-            // {
-            //     xhr.setRequestHeader('content-type', 'application/json; charset=utf-8');
-            // }
-            // else if ('formdata' == dataType)
-            // {
-            //     xhr.setRequestHeader('content-type', 'multipart/form-data');
-            // }
-            // if (typeof data == 'string' && data.length && isJsonString(data)) 
-            // {
-            //     xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-            // }
 
             if (!isGetMethod)
             {

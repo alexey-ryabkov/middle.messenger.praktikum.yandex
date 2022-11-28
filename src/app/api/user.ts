@@ -1,7 +1,7 @@
+import { PlainObject } from "@core/types";
 import {AuthUserApi, ChatUserApi, UserProfileApi, 
     RegistrateData, AuthorizeData, ChangeAuthData, ProfileData, ChatUserFields} from "@models/types"; 
 import {restAuthApi, restUsersApi} from "@api/rest";
-import { PlainObject } from "@core/types";
 
 export class UserApi implements AuthUserApi, ChatUserApi, UserProfileApi
 {
@@ -58,6 +58,7 @@ export class UserApi implements AuthUserApi, ChatUserApi, UserProfileApi
 
                         // if (profile.avatar != avatar)
 
+                        // TODO
                         // return Promise.all([
                         //     restUsersApi.put('/profile', profileData),
                         //     restUsersApi.put('/profile/avatar', avatar)

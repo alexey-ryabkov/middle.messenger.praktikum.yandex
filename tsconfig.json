@@ -17,19 +17,27 @@
 
         "baseUrl": "./src",
         "paths": {
+            "@core/block": ["lib/core/block"],
+            "@core/*": ["lib/core/*"],
+
+            "@lib-modules/*": ["lib/modules/*"],
+            "@lib-layouts/*": ["lib/layouts/*"],
+            "@lib-components/*": ["lib/components/*"],
+            "@lib-utils-kit": ["lib/utils"],
+            "@lib-utils/*": ["lib/utils/*"],
+
             "@app": ["app"],
+            "@app-modules/*": ["app/modules/*"],
+            "@app-layouts/*": ["app/layouts/*"],
+            "@app-components/*": ["app/components/*"],      
+            "@app-utils-kit": ["app/utils"],
+            "@app-utils/*": ["app/utils/*"],
+
+            "@actions": ["app/actions"],
             "@data/*": ["app/dummy_data/*"],
             "@pages": ["app/pages"],
             "@api/*": ["app/api/*"],
-            "@models/*": ["app/models/*"],
-            "@core/block": ["lib/core/block"],
-            "@core/*": ["lib/core/*"],
-            "@app-modules/*": ["app/modules/*"],
-            "@lib-modules/*": ["lib/modules/*"],
-            "@lib-layouts/*": ["lib/layouts/*"],
-            "@lib-components/*": ["lib/components/*"],                  
-            "@lib-utils-kit": ["lib/utils"],
-            "@lib-utils/*": ["lib/utils/*"]
+            "@models/*": ["app/models/*"]            
         } 
     },
     "exclude": [

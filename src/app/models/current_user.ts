@@ -69,6 +69,10 @@ export default class CurrentUser
         const user = this._app.storeState.currentUser;
         return user ? new ChatUser(user) : null;
     }
+    get isAuthorized ()
+    {
+        return !!this.data;
+    }
     static getField (name : string)
     {
         // TODO

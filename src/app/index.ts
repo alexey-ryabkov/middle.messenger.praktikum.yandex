@@ -25,6 +25,7 @@ export default class SurChat implements App
     protected _store : Store;
     protected _chatsList : ChatsList;
     protected _user : CurrentUser;
+    protected _isUserDefined = false;
 
     private static _instance : SurChat;
 
@@ -42,6 +43,11 @@ export default class SurChat implements App
             chatUsers: {},
         };
         this._store = new Store(initState, `${SurChat.NAME} store`);
+
+        this._store.oneTime(Store.getEventName4path('currentUser'), user => 
+        {
+            return this._isUserDefined = !!user;
+        });
 
         this._user = new CurrentUser(this);
         this._chatsList = new ChatsList(this); 
@@ -77,7 +83,7 @@ export default class SurChat implements App
     }
     get isUserAuthorized ()
     {
-        return !!this.user.data;
+        return this.user.isAuthorized;
     }
     get chatsList ()
     {
@@ -121,11 +127,11 @@ export default class SurChat implements App
         {
             return false;
         } 
-        if (!this.isUserAuthorized && page.access == PageAccess.authorized)
+        if (!this._isUserDefined && page.access == PageAccess.authorized)
         {
             return this._router.go( Page.url( SurChat.AUTH_PAGE_NAME ));
         }
-        else if (this.isUserAuthorized && page.access == PageAccess.nonAuthorized)
+        else if (this._isUserDefined && page.access == PageAccess.nonAuthorized)
         {
             return this._router.go( Page.url( SurChat.CHAT_PAGE_NAME ));
         }
@@ -151,19 +157,17 @@ export default class SurChat implements App
     }
     protected _prepareAuthRedirects ()
     {
-        // Store.getEventName4path('currentUser')
-        // 'updated:currentUser'
-        this._store.on(StoreEvents.updated, user => 
+        this._store.on(Store.getEventName4path('currentUser'), user => 
         {
-            console.log('that`s it');
-            if (this.isUserAuthorized && null === user)
+            if (this._isUserDefined && null === user)
             {
                 this._router.go( Page.url( SurChat.AUTH_PAGE_NAME ));
             }
-            else if (!this.isUserAuthorized && user)
+            else if (!this._isUserDefined && user)
             {
                 this._router.go( Page.url( SurChat.CHAT_PAGE_NAME ));
             }
+            this._isUserDefined = !!user;
         });
     }
 }

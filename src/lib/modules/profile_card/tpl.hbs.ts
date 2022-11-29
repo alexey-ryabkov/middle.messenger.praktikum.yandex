@@ -1,5 +1,5 @@
 export default `
 {{{avatar}}}
 {{{caption}}}
-{{{button}}}
+{{{menu}}}
 `.trim();

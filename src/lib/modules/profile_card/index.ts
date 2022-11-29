@@ -1,42 +1,37 @@
 import Templator from '@core/templator';
 import ComponentBlock from '@core/block/component';
 import {BemParams} from '@core/block/bem';
-import {BlockEvents, BlockProps} from '@core/block';
+import {BlockProps} from '@core/block';
 import Avatar from '@lib-components/avatar';
 import Caption, {CaptionSize, CaptionWeight} from '@lib-components/caption';
-import IconButton from '@lib-components/icon_button';
-import Icon, {IconVar} from '@lib-components/icon';
+import DropdownMenu from '@lib-modules/dropdown_menu';
 import tpl from './tpl.hbs';
 import './style.scss';
 
 export type ProfileCardProps = BlockProps & 
 {
     image : string,
-    name : string
+    name : string,
+    menu : DropdownMenu
 };
 export default class ProfileCard extends ComponentBlock 
 {
-    constructor (props : ProfileCardProps, btnEvents? : BlockEvents)
+    constructor (props : ProfileCardProps)
     {   
-        const {avatar, caption} = ProfileCard._prepareProps(props);
-        
-        const button = new IconButton({ 
-            icon: new Icon({ variant: IconVar.circle_dots }), 
-            size: 'regular',
-            importance: 'primary', 
+        const {avatar, caption, menu} = ProfileCard._prepareProps(props);
 
-        }, btnEvents);
-
-        button.bemMix(['profileCard', 'button']);
-
-        super({avatar, caption, button});
+        if (menu)
+        {
+            menu.bemMix(['profileCard', 'dropdownMenu']);
+        }
+        super({ avatar, caption, menu });
     }    
     setProps (nextProps: Partial< ProfileCardProps >)
     {
         ProfileCard._prepareProps(nextProps);
         super.setProps(nextProps);  
     }  
-    protected static _prepareProps (props : Partial< ProfileCardProps > = {})
+    protected static _prepareProps (props : Partial< ProfileCardProps >)
     {
         if (props.image)
         {

@@ -17,34 +17,51 @@ export type ProfileCardProps = BlockProps &
 export default class ProfileCard extends ComponentBlock 
 {
     constructor (props : ProfileCardProps, btnEvents? : BlockEvents)
-    {
-        const avatar = new Avatar({ 
-            image: props.image, 
-            size: 'small'
-        });
-        const caption = new Caption({ 
-            caption: props.name,
-            size: CaptionSize.h2, 
-            weight: CaptionWeight.Regular
-        });
+    {   
+        const {avatar, caption} = ProfileCard._prepareProps(props);
+        
         const button = new IconButton({ 
             icon: new Icon({ variant: IconVar.circle_dots }), 
             size: 'regular',
-            importance: 'primary' 
+            importance: 'primary', 
 
         }, btnEvents);
 
-        avatar.bemMix(['profileCard', 'avatar']);
-        caption.bemMix(['profileCard', 'name']); 
         button.bemMix(['profileCard', 'button']);
 
         super({avatar, caption, button});
-    }
+    }    
+    setProps (nextProps: Partial< ProfileCardProps >)
+    {
+        ProfileCard._prepareProps(nextProps);
+        super.setProps(nextProps);  
+    }  
+    protected static _prepareProps (props : Partial< ProfileCardProps > = {})
+    {
+        if (props.image)
+        {
+            props.avatar = new Avatar({ 
+                image: props.image, 
+                size: 'small'
+            });
+            props.avatar.bemMix(['profileCard', 'avatar']);            
+        }
+        if (props.name)
+        {
+            props.caption = new Caption({ 
+                caption: props.name,
+                size: CaptionSize.h2, 
+                weight: CaptionWeight.Regular
+            });
+            props.caption.bemMix(['profileCard', 'name']); 
+        }
+        return props;
+    } 
     protected _prepareBemParams ()
     {
         const bem : BemParams = {name: 'profileCard'};
         return bem;
-    }
+    }    
     protected get _template () 
     {
         return new Templator(tpl);

@@ -22,23 +22,58 @@ export default class ChatComponent extends ComponentBlock
 {
     constructor (props : ChatProps)
     {
+        const {avatar, caption} = ChatComponent._prepareProps(props);
+
+        super( {avatar, caption, ...props}, [], { node : props?.tag ?? 'div' });
+    }
+    setProps (nextProps: Partial< ChatProps >)
+    {
+        ChatComponent._prepareProps(nextProps);
+
+        if (nextProps.isActive)
+        {
+            this.addBemMods([ ['active'] ]);
+
+            this.bemUnmix([ 'icontainer', [['bg', 'glass']] ]);
+
+            this.bemMix([ 'icontainer', [['bg', 'grayLight']] ]);
+            this.bemMix([ 'icontainer', [['dropshadow']] ]);
+        }
+        else
+        {
+            this.delBemMods([ ['active'] ]);
+
+            this.bemUnmix([ 'icontainer', [['bg', 'grayLight']] ]);
+            this.bemUnmix([ 'icontainer', [['dropshadow']] ]);
+
+            this.bemMix([ 'icontainer', [['bg', 'glass']] ]);
+        }
+        super.setProps(nextProps);  
+    }  
+    protected static _prepareProps (props : Partial< ChatProps > = {})
+    {
         if (props.author)
         {
             props.msgAuthor = 'Вы';
         }
-        const avatar = new Avatar({ 
-            image: props.image, 
-            size: 'regular'
-        });
-        const caption = new Caption({ 
-            caption: props.name,
-            size: CaptionSize.h3, 
-            weight: CaptionWeight.Regular
-        });
-        avatar.bemMix([ 'chat', 'avatar' ]);
-        caption.bemMix([ 'chat', 'name' ]); 
-
-        super( {avatar, caption, ...props}, [], { node : props?.tag ?? 'div' });
+        if ('image' in props)
+        {
+            props.avatar = new Avatar({ 
+                image: props.image, 
+                size: 'regular'
+            });
+            props.avatar.bemMix([ 'chat', 'avatar' ]);
+        }
+        if (props.name)
+        {
+            props.caption = new Caption({ 
+                caption: props.name,
+                size: CaptionSize.h3, 
+                weight: CaptionWeight.Regular,
+            });
+            props.caption.bemMix([ 'chat', 'name' ]);
+        }
+        return props;
     }
     protected _prepareBemParams (params : BemCompParams)
     {
@@ -47,7 +82,8 @@ export default class ChatComponent extends ComponentBlock
             name: 'chat', 
             mix: { block: [[ 'icontainer', [['size', 'small']] ]] }, 
             mods: { block: [] }
-        };  
+        };
+
         if (props.isActive)
         {
             bem?.mods?.block?.push(['active']);

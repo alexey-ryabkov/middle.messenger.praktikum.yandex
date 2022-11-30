@@ -1,13 +1,12 @@
 import SurChat from '@app';
+import {PlainObject} from '@core/types';
+import {StoreEvents} from '@core/flux/store';
 import {BlockEvents, BlockProps} from '@core/block';
 import ComponentBlock, {ComponentParams} from '@core/block/component';
-import {StoreEvents} from '@core/state/store';
-import {PlainObject} from '@core/types';
-
 
 type state2props = (state: PlainObject) => PlainObject;
 
-type CompConn2storeConstructor<PropsType> = new (
+type CompConn2storeConstructor< PropsType > = new (
 												props? : PropsType, 
 												events? : BlockEvents, 
 												params? : ComponentParams
@@ -21,10 +20,8 @@ export function storeConnector (mapStateToProps: state2props)
 		return componentConnected2store(ComponentCls, mapStateToProps);
 	};
 }
-
-// TODO в зависимости от использования мб сделать возможность передачи store path . и этот же путь будет использоваться при событии 
-// TODO см будет ли использоваться дженерик
-
+// TODO store path as a parameter
+// TODO do we need generic here?
 export default function componentConnected2store< CompProps extends BlockProps = BlockProps > 
 						(
 							ComponentCls : typeof ComponentBlock, 

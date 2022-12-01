@@ -38,6 +38,7 @@ export type ProfileData = Omit< ChatUserProfile, 'login' >;
 
 export interface AuthUserApi
 {
+    // registrate (data : RegistrateData) : Promise< ChatUserFields >;
     registrate (data : RegistrateData) : Promise< number >;
     authorize (data : AuthorizeData) : Promise< void >;
     changeAuthData (data : ChangeAuthData) : Promise< void >;
@@ -110,13 +111,25 @@ export interface ChatApi
 
 export enum AppErrorCode
 {
-    default = 666,
-    restApi,
-    wsApi,
-    user,
-    // TODO 
+    unknown = 0,
+
+    restApiRequest = 400,
+    restApiAuth,
+    restApiAccess = 403,
+    restApiPath,
+    restApiServer = 500,
+
+    wsApi = 600,
+
+    default = 700, 
+    dev,   
+    userInput,
 }
 export type AppError = Error &
 {
-    cause: {code : number, msg : string}
+    cause: {
+        code : AppErrorCode, 
+        msg : string,
+        additional?: string
+    }
 }

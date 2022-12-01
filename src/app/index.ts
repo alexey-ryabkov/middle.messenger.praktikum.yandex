@@ -23,6 +23,8 @@ export default class SurChat implements App
         chats: {}, 
         openedChat: null,
         chatUsers: {},
+        showChatsLoader : true,
+        showMessagesLoader : true,
     };
     protected static readonly _INITIALIZE_MSG = 'Загрузка приложения...';    
     protected static readonly _ROOT_NODE = document.body;    

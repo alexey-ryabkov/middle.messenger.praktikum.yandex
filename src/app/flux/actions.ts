@@ -72,7 +72,8 @@ export default class Actions
                     app.store.set('chats', chats, StoreSetStateType.replace);
                 }
             })
-            .catch( error => apiErrorHandler(error) );
+            .catch( error => apiErrorHandler(error) )
+            .finally( () => Actions.toggleChatsLoader(false) );
     } 
     static createUserChat (login : string)
     {
@@ -167,6 +168,16 @@ export default class Actions
 
             app.store.set(`chats.${chatId}`, chat);
         }
+        return Promise.resolve();
+    } 
+    static toggleChatsLoader (flag : boolean) 
+    {
+        SurChat.instance.store.set('showChatsLoader', flag);
+        return Promise.resolve();
+    } 
+    static toggleMessagesLoader (flag : boolean) 
+    {
+        SurChat.instance.store.set('showMessagesLoader', flag);
         return Promise.resolve();
     } 
     protected static _processProfileData (profile : ChatUserFields)

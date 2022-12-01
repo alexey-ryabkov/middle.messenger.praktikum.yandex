@@ -3,10 +3,12 @@ import EventBus from "@core/event_bus";
 
 export type AppStoreScheme = 
 {    
-    currentUser: ChatUserFields | null,
-    chats: PlainObject< ChatFields >, 
-    openedChat: string | null,
-    chatUsers: PlainObject< ChatUserFields >,
+    currentUser : ChatUserFields | null,
+    chats : PlainObject< ChatFields >, 
+    openedChat : string | null,
+    chatUsers : PlainObject< ChatUserFields >,
+    showChatsLoader : boolean,
+    showMessagesLoader : boolean,
 };
 
 export type ChatUserProfile =

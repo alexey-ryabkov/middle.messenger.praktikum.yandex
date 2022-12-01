@@ -5,7 +5,7 @@ import chatsApi from '@api/chats';
 import Messenger, {MessengerEvents} from '@api/messages';
 import CurrentUser from '@models/current_user';
 import ChatUser from '@models/chat_user';
-import Actions from '@actions';
+import Actions from '@flux/actions';
 
 export enum ChatType
 {
@@ -33,18 +33,19 @@ export default class Chat
         ({
             id: this._id,
             createdBy: this._createdBy = 0,
-            avatar: this._avatar = null,            
+            avatar: this._avatar = null,    
+            token: this._token = '',        
             title: this._title = '',
             unreadCnt: this.unreadCnt = 0,
             members: this._members = [],             
         } = fields);
 
-        this._userId = (this._app.user as CurrentUser).id;
+        this._userId = this._app.user.data?.id ?? 0;
 
         (this._messenger = new Messenger( this._userId, this._id, this._token ))
                 .on(MessengerEvents.message, message => 
                 {
-                    Actions.recieveMessage(this._id, message as Message);
+                    Actions.recieveLastMessage(this._id, message as Message);
                 })
                 .on(MessengerEvents.error, error => console.error(error));
 
@@ -93,7 +94,7 @@ export default class Chat
     }  
     get collocutor ()
     {
-        const collocutorId = this._members.filter( user => user == this._userId )[0];
+        const collocutorId = this._members.filter( user => user != this._userId )?.[0];
 
         if (collocutorId)
         {

@@ -3,6 +3,7 @@ import SurChat from "@app";
 import Chat from "@models/chat";
 import chats from '@data/chats.json'; 
 import DummyChat from "@models/dummy_chat";
+import Store, { StoreEvents } from "@core/store";
 
 export default class ChatsList 
 {
@@ -12,7 +13,8 @@ export default class ChatsList
         protected _app : SurChat
     ) {
         this._processChats();
-        this._app.store.on('updated:chats', () => this._processChats());
+        
+        this._app.store.on( Store.getEventName4path('chats'), () => this._processChats() );
     }
     protected _processChats ()
     {
@@ -34,23 +36,48 @@ export default class ChatsList
     }
     get activeChat ()
     {
-        const id = this._app.storeState.openedChat;
+        const chatId = this._app.storeState.openedChat;
 
-        if (id)
+        if (chatId)
         {
-            return this.getChat(Number(id));
+            return this.getChat(chatId);
         }
         return null;
     }
-    getChat (chatId : number)
+    getChat (chatId : string)
     {
-        const id = String(chatId);
-
-        if (!(id in this._chats))
+        if (chatId in this._chats)
         {
-            return this._chats[id];
+            return this._chats[chatId];
         }
         return null;
+    }
+    getChat2open ()
+    {
+        return Object.values(this._chats).reduce((chat2open, chat) => 
+        {
+            let resChat2open : Chat | null = chat2open;
+
+            if (resChat2open)
+            {
+                const chatlastMsg = chat.lastMessage;
+                const chat2openlastMsg = (resChat2open as Chat).lastMessage;
+
+                if (chatlastMsg && 
+                (
+                    !chat2openlastMsg
+                    || 
+                    chatlastMsg > chat2openlastMsg
+                )) {
+                    resChat2open = chat;
+                }
+            }
+            else
+                resChat2open = chat;
+            
+            return resChat2open;
+        }, 
+        null);
     }
     // TODO below depricated 
     get dummyList ()

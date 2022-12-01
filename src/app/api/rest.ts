@@ -1,23 +1,53 @@
 import {PlainObject} from "@core/types";
-import Http, {HttpOptsFull, Methods} from "@core/http";
+import Http, {HttpOptsFull, HTTPMethods} from "@core/http";
 import SurChat from "@app";
-import {AppError} from "@models/types";
+import {AppError, AppErrorCode} from "@models/types";
 import {createAppError} from "@app-utils-kit"
 
 const API_HOST = 'https://ya-praktikum.tech';
 const API_BASE_URL = `${API_HOST}/api/v2`;
 
-export function apiErrorHandler (error : AppError) 
+export function apiErrorHandler (error : Error) 
 {
-    const {code, msg} = error.cause;
-
-    if (401 == code)
+    if (!('cause' in error))
     {
-        SurChat.instance.store.set('currentUser', null); 
+        // dev? (no api) error
+        throw createAppError(error.message, AppErrorCode.unknown, 'actions');
     }
-    else 
-        console.error(code, `rest api: ${msg}`);
+
+    const {code, msg, additional} = (error as AppError).cause;
+
+    if (AppErrorCode.restApiRequest == code)
+    {
+        // wrong data input from user  
+        throw createAppError(msg, AppErrorCode.userInput);
+    }
+    else if (AppErrorCode.restApiAuth == code)
+    {
+        const app = SurChat.instance;
+
+        // we`re not authorized anymore ...
+        if (app.storeState.currentUser)
+        {
+            // ... so reinit store if we`s authorized before
+            app.resetStoreState(); 
+        }
+    }
+    else
+    {
+        // dev (api) error
+        throw createAppError(msg, AppErrorCode.dev, 'rest api (in actions)', additional);
+    }
 }
+/* TODO ошибка в клиентском коде
+пропускаем только AppErrorCode.userInput, остальные мьютим, выводя в консоль 
+export function userErrorHandler (error : AppError) 
+{
+    const {code, msg} = (error as AppError).cause;
+    // rest api error [${code}]
+    // console.error(`${msg}${ additional ? ` (${additional})` : '' }`);
+} */
+
 class RestApi extends Http
 {
     constructor (apiPath = '') 
@@ -25,11 +55,13 @@ class RestApi extends Http
         super(API_BASE_URL + apiPath);
     }
     get = (url? : string) => this._apiRequest(url);
-    put = (url? : string, data : PlainObject = {}) => this._apiRequest(url, Methods.PUT, data);
-    post = (url? : string, data : PlainObject = {}) => this._apiRequest(url, Methods.POST, data);
-    delete = (url? : string, data : PlainObject = {}) => this._apiRequest(url, Methods.DELETE, data);
+    put = (url? : string, data : PlainObject = {}) => this._apiRequest(url, HTTPMethods.PUT, data);
+    post = (url? : string, data : PlainObject = {}) => this._apiRequest(url, HTTPMethods.POST, data);
+    delete = (url? : string, data : PlainObject = {}) => this._apiRequest(url, HTTPMethods.DELETE, data);
 
-    protected _apiRequest (url = '', method : Methods = Methods.GET, data? : object, isFormData = false) 
+    protected _apiRequest (url = '', method : HTTPMethods = HTTPMethods.GET, data? : object, 
+    // TODO
+    isFormData = false) 
     {
         const options : HttpOptsFull = {
             method,
@@ -55,40 +87,43 @@ class RestApi extends Http
                         .catch(error => 
                         {
                             // TODO use createAppError for http request aborted 
-                            let code = error.cause?.code || 0;
-                            let msg = error?.cause?.response?.reason;
-                            const addError = error?.cause?.response?.error;
+                            let code = error.cause?.code || 0;                            
+                            const additional = error?.cause?.response?.error;
                             
+                            let msg = error?.cause?.response?.reason;
                             if (!msg)
                             {
                                 switch (code)
                                 {
-                                    case 400:
+                                    case AppErrorCode.restApiRequest:
+                                    case 409:
+                                        code = AppErrorCode.restApiRequest;
                                         msg = 'bad request';
                                         break;
 
-                                    case 401:
+                                    case AppErrorCode.restApiAuth:
                                         msg = 'unauthorized';
                                         break;
 
-                                    case 500:
+                                    case AppErrorCode.restApiAccess:
+                                        msg = 'no access';
+                                        break;
+
+                                    case AppErrorCode.restApiPath:
+                                        msg = 'non-existent path';
+                                        break;
+
+                                    case AppErrorCode.restApiServer:
                                         msg = 'unexpected error';
                                         break;
 
                                     default:
-                                        code = 0;
+                                        code = AppErrorCode.unknown;
                                         msg = 'unknown error';
                                         break;
                                 }
-                            }                            
-                            if (addError)
-                            {
-                                msg += ` (${addError})`;
                             }
-                            // TODO get out this after dbg
-                            console.error(code, `(temporary console error) rest api: ${msg}`);
-
-                            throw createAppError(msg, code, 'rest api');
+                            throw createAppError(msg, code, 'rest api', additional);
                         });
     }
 }

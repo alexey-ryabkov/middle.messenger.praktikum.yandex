@@ -1,5 +1,6 @@
 import {PlainObject} from "@core/types";
-import {AppErrorCode, ChatFields, ChatUserFields, Message} from "@models/types";
+import {AppError, AppErrorCode, AuthorizeData, ChangeAuthData, ChatFields, ChatUserFields, 
+    Message, ProfileData, RegistrateData} from "@models/types";
 import SurChat from "@app";
 import {apiErrorHandler} from "@api/rest";
 import chatsApi from "@api/chats";
@@ -8,42 +9,72 @@ import ChatUser from "@models/chat_user";
 import Chat from "@models/chat";
 import {isEqual} from "@lib-utils-kit";
 import {createAppError} from "@app-utils-kit";
+import { StoreSetStateType } from "@core/flux/store";
 
-// TODO Обновляем пользователя (в кеше пользователей), когда открываем чат с ним
-// TODO если user chat, то при этом обновляется авка чата и название выводимое
-// TODO для юзер чатов если изменился пользователь, то меняется и инфа по чату (картинка, название)
+// TODO если мы авторизуемся авторматом после регистрации нужен ли defineUser ?
 
 export default class Actions 
 {
     static defineUser ()
     {
-        const app = SurChat.instance;
-
         return userApi.getProfile()                
-            .then(profile => 
-            {
-                const curProfile = app.storeState.currentUser;
+            .then( profile => Actions._processProfileData(profile) )
+            .catch( error => apiErrorHandler(error) );
+    }
+    static createUser (data : RegistrateData)
+    {
+        return userApi.registrate(data).then( () => Actions.defineUser() );
+    }
+    static authorizeUser (data : AuthorizeData)
+    {
+        return userApi.authorize(data).then( () => Actions.defineUser() );
+    }
+    static changeUserProfile (data : ProfileData)
+    {
+        return userApi.setProfile(data).then( () => Actions.defineUser() );
+    }
+    static changeUserAuthData (data : ChangeAuthData)
+    {
+        return userApi.changeAuthData(data).then( () => Actions.defineUser() );
+    }
+    static logoutUser ()
+    {
+        return userApi.logout().then( () => Actions.defineUser() );
+    }       
+    static getChatsList ()
+    {   
+        const app = SurChat.instance;
+        const curUser = app.user.data;
 
-                if (!curProfile || !isEqual(profile, curProfile))
+        // TODO нужно везде использовать store ?
+        if (!curUser)
+        {
+            return Promise.reject( createAppError('no current user', AppErrorCode.default, 'Actions.getChatsList') );
+        }
+        return chatsApi.getChatsList()
+            .then(rawChats =>
+            {
+                const chats : PlainObject< ChatFields > = {};
+
+                rawChats.reduce((chats, chat) =>
                 {
-                    app.store.set('currentUser', profile); 
+                    // rest api don`t give us userId by login ( /user/search ) for current user. so fix it here
+                    if (chat.lastMessage && !chat.lastMessage.userId)
+                    {
+                        chat.lastMessage.userId = curUser.id ?? 0;
+                    }                    
+                    chats[String(chat.id)] = chat;
+                    return chats;
+                }, 
+                chats);
+
+                if (!isEqual(chats, app.storeState.chats))
+                {
+                    app.store.set('chats', chats, StoreSetStateType.replace);
                 }
             })
-            .catch(error => apiErrorHandler(error));
-    }
-    static logout ()
-    {
-        return userApi.logout()
-            .then(() => SurChat.instance.store.set('currentUser', null))
-            .catch(error =>
-            {
-                alert('Операция не выполнена');
-                
-                const {code, msg} = error.cause;                    
-                console.error(code, `rest api: ${msg}`);                
-            });
-    }
-    
+            .catch( error => apiErrorHandler(error) );
+    } 
     static createUserChat (login : string)
     {
         const curUser = SurChat.instance.user.data;
@@ -68,20 +99,7 @@ export default class Actions
             {
                 return Actions.getChatsList().then( () => Actions.openChat(chatId) );
             })
-            .catch(error => 
-            {
-                const {code, msg} = error.cause;
-
-                if (AppErrorCode.default == code)
-                {
-                    alert(msg);
-                }
-                else
-                {
-                    alert('Операция не выполнена');
-                    apiErrorHandler(error);
-                }                    
-            });
+            .catch( error => apiErrorHandler(error) );
     }
     static createGroupChat ()
     {
@@ -109,51 +127,36 @@ export default class Actions
 
                     if (!isEqual(chatUsers, app.storeState.chatUsers))
                     {
-                        app.store.set('chatUsers', chatUsers);
+                        app.store.set('chatUsers', chatUsers, StoreSetStateType.replace);
                     }
                 })
-                .catch(error => apiErrorHandler(error))
+                .catch( error => apiErrorHandler(error) )
                 .finally(() => 
                 {                    
                     app.store.set('openedChat', id);
                 });
         }
         return Promise.resolve();
-    }    
-    static getChatsList ()
-    {   
+    }
+    static closeChat (chatId : number) 
+    {
         const app = SurChat.instance;
-        const curUser = app.user.data;
 
-        if (!curUser)
+        const id = String(chatId);
+        if (id == app.storeState.openedChat)
         {
-            return Promise.reject( createAppError('no current user', AppErrorCode.default, 'Actions.getChatsList') );
+            app.store.set('openedChat', null);
+            app.store.set('chatUsers', {}, StoreSetStateType.replace);
         }
-        return chatsApi.getChatsList()
-            .then(rawChats =>
-            {
-                const chats : PlainObject< ChatFields > = {};
-
-                rawChats.reduce((chats, chat) =>
-                {
-                    // rest api don`t give us userId by login ( /user/search ) for current user. so fix it here
-                    if (chat.lastMessage && !chat.lastMessage.userId)
-                    {
-                        chat.lastMessage.userId = curUser.id ?? 0;
-                    }                    
-                    chats[String(chat.id)] = chat;
-                    return chats;
-                }, 
-                chats);
-
-                if (!isEqual(chats, app.storeState.chats))
-                {
-                    app.store.set('chats', chats);
-                }
-            })
-            .catch(error => apiErrorHandler(error));
+        return Promise.resolve();
+    }
+    static deleteChat (chatId : number) 
+    {
+        return chatsApi.deleteChat(chatId)
+            .then(() => Actions.getChatsList())
+            .then(() => Actions.closeChat(chatId));
     } 
-    static recieveMessage (chatId : number, msg : Message)
+    static recieveLastMessage (chatId : number, msg : Message)
     {
         const app = SurChat.instance;
         const chat = app.storeState.chats?.[String(chatId)];
@@ -166,5 +169,16 @@ export default class Actions
             app.store.set(`chats.${chatId}`, chat);
         }
         return Promise.resolve();
-    }    
+    } 
+    protected static _processProfileData (profile : ChatUserFields)
+    {
+        const app = SurChat.instance;
+        const curProfile = app.storeState.currentUser;
+
+        if (!curProfile || !isEqual(profile, curProfile))
+        {
+            app.store.set('currentUser', profile); 
+        }
+    } 
 }
+window.actions = Actions;

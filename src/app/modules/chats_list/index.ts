@@ -23,8 +23,6 @@ class ChatsModule extends ComponentBlock
 {
     constructor (props : ChatsModuleProps)
     {
-        console.log('props in constructor before', props);
-
         const {chats, loader} = ChatsModule._prepareProps(props);
 
         const buttonAdd = new IconButton({ 
@@ -32,7 +30,7 @@ class ChatsModule extends ComponentBlock
             size: 'regular',
             importance: 'primary'
         }, 
-        [ 'click', () => 
+        ['click', () => 
         {
             let login = prompt('Введите логин пользователя');
             if (null !== login)
@@ -59,14 +57,10 @@ class ChatsModule extends ComponentBlock
         }, 
         [ 'keyup', () => console.log('type in search phrase') ]);
 
-        console.log('props in constructor after', { chats, loader, search, buttonAdd });
-
         super({ chats, loader, search, buttonAdd });
     }
     setProps (nextProps : Partial< ChatsModuleProps >)
     {   
-        console.log('props in setProps before', nextProps);
-        
         const props : Partial< ChatsModuleProps > = {};
 
         const {chats, loader} = ChatsModule._prepareProps(nextProps);
@@ -97,8 +91,6 @@ class ChatsModule extends ComponentBlock
         {
             props.loader = loader;
         }
-
-        console.log('props in setProps after', props);
 
         super.setProps(props);
     }  

@@ -1,13 +1,12 @@
 import SurChat from '@app';
 import {PlainObject} from '@core/types';
-import {StoreEvents} from '@core/store';
+import Store, {StoreEvents} from '@core/store';
 import {BlockEvents, BlockProps} from '@core/block';
+import {AppStoreScheme} from '@models/types';
 import ComponentBlock, {ComponentParams} from '@core/block/component';
+import { isEqual } from '@lib-utils-kit';
 
-// TODO мы не можем использовать SurChat в папке lib !!!
-// TODO type state2props = (state: AppStoreScheme) => PlainObject;
-
-type state2props = (state: PlainObject) => PlainObject;
+type state2props = (state : AppStoreScheme) => PlainObject;
 
 type CompConn2storeConstructor< PropsType > = 
 	new (
@@ -17,19 +16,11 @@ type CompConn2storeConstructor< PropsType > =
 	) 
 	=> ComponentBlock;
 
-export function storeConnector (mapStateToProps: state2props)
-{
-	return function (ComponentCls : typeof ComponentBlock)
-	{
-		return componentConnected2store(ComponentCls, mapStateToProps);
-	};
-}
-
-// TODO do we need generic here?
 export default function componentConnected2store< CompProps extends BlockProps = BlockProps > 
 (
 	ComponentCls : typeof ComponentBlock, 
-	mapStateToProps: state2props							
+	mapStateToProps : state2props,
+	trackStorePath? : string
 ) 
 : CompConn2storeConstructor< CompProps >
 {
@@ -42,12 +33,28 @@ export default function componentConnected2store< CompProps extends BlockProps =
 			events : BlockEvents = [], 
 			params : ComponentParams = {}) 
 		{
-			// TODO store path as a parameter
-			app.store.on(StoreEvents.updated, () => 
+			let compState = mapStateToProps( app.storeState );
+
+			app.store.on(trackStorePath ? Store.getEventName4path(trackStorePath) : StoreEvents.updated, () => 
             {				
-				this.setProps({ ...mapStateToProps( app.storeState ) });
+				const compNextState = mapStateToProps( app.storeState );
+				
+				if (!isEqual(compState, compNextState))
+				{
+					this.setProps({ ...compNextState });
+
+					compState = compNextState;
+				}
 			});
-			super( {...props, ...mapStateToProps( app.storeState )}, events, params );
+			
+			super( {...props, ...compState}, events, params );
 		}
+	};
+}
+export function storeConnector (mapStateToProps : state2props, trackStorePath? : string)
+{
+	return function (ComponentCls : typeof ComponentBlock)
+	{
+		return componentConnected2store(ComponentCls, mapStateToProps, trackStorePath);
 	};
 }

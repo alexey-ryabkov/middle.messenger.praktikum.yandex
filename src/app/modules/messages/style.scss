@@ -1,6 +1,8 @@
 @import '../main/vars';
 
 ._messages {
+    position: relative;
+    
     &__ {
         &box {
             box-sizing: border-box;

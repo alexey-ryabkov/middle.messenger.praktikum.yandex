@@ -1,28 +1,43 @@
-import {PlainObject} from "@core/types";
+import {Handler, PlainObject, SingleOrPlural} from "@core/types";
 import EventBus from "@core/event_bus";
 import {setValInPath} from "@lib-utils-kit";
 
 export enum StoreEvents {
+    inited = 'inited',
     added = 'added',
     updated = 'updated',
     deleted = 'deleted',
+    reinited = 'reinited',
     cleared = 'cleared'
+}
+export enum StoreSetStateType {
+    merge = 'merge',
+    replace = 'replace',
 }
 export default class Store extends EventBus 
 {
+    protected _state : PlainObject;
+
     constructor (
-        protected _state : PlainObject = {},
+        initState : PlainObject,
         protected readonly _NAME : string
     ) {
         super();
         // TODO save sate to localstorage (without personal data?)
+
+        this._init(initState);
+        this.emit( StoreEvents.inited );
+    }
+    init (initState : PlainObject)
+    {
+        this._init(initState);        
+        this.emit( StoreEvents.reinited );
     }
     get state ()
     {
         return this._state;
     }
-    // TODO do we need this method?
-    get (path: string)
+    get (path: string) 
     {
         return path.trim().split('.').reduce( (result, pathPart) => 
         {
@@ -35,29 +50,86 @@ export default class Store extends EventBus
         }, 
         this._state);
     }
-    set (path: string, value: unknown)
+    set (path: string, value: unknown, type : StoreSetStateType = StoreSetStateType.merge)
     {
-        setValInPath(this._state, path, value);
+        console.log('store set', path, value);
+
+        if (!path)
+        {
+            return;
+        }
+        const pathArr = path.split('.');
+
+        if (StoreSetStateType.replace == type)
+        {
+            const partialPathArr = [...pathArr];
+            const lastPathPart = partialPathArr.pop() as string; // partialPathArr become partial here, after pop()
+
+            if (partialPathArr.length)
+            {
+                const partialPath = partialPathArr.join('.');
+                let stateOnPath = this.get(partialPath);
+
+                if (!stateOnPath)
+                {
+                    // not found value on path, so don't need to replace, use merging
+                    setValInPath(this._state, path, value);
+                }
+                else
+                    // found value on path, so replace it 
+                    stateOnPath = {
+                        lastPathPart: value
+                    };
+            }
+            else
+                // single part path, just replace 
+                this._state[lastPathPart] = value;
+        }
+        else
+            // merge new value into state
+            setValInPath(this._state, path, value);
 
         this.emit( StoreEvents.updated );
 
         let partOfPath = '';
-        path.split('.').forEach(part => 
+        pathArr.forEach(part => 
         {
             partOfPath = !partOfPath ? part : `${partOfPath}.${part}`;
 
-            this.emit( Store.getEventName4path(partOfPath), this.get(path) );
+            this.emit( Store.getEventName4path(partOfPath) );
         });        
     }
     clear ()
     {
         this._state = {};
         
-        this.emit( StoreEvents.updated );
-        this.emit( StoreEvents.cleared );        
+        this.emit( StoreEvents.cleared ); 
+    }
+    on (event : SingleOrPlural< string >, callback : Handler)
+    {
+        const events = typeof event == 'string' ? [event] : Array.from(event);
+
+        // every listeners also subscribed on cleared and reinited events cause it affects all state
+        events.push(StoreEvents.reinited);
+        events.push(StoreEvents.cleared);
+
+        events.forEach( event => super.on(event, callback) );
+
+        return this;
+    }
+    emit (event : string) 
+    {
+        // TODO get out after debugging 
+        console.log('store emit', event);
+
+        super.emit(event);
     }
     static getEventName4path (path: string, event : StoreEvents = StoreEvents.updated)
     {
         return `${event}:${path}`;
+    }
+    protected _init (initState : PlainObject)
+    {
+        this._state = initState;
     }
 }

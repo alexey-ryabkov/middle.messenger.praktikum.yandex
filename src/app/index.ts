@@ -2,12 +2,13 @@
 import {App, AppContainer} from '@core/types';
 import Page, {PageAccess} from '@core/page';
 import Router from '@core/router';
-import Store, { StoreEvents } from '@core/state/store';
+import Store, { StoreEvents } from '@core/flux/store';
 import {AppStoreScheme} from '@models/types';
 import ChatsList from '@models/chats_list'; 
 import CurrentUser from '@models/current_user';
 import MainContainer from '@app-modules/main';
 import Spinner from '@lib-components/spinner';
+import { cloneDeep } from '@lib-utils-kit';
 
 export default class SurChat implements App
 {
@@ -17,8 +18,14 @@ export default class SurChat implements App
     static readonly FALLBACK_PAGE_NAME = 'error404';
     static readonly ERROR_PAGE_NAME = 'error500';
 
+    protected static readonly _INIT_STORE_STATE : AppStoreScheme = {
+        currentUser: null,
+        chats: {}, 
+        openedChat: null,
+        chatUsers: {},
+    };
     protected static readonly _INITIALIZE_MSG = 'Загрузка приложения...';    
-    protected static readonly _ROOT_NODE = document.body;
+    protected static readonly _ROOT_NODE = document.body;    
 
     protected _container : AppContainer; 
     protected _router : Router;
@@ -36,22 +43,20 @@ export default class SurChat implements App
         
         this._router = new Router();
 
-        const initState : AppStoreScheme = {
-            currentUser: null,
-            chats: {}, 
-            openedChat: null,
-            chatUsers: {},
-        };
-        this._store = new Store(initState, `${SurChat.NAME} store`);
+        this._store = new Store( SurChat._initStoreState, `${SurChat.NAME} store` );
 
-        this._store.oneTime(Store.getEventName4path('currentUser'), user => 
+        this._store.oneTime(Store.getEventName4path('currentUser'), () => 
         {
-            return this._isUserDefined = !!user;
+            const {currentUser} = this.storeState;
+
+            // console.log('one time currentUser handler');
+            return this._isUserDefined = !!currentUser;
         });
 
         this._user = new CurrentUser(this);
         this._chatsList = new ChatsList(this); 
     }
+
     static get instance ()
     {
         return this._instance || (this._instance = new this());
@@ -69,14 +74,29 @@ export default class SurChat implements App
     {
         return this._container;
     }
+
     get store ()
     {
+        // TODO mb HOC to forbid use Store.state & Store.get instead storeState below
         return this._store;
     }
     get storeState ()
     {
-        return this._store.state as AppStoreScheme;
+        const isStateCleared = 0 == Object.keys(this._store.state).length;
+
+        return !isStateCleared 
+            ? this._store.state as AppStoreScheme
+            : SurChat._initStoreState;
     }
+    resetStoreState ()
+    {
+        this._store.init( SurChat._initStoreState );
+    }
+    protected static get _initStoreState ()
+    {
+        return cloneDeep(SurChat._INIT_STORE_STATE) as AppStoreScheme;
+    }
+
     get user ()
     {
         return this._user;
@@ -89,6 +109,7 @@ export default class SurChat implements App
     {
         return this._chatsList;
     }
+
     // TODO убрать весь сахар: .page .go2page ? 
     set pages (pages : Page[])
     {
@@ -97,9 +118,11 @@ export default class SurChat implements App
     get page ()
     {
         return this._router.currentRoute;
-    }    
+    }
     init ()
     {
+        // console.log('app init');
+        
         this._prepareLinks4routing();
         this._prepareAuthRedirects();
         
@@ -157,17 +180,21 @@ export default class SurChat implements App
     }
     protected _prepareAuthRedirects ()
     {
-        this._store.on(Store.getEventName4path('currentUser'), user => 
+        this._store.on( Store.getEventName4path('currentUser'), () => 
         {
-            if (this._isUserDefined && null === user)
+            const {currentUser} = this.storeState;
+            
+            // console.log('and now will redirect!', this._isUserDefined, currentUser);
+
+            if (this._isUserDefined && null === currentUser)
             {
                 this._router.go( Page.url( SurChat.AUTH_PAGE_NAME ));
             }
-            else if (!this._isUserDefined && user)
+            else if (!this._isUserDefined && currentUser)
             {
                 this._router.go( Page.url( SurChat.CHAT_PAGE_NAME ));
             }
-            this._isUserDefined = !!user;
+            this._isUserDefined = !!currentUser;
         });
     }
 }

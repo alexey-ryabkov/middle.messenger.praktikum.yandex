@@ -33,7 +33,7 @@
             "@app-utils-kit": ["app/utils"],
             "@app-utils/*": ["app/utils/*"],
 
-            "@actions": ["app/actions"],
+            "@flux/*": ["app/flux/*"],
             "@data/*": ["app/dummy_data/*"],
             "@pages": ["app/pages"],
             "@api/*": ["app/api/*"],

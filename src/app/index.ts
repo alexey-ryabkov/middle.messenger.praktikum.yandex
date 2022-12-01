@@ -2,7 +2,7 @@
 import {App, AppContainer} from '@core/types';
 import Page, {PageAccess} from '@core/page';
 import Router from '@core/router';
-import Store, { StoreEvents } from '@core/flux/store';
+import Store, { StoreEvents } from '@core/store';
 import {AppStoreScheme} from '@models/types';
 import ChatsList from '@models/chats_list'; 
 import CurrentUser from '@models/current_user';

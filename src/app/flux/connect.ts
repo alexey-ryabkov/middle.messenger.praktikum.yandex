@@ -1,17 +1,21 @@
 import SurChat from '@app';
 import {PlainObject} from '@core/types';
-import {StoreEvents} from '@core/flux/store';
+import {StoreEvents} from '@core/store';
 import {BlockEvents, BlockProps} from '@core/block';
 import ComponentBlock, {ComponentParams} from '@core/block/component';
 
+// TODO мы не можем использовать SurChat в папке lib !!!
+// TODO type state2props = (state: AppStoreScheme) => PlainObject;
+
 type state2props = (state: PlainObject) => PlainObject;
 
-type CompConn2storeConstructor< PropsType > = new (
-												props? : PropsType, 
-												events? : BlockEvents, 
-												params? : ComponentParams
-											) 
-											=> ComponentBlock;
+type CompConn2storeConstructor< PropsType > = 
+	new (
+		props? : PropsType, 
+		events? : BlockEvents, 
+		params? : ComponentParams
+	) 
+	=> ComponentBlock;
 
 export function storeConnector (mapStateToProps: state2props)
 {
@@ -20,16 +24,16 @@ export function storeConnector (mapStateToProps: state2props)
 		return componentConnected2store(ComponentCls, mapStateToProps);
 	};
 }
-// TODO store path as a parameter
+
 // TODO do we need generic here?
 export default function componentConnected2store< CompProps extends BlockProps = BlockProps > 
-						(
-							ComponentCls : typeof ComponentBlock, 
-							mapStateToProps: state2props							
-						) 
-						: CompConn2storeConstructor< CompProps >
+(
+	ComponentCls : typeof ComponentBlock, 
+	mapStateToProps: state2props							
+) 
+: CompConn2storeConstructor< CompProps >
 {
-	const store = SurChat.instance.store;
+	const app = SurChat.instance;
 
 	return class extends ComponentCls 
     {
@@ -38,11 +42,12 @@ export default function componentConnected2store< CompProps extends BlockProps =
 			events : BlockEvents = [], 
 			params : ComponentParams = {}) 
 		{
-			store.on(StoreEvents.updated, () => 
-            {
-				this.setProps({ ...mapStateToProps( store.state ) });
+			// TODO store path as a parameter
+			app.store.on(StoreEvents.updated, () => 
+            {				
+				this.setProps({ ...mapStateToProps( app.storeState ) });
 			});
-			super( {...props, ...mapStateToProps( store.state )}, events, params );
+			super( {...props, ...mapStateToProps( app.storeState )}, events, params );
 		}
 	};
 }

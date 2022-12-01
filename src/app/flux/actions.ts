@@ -9,7 +9,7 @@ import ChatUser from "@models/chat_user";
 import Chat from "@models/chat";
 import {isEqual} from "@lib-utils-kit";
 import {createAppError} from "@app-utils-kit";
-import { StoreSetStateType } from "@core/flux/store";
+import { StoreSetStateType } from "@core/store";
 
 // TODO если мы авторизуемся авторматом после регистрации нужен ли defineUser ?
 
@@ -46,7 +46,6 @@ export default class Actions
         const app = SurChat.instance;
         const curUser = app.user.data;
 
-        // TODO нужно везде использовать store ?
         if (!curUser)
         {
             return Promise.reject( createAppError('no current user', AppErrorCode.default, 'Actions.getChatsList') );

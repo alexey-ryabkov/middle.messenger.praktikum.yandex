@@ -1,35 +1,55 @@
+import Actions from '@flux/actions';
+import componentConnected2store from '@flux/connect';
 import Templator from '@core/templator';
+import {BlockProps} from '@core/block';
 import {BemParams} from '@core/block/bem';
 import ComponentBlock from '@core/block/component';
 import IconButton from '@lib-components/icon_button';
 import Icon, {IconVar} from '@lib-components/icon';
+import Spinner from '@lib-components/spinner';
 import ChatComponent, {ChatProps} from './components/chat';
 import SearchComponent from './components/search';
 import mount, {MountType} from '@lib-utils/mount';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-export type ChatsData = Record< string, ChatProps > | ChatProps;
-
-export default class ChatsModule extends ComponentBlock
+type ChatsData = Record< string, ChatProps > | ChatProps;
+export type ChatsModuleProps = BlockProps & 
 {
-    constructor (chatsData : ChatsData)
+    chatsData : ChatsData,
+    showLoader : boolean,
+}
+class ChatsModule extends ComponentBlock
+{
+    constructor (props : ChatsModuleProps)
     {
-        const {chats} = ChatsModule._prepareProps(chatsData);
+        console.log('props in constructor before', props);
+
+        const {chats, loader} = ChatsModule._prepareProps(props);
 
         const buttonAdd = new IconButton({ 
             icon: new Icon({ variant: IconVar.plus }), 
             size: 'regular',
-            importance: 'primary'  
-
-        }, [ 'click', () => 
+            importance: 'primary'
+        }, 
+        [ 'click', () => 
         {
-            console.log('add chat') 
-
-            const login = prompt('Введите логин пользователя');
-            if (login)
+            let login = prompt('Введите логин пользователя');
+            if (null !== login)
             {
-                // TODO тут экшен
+                login = login.trim();
+                if (login)
+                {
+                    Actions.toggleChatsLoader(true)
+                        .then( () => Actions.createUserChat(login as string) )
+                        .catch(() => 
+                        {
+                            // TODO операция не выполнена или пользователь не найден 
+                        })
+                        .finally( () => Actions.toggleChatsLoader(false) );
+                }
+                else
+                    alert('Некорректный логин');
             }
         }]);
 
@@ -39,44 +59,82 @@ export default class ChatsModule extends ComponentBlock
         }, 
         [ 'keyup', () => console.log('type in search phrase') ]);
 
-        super({ chats, search, buttonAdd });
+        console.log('props in constructor after', { chats, loader, search, buttonAdd });
+
+        super({ chats, loader, search, buttonAdd });
     }
-    setProps (chatsData : ChatsData)
-    {
-        const {chats} = ChatsModule._prepareProps(chatsData);
+    setProps (nextProps : Partial< ChatsModuleProps >)
+    {   
+        console.log('props in setProps before', nextProps);
+        
+        const props : Partial< ChatsModuleProps > = {};
 
-        const isSingleChat = 1 == Object.keys(chats).length;
-
-        if (isSingleChat)
+        const {chats, loader} = ChatsModule._prepareProps(nextProps);
+        
+        if ('chatsData' in nextProps)
         {
-            // FIXME now we need to call it twice
-            this.processElems();
+            if (chats)
+            {
+                const isSingleChat = 1 == Object.keys(chats).length;
+                if (isSingleChat)
+                {
+                    // FIXME now we need to call it twice
+                    this.processElems();
 
-            const chat = Object.values(chats)[0];
+                    const chat = Object.values(chats)[0] as ChatComponent;
 
-            mount(chat.element, this.elems['list'], MountType.prepend);
-            this.processElems();
+                    mount(chat.element, this.elems['list'], MountType.prepend);
+
+                    this.processElems();
+                }
+                else
+                    props.chats = chats;
+            }
+            else
+                props.chats = chats;
         }
-        else
-            super.setProps({ chats });
+        if ('chatsData' in nextProps)
+        {
+            props.loader = loader;
+        }
+
+        console.log('props in setProps after', props);
+
+        super.setProps(props);
     }  
-    protected static _prepareProps (chatsData : ChatsData)
-    {
-        const props : { chats : Record< string, ChatComponent > } = { chats : {} };
-        const isSingleChatData = 'name' in chatsData;
-
-        if (isSingleChatData)
+    protected static _prepareProps (props : Partial< ChatsModuleProps >)
+    {   
+        if ('chatsData' in props)
         {
-            const chat = ChatsModule._createChatComponent(chatsData as ChatProps);
-            props.chats[chat.id] = chat;
-        }
-        else
-            Object.values(chatsData).forEach(chatProps => 
-            {   
-                const chat = ChatsModule._createChatComponent(chatProps);
-                props.chats[chat.id] = chat;
-            });
+            const chatsData = props.chatsData;
+            if (chatsData && Object.keys(chatsData).length > 0)
+            {
+                const chats : Record< string, ChatComponent > = {};
             
+                const isSingleChatData = 'name' in chatsData;            
+                if (isSingleChatData)
+                {
+                    const chat = ChatsModule._createChatComponent(chatsData as ChatProps);
+                    chats[chat.id] = chat;
+                }
+                else
+                    Object.values(chatsData).forEach(chatProps => 
+                    {   
+                        const chat = ChatsModule._createChatComponent(chatProps);
+                        chats[chat.id] = chat;
+                    });
+
+                props.chats = chats;
+            }
+            else            
+                props.chats = null;
+        }
+        if ('showLoader' in props)
+        {
+            props.loader = props.showLoader
+                ? new Spinner({ centered: true })
+                : '';
+        }        
         return props;
     } 
     protected static _createChatComponent (props : ChatProps)
@@ -98,3 +156,8 @@ export default class ChatsModule extends ComponentBlock
         return new Templator(tpl);
     }
 }
+export default componentConnected2store< ChatsModuleProps >(ChatsModule, storeState => 
+{
+    return {chatsData: storeState.chats, showLoader: storeState.showChatsLoader};
+},
+['chats', 'showChatsLoader']);

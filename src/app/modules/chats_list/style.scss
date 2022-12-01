@@ -1,6 +1,10 @@
+@use 'sass:map';
+
 @import '../../modules/main/vars';
 
 ._chats {
+    position: relative;
+    
     &__ {
         &list {
             list-style: none;
@@ -24,5 +28,16 @@
             border-right: 1px solid $gray;
             padding: 0 10px;
         }
+
+        &noChatsMsg {
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            font-weight: map.get($font-weights, 'Light');
+        }
+    }
+
+    .spinner {
+        transform: translate(-11px, -23.5px);
     }
 }

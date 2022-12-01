@@ -10,7 +10,7 @@ import './style.scss';
 
 export type ProfileCardProps = BlockProps & 
 {
-    image : string,
+    image? : string,
     name : string,
     menu : DropdownMenu
 };
@@ -33,7 +33,7 @@ export default class ProfileCard extends ComponentBlock
     }  
     protected static _prepareProps (props : Partial< ProfileCardProps >)
     {
-        if (props.image)
+        if ('image' in props)
         {
             props.avatar = new Avatar({ 
                 image: props.image, 
@@ -41,14 +41,19 @@ export default class ProfileCard extends ComponentBlock
             });
             props.avatar.bemMix(['profileCard', 'avatar']);            
         }
-        if (props.name)
+        if ('name' in props)
         {
-            props.caption = new Caption({ 
-                caption: props.name,
-                size: CaptionSize.h2, 
-                weight: CaptionWeight.Regular
-            });
-            props.caption.bemMix(['profileCard', 'name']); 
+            if (props.name)
+            {
+                props.caption = new Caption({ 
+                    caption: props.name,
+                    size: CaptionSize.h2, 
+                    weight: CaptionWeight.Regular
+                });
+                props.caption.bemMix(['profileCard', 'name']); 
+            }
+            else
+                props.caption = '';
         }
         return props;
     } 

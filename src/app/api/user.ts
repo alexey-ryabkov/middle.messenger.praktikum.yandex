@@ -5,6 +5,10 @@ import {restAuthApi, restUsersApi} from "@api/rest";
 
 export class UserApi implements AuthUserApi, ChatUserApi, UserProfileApi
 {
+    // registrate (data : RegistrateData) 
+    // {
+    //     return restAuthApi.post('/signup', data).then( userData => UserApi.processUserData(userData) );
+    // }
     registrate (data : RegistrateData) 
     {
         return restAuthApi.post('/signup', data).then( result => result.id as number );
@@ -21,10 +25,13 @@ export class UserApi implements AuthUserApi, ChatUserApi, UserProfileApi
                     .then(profile =>
                     {
                         return (login != profile.login)
+
                                     ? Promise.all([
-                                        restUsersApi.put('/profile', {...profile, login}),
-                                        restUsersApi.put('/password', passwordData)
-                                    ]).then(() => {return})
+                                            restUsersApi.put('/profile', {...profile, login}),
+                                            restUsersApi.put('/password', passwordData)
+                                        ])
+                                        .then(() => {return})
+
                                     : restUsersApi.put('/password', passwordData).then(() => {return});
                     });
     }
@@ -68,11 +75,7 @@ export class UserApi implements AuthUserApi, ChatUserApi, UserProfileApi
     }
     getProfile ()
     {
-        return restAuthApi.get('/user')
-                    .then(userData => 
-                    {
-                        return UserApi.processUserData(userData);
-                    }); 
+        return restAuthApi.get('/user').then( userData => UserApi.processUserData(userData) ); 
     }
     static processUserData (userData : PlainObject)
     {

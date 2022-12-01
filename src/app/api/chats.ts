@@ -10,7 +10,9 @@ class ChatsApi implements ChatsListApi, ChatApi
         return restChatsApi.post('', {title: name})
             .then(result =>
             {
-                return restChatsApi.put('/users', {users: [userId], chatId: result.id}).then( result => result.id as number );
+                const chatId = result.id as number;
+
+                return restChatsApi.put('/users', {users: [userId], chatId}).then( () => chatId );
             });        
     }
     addGroupChat (name : string)
@@ -44,8 +46,7 @@ class ChatsApi implements ChatsListApi, ChatApi
                     {
                         return ( userDataArr as PlainObject[] ).map( userData => UserApi.processUserData(userData) );
                     }); 
-    }
-    
+    }    
     getNewMsgCnt (chatId : number)
     {
         return restChatsApi.get(`/new/${chatId}`).then( result => result.unread_count as number ); 
@@ -65,14 +66,14 @@ class ChatsApi implements ChatsListApi, ChatApi
                     ...chatData                        
                 } = chatsDataItem;
 
-                const chat = (<unknown>{
+                const chat = <unknown>{
                     ...chatData, 
                     unreadCnt, 
                     createdBy, 
                     lastMessage: null, 
                     members: [],
                     token: ''
-                }) as ChatFields;
+                } as ChatFields;
 
                 if (lastMsgData)
                 {
@@ -90,10 +91,8 @@ class ChatsApi implements ChatsListApi, ChatApi
                     } as Message;
                 }
 
-                // also get chat`s members userIds to conform api interface 
+                // also get chat`s members userIds and token to conform api interface                 
                 chat.members = await this.getUsers( chat.id ).then( users => users.map(user => user.id) );
-
-                // at last, get chat`s token
                 chat.token = await this._getChatToken( chat.id );
 
                 chatsList.push(chat);

@@ -105,7 +105,14 @@ export default class Messenger extends EventBus implements MessengerApi
         {
             this._socket.close(Messenger.MANUALLY_CLOSE_CODE, 'manually closed');
         }
-    }    
+    }  
+    static processMessage (data : any)
+    {
+        const {user_id: userId, time, ...messageData} = data;
+        const datetime = new Date(time);
+
+        return {...messageData, userId, datetime} as Message;
+    }  
     protected _setupEvents ()
     {
         this._socket.addEventListener('open', () => 
@@ -118,7 +125,7 @@ export default class Messenger extends EventBus implements MessengerApi
             {
                 const data = JSON.parse(event.data);
 
-                console.log('message', data); // 
+                // console.log('message', data); // 
 
                 if (Array.isArray(data))
                 {
@@ -162,12 +169,12 @@ export default class Messenger extends EventBus implements MessengerApi
         {
             if (!event.wasClean) 
             {
-                console.warn(`Disconnected. Code: ${event.code}, reason: ${event.reason}. Restart in ${Messenger.RECONNECT_DELAY}ms`);
+                console.warn(`ws disconnected. Code: ${event.code}, reason: ${event.reason}. Restart in ${Messenger.RECONNECT_DELAY}ms`);
                 this._restartTimer = window.setTimeout(() => this.open(), Messenger.RECONNECT_DELAY);
             } 
             else
             {
-                console.log('closed', event); // 
+                console.info('ws manually closed', event);
                 this.emit(MessengerEvents.closed);
             }
         });
@@ -190,13 +197,6 @@ export default class Messenger extends EventBus implements MessengerApi
             }, 
             Messenger.PING_DELAY);
         }
-    }
-    static processMessage (data : any)
-    {
-        const {user_id: userId, time, ...messageData} = data;
-        const datetime = new Date(time);
-
-        return {...messageData, userId, datetime} as Message;
     }
     protected static _processChatMessage (data : any)
     {

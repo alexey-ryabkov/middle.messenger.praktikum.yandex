@@ -1,5 +1,5 @@
 import SurChat from '@app';
-import {PlainObject} from '@core/types';
+import {PlainObject, SingleOrPlural} from '@core/types';
 import Store, {StoreEvents} from '@core/store';
 import {BlockEvents, BlockProps} from '@core/block';
 import {AppStoreScheme} from '@models/types';
@@ -20,7 +20,7 @@ export default function componentConnected2store< CompProps extends BlockProps =
 (
 	ComponentCls : typeof ComponentBlock, 
 	mapStateToProps : state2props,
-	trackStorePath? : string
+	trackStorePath? : SingleOrPlural< string >
 ) 
 : CompConn2storeConstructor< CompProps >
 {
@@ -35,26 +35,37 @@ export default function componentConnected2store< CompProps extends BlockProps =
 		{
 			let compState = mapStateToProps( app.storeState );
 
-			app.store.on(trackStorePath ? Store.getEventName4path(trackStorePath) : StoreEvents.updated, () => 
-            {				
-				const compNextState = mapStateToProps( app.storeState );
+			let trackStoreEvents : string[] | null = null;
+			if (trackStorePath)
+			{
+				const trackStorePathes = typeof trackStorePath == 'string' 
+											? [trackStorePath] 
+											: Array.from(trackStorePath);
 				
-				if (!isEqual(compState, compNextState))
-				{
-					this.setProps({ ...compNextState });
+				trackStoreEvents = trackStorePathes.map(path => Store.getEventName4path(path))
+			}			
 
-					compState = compNextState;
-				}
-			});
+			app.store.on(
+				trackStoreEvents ? trackStoreEvents : StoreEvents.updated, 
+				() => {				
+					const compNextState = mapStateToProps( app.storeState );
+					
+					if (!isEqual(compState, compNextState))
+					{
+						this.setProps({ ...compNextState });
+
+						compState = compNextState;
+					}
+				});
 			
 			super( {...props, ...compState}, events, params );
 		}
 	};
 }
-export function storeConnector (mapStateToProps : state2props, trackStorePath? : string)
+export function storeConnector (mapStateToProps : state2props, trackStorePathes? : SingleOrPlural< string >)
 {
 	return function (ComponentCls : typeof ComponentBlock)
 	{
-		return componentConnected2store(ComponentCls, mapStateToProps, trackStorePath);
+		return componentConnected2store(ComponentCls, mapStateToProps, trackStorePathes);
 	};
 }

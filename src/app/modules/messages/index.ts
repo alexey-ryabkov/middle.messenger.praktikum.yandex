@@ -1,5 +1,4 @@
 import SurChat from '@app';
-import Actions from '@flux/actions';
 import componentConnected2store from '@flux/connect';
 import Templator from '@core/templator';
 import {BlockProps} from '@core/block';
@@ -34,22 +33,19 @@ class MessagesModule extends ComponentBlock
         }, 
         ['click', () => 
         {
-            /*
-            TODO 
-            
-            const msgContent = inputSend.value.trim();
-
-            if (msgContent)
+            const activeChat = SurChat.instance.chatsList.activeChat;
+            if (activeChat)
             {
-                const messagesList = SurMessage.instance.messagesList;
-                const activeMessage = messagesList.activeMessage;
-
-                activeMessage?.sendMessage(msgContent);
+                const msgContent = inputSend.value.trim();
+                if (msgContent)
+                {
+                    activeChat.sendMessage(msgContent);
+                }
+                else
+                    alert('Сначала введите текст сообщения');
             }
             else
-                alert('Сначала введите текст сообщения');
-            
-             */
+                alert('Сначала выберите чат');
         }]);
 
         const buttonAttach = new DropdownMenu(
@@ -60,25 +56,26 @@ class MessagesModule extends ComponentBlock
                 importance: 'secondary', 
             }),
             options: [
+                // TODO attachment func
                 {
                     title: 'Файл',
                     icon: IconVar.images,
-                    action: () => console.log('attach file'),
+                    action: () => alert('Этот функционал пока не работает'),
                 },
                 {
                     title: 'Стикер',
                     icon: IconVar.circle_smile,
-                    action: () => console.log('attach sticker'),
+                    action: () => alert('Этот функционал пока не работает'),
                 },
                 {
                     title: 'Видео',
                     icon: IconVar.camera,
-                    action: () => console.log('attach video'),
+                    action: () => alert('Этот функционал пока не работает'),
                 },
                 {
                     title: 'Локация',
                     icon: IconVar.location,
-                    action: () => console.log('attach location'),
+                    action: () => alert('Этот функционал пока не работает'),
                 }
             ],
             position: ['bottom', 'Right']
@@ -106,23 +103,6 @@ class MessagesModule extends ComponentBlock
     }
     setProps (nextProps : Partial< MessagesModuleProps >)
     {
-        // const {messages} = MessagesModule._prepareProps(messagesData);
-
-        // const isSingleMsg = 1 == Object.keys(messages).length;
-
-        // if (isSingleMsg)
-        // {
-        //     // FIXME now we need to call it twice
-        //     this.processElems();
-
-        //     const message = Object.values(messages)[0];
-
-        //     mount(message.element, this.elems['list']);
-        //     this.processElems();
-        // }
-        // else
-        //     super.setProps({ messages });
-
         const props : Partial< MessagesModuleProps > = {};
 
         const {messages, loader} = MessagesModule._prepareProps(nextProps);
@@ -158,21 +138,6 @@ class MessagesModule extends ComponentBlock
     }  
     protected static _prepareProps (props : Partial< MessagesModuleProps >)
     {
-        // const props : { messages : Record< string, MessageComponent > } = { messages : {} };
-        // const isSingleMsgData = 'msg' in messagesData;
-
-        // if (isSingleMsgData)
-        // {
-        //     const message = MessagesModule._createMessageComponent(messagesData as MessageProps);
-        //     props.messages[message.id] = message;
-        // }
-        // else
-        //     Object.values(messagesData).forEach(messageProps => 
-        //     {   
-        //         const message = MessagesModule._createMessageComponent(messageProps);
-        //         props.messages[message.id] = message;
-        //     });
-
         if ('messagesData' in props)
         {
             const messagesData = props.messagesData;

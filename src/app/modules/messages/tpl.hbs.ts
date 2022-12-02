@@ -9,18 +9,18 @@ export default `
             {{/each}}
         </ul>
     </li>
-</ul>
-<div class="_messages__sendMessage _sendMessage">
-    {{{inputSend}}}
-    {{{buttonSend}}}
-    {{{buttonAttach}}}
-</div>    
+</ul>   
 {{else}}
 <div class="_messages__box">
-    <div class="text _messages__noChatsMsg">
-    Заглушка
+    <div class="text _messages__emptyMsg">
+    Выберите чат, чтобы отправить сообщение.
     </div>
 </div>
 {{/if}} 
 {{{loader}}}
+<div class="_messages__sendMessage _sendMessage">
+    {{{inputSend}}}
+    {{{buttonSend}}}
+    {{{buttonAttach}}}
+</div> 
 `.trim();

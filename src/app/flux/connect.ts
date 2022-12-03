@@ -1,35 +1,35 @@
 import SurChat from '@app';
-import {PlainObject, SingleOrPlural} from '@core/types';
+import {SingleOrPlural} from '@core/types';
 import Store, {StoreEvents} from '@core/store';
 import {BlockEvents, BlockProps} from '@core/block';
 import {AppStoreScheme} from '@models/types';
 import ComponentBlock, {ComponentParams} from '@core/block/component';
-import { isEqual } from '@lib-utils-kit';
+import {isEqual} from '@lib-utils-kit';
 
-type state2props = (state : AppStoreScheme) => PlainObject;
+type state2props< PropsType > = (state : AppStoreScheme) => PropsType;
 
 type CompConn2storeConstructor< PropsType > = 
 	new (
-		props? : PropsType, 
+		props? : PropsType | null, 
 		events? : BlockEvents, 
 		params? : ComponentParams
 	) 
 	=> ComponentBlock;
 
 export default function componentConnected2store< CompProps extends BlockProps = BlockProps > 
-(
-	ComponentCls : typeof ComponentBlock, 
-	mapStateToProps : state2props,
-	trackStorePath? : SingleOrPlural< string >
-) 
-: CompConn2storeConstructor< CompProps >
+	(
+		ComponentCls : typeof ComponentBlock, 
+		mapStateToProps : state2props< CompProps >,
+		trackStorePath? : SingleOrPlural< string >
+	) 
+	: CompConn2storeConstructor< CompProps >
 {
 	const app = SurChat.instance;
 
 	return class extends ComponentCls 
     {
 		constructor (
-			props? : CompProps, 
+			props? : CompProps | null, 
 			events : BlockEvents = [], 
 			params : ComponentParams = {}) 
 		{
@@ -47,7 +47,9 @@ export default function componentConnected2store< CompProps extends BlockProps =
 
 			app.store.on(
 				trackStoreEvents ? trackStoreEvents : StoreEvents.updated, 
-				() => {				
+				() => {	
+					console.log('componentConnected2store store.on', trackStoreEvents ? trackStoreEvents : StoreEvents.updated);
+					
 					const compNextState = mapStateToProps( app.storeState );
 					
 					if (!isEqual(compState, compNextState))
@@ -57,15 +59,18 @@ export default function componentConnected2store< CompProps extends BlockProps =
 						compState = compNextState;
 					}
 				});
-			
+
 			super( {...props, ...compState}, events, params );
 		}
 	};
 }
-export function storeConnector (mapStateToProps : state2props, trackStorePathes? : SingleOrPlural< string >)
-{
+export function storeConnector< CompProps extends BlockProps = BlockProps > 
+(
+	mapStateToProps : state2props< CompProps >, 
+	trackStorePathes? : SingleOrPlural< string >
+) {
 	return function (ComponentCls : typeof ComponentBlock)
 	{
-		return componentConnected2store(ComponentCls, mapStateToProps, trackStorePathes);
+		return componentConnected2store< CompProps >(ComponentCls, mapStateToProps, trackStorePathes);
 	};
 }

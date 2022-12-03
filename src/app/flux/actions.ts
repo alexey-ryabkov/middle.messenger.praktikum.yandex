@@ -12,6 +12,7 @@ import {createAppError} from "@app-utils-kit";
 import { StoreSetStateType } from "@core/store";
 
 // TODO если мы авторизуемся авторматом после регистрации нужен ли defineUser ?
+// (not valid cookie)
 
 export default class Actions 
 {
@@ -44,12 +45,7 @@ export default class Actions
     static getChatsList ()
     {   
         const app = SurChat.instance;
-        const curUser = app.user.data;
 
-        if (!curUser)
-        {
-            return Promise.reject( createAppError('no current user', AppErrorCode.default, 'Actions.getChatsList') );
-        }
         return chatsApi.getChatsList()
             .then(rawChats =>
             {
@@ -60,9 +56,9 @@ export default class Actions
                     // rest api don`t give us userId by login ( /user/search ) for current user. so fix it here
                     if (chat.lastMessage && !chat.lastMessage.userId)
                     {
-                        chat.lastMessage.userId = curUser.id ?? 0;
+                        chat.lastMessage.userId = app.user.data?.id ?? 0;
                     }                    
-                    chats[String(chat.id)] = chat;
+                    chats[chat.id] = chat;
                     return chats;
                 }, 
                 chats);
@@ -72,8 +68,7 @@ export default class Actions
                     app.store.set('chats', chats, StoreSetStateType.replace);
                 }
             })
-            .catch( error => apiErrorHandler(error) )
-            .finally( () => Actions.toggleChatsLoader(false) );
+            .catch( error => apiErrorHandler(error) );
     } 
     static createUserChat (login : string)
     {
@@ -94,14 +89,11 @@ export default class Actions
                 }
                 else
                     throw createAppError(`Пользователь с логином ${login} не найден`, AppErrorCode.default, 'createUserChat action');
-            })    
-            .then(chatId => 
-            {
-                return Actions.getChatsList().then( () => Actions.openChat(chatId) );
             })
+            .then( chatId => Actions.getChatsList().then( () => chatId ) )
             .catch( error => apiErrorHandler(error) );
     }
-    static createGroupChat ()
+    static createGroupChat (name : string)
     {
         // TODO 
         return Promise.reject( createAppError('absent func', AppErrorCode.default, 'Actions.createGroupChat') );
@@ -111,32 +103,28 @@ export default class Actions
         const id = String(chatId);
         const app = SurChat.instance;
 
-        if (id != app.storeState.openedChat && id in app.storeState.chats)
-        {
-            return chatsApi.getUsers(chatId)
-                .then(rawUsers =>
+        return chatsApi.getUsers(chatId)
+            .then(rawUsers =>
+            {
+                const chatUsers : PlainObject< ChatUserFields > = {};
+
+                rawUsers.reduce((chatUsers, user) =>
                 {
-                    const chatUsers : PlainObject< ChatUserFields > = {};
+                    chatUsers[user.id] = user;
+                    return chatUsers;
+                }, 
+                chatUsers);
 
-                    rawUsers.reduce((chatUsers, user) =>
-                    {
-                        chatUsers[String(user.id)] = user;
-                        return chatUsers;
-                    }, 
-                    chatUsers);
-
-                    if (!isEqual(chatUsers, app.storeState.chatUsers))
-                    {
-                        app.store.set('chatUsers', chatUsers, StoreSetStateType.replace);
-                    }
-                })
-                .catch( error => apiErrorHandler(error) )
-                .finally(() => 
-                {                    
-                    app.store.set('openedChat', id);
-                });
-        }
-        return Promise.resolve();
+                if (!isEqual(chatUsers, app.storeState.chatUsers))
+                {
+                    app.store.set( 'chatUsers', chatUsers, StoreSetStateType.replace );
+                }
+            })
+            .catch( error => apiErrorHandler(error) )
+            .finally(() => 
+            {                    
+                app.store.set( 'openedChat', id );
+            });
     }
     static closeChat (chatId : number) 
     {
@@ -145,39 +133,38 @@ export default class Actions
         const id = String(chatId);
         if (id == app.storeState.openedChat)
         {
-            app.store.set('openedChat', null);
+            app.store.set( 'openedChat', null );
             app.store.set('chatUsers', {}, StoreSetStateType.replace);
         }
         return Promise.resolve();
     }
     static deleteChat (chatId : number) 
     {
-        return chatsApi.deleteChat(chatId)
-            .then(() => Actions.getChatsList())
-            .then(() => Actions.closeChat(chatId));
+        return chatsApi.deleteChat( chatId )
+            .then( () => Actions.getChatsList() );
     } 
     static recieveLastMessage (chatId : number, msg : Message)
     {
         const app = SurChat.instance;
-        const chat = app.storeState.chats?.[String(chatId)];
 
+        const chat = app.storeState.chats?.[chatId];
         if (chat)
         {
             chat.lastMessage = msg;
             chat.unreadCnt++;
 
-            app.store.set(`chats.${chatId}`, chat);
+            app.store.set( `chats.${chatId}`, chat );
         }
         return Promise.resolve();
     } 
     static toggleChatsLoader (flag : boolean) 
     {
-        SurChat.instance.store.set('showChatsLoader', flag);
+        SurChat.instance.store.set( 'showChatsLoader', flag );
         return Promise.resolve();
     } 
     static toggleMessagesLoader (flag : boolean) 
     {
-        SurChat.instance.store.set('showMessagesLoader', flag);
+        SurChat.instance.store.set( 'showMessagesLoader', flag );
         return Promise.resolve();
     } 
     protected static _processProfileData (profile : ChatUserFields)
@@ -185,9 +172,9 @@ export default class Actions
         const app = SurChat.instance;
         const curProfile = app.storeState.currentUser;
 
-        if (!curProfile || !isEqual(profile, curProfile))
+        if (!curProfile || !isEqual( profile, curProfile ))
         {
-            app.store.set('currentUser', profile); 
+            app.store.set( 'currentUser', profile ); 
         }
     } 
 }

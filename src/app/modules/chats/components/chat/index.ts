@@ -7,6 +7,8 @@ import Caption, {CaptionSize, CaptionWeight} from '@lib-components/caption';
 import tpl from './tpl.hbs';
 import './style.scss';
 
+import ChatUser from '@models/chat_user';
+
 export type ChatProps = BlockProps & 
 {
     image : string,
@@ -14,7 +16,7 @@ export type ChatProps = BlockProps &
     isActive : boolean,
     datetime? : string,
     msg? : string,
-    author : 'you' | null,
+    msgAuthor? : 'you' | ChatUser | null,
     tag? : string,
     newMsgCnt? : number
 };
@@ -52,9 +54,20 @@ export default class ChatComponent extends ComponentBlock
     }  
     protected static _prepareProps (props : Partial< ChatProps > = {})
     {
-        if (props.author)
+        if ('msgAuthor' in props)
         {
-            props.msgAuthor = 'Вы';
+            let msgAuthorName = '';
+
+            const msgAuthor = props.msgAuthor;
+            if (msgAuthor instanceof ChatUser)
+            {
+                props.msgAuthorName = msgAuthor.nickname;
+            }
+            else if ('you' == msgAuthor)
+            {
+                msgAuthorName = 'Вы';
+            }            
+            props.msgAuthorName = msgAuthorName;
         }
         if ('image' in props)
         {

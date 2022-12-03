@@ -7,8 +7,8 @@ export default `
     </div>
     {{#if msg}}
     <div class="chat__msg">
-        {{#if msgAuthor}}
-        <strong class="chat__msgAuthor">{{msgAuthor}}:</strong>
+        {{#if msgAuthorName}}
+        <strong class="chat__msgAuthor">{{msgAuthorName}}:</strong>
         {{/if}}
         <div class="text chat__msgContent">{{msg}}</div>
     </div> 

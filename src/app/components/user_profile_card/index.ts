@@ -7,8 +7,6 @@ import IconButton from "@lib-components/icon_button";
 import ProfileCard from "@lib-components/profile_card";
 import DropdownMenu from "@lib-modules/dropdown_menu";
 
-const app = SurChat.instance;
-
 export type UserProfileCardProps = BlockProps & 
 {
     image : string,
@@ -18,6 +16,8 @@ class UserProfileCard extends ProfileCard
 {
     constructor (props : UserProfileCardProps)
     {
+        const app = SurChat.instance;
+
         super({
             ...props, 
             menu: new DropdownMenu(
@@ -51,10 +51,10 @@ class UserProfileCard extends ProfileCard
 }
 export default componentConnected2store< UserProfileCardProps >(UserProfileCard, () => 
 {
-    const curUser = app.user.data;
+    const curUser = SurChat.instance.user.data;
 
-    console.log('UserProfileCard set props');
+    console.log('UserProfileCard componentConnected2store', {image: curUser?.avatar || '', name: curUser?.nickname || ''});
 
-    return {image: curUser?.avatar, name: curUser?.nickname};
+    return {image: curUser?.avatar || '', name: curUser?.nickname || ''};
 },
 'currentUser');

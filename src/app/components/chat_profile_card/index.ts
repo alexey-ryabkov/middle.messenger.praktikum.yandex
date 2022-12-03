@@ -1,13 +1,10 @@
 import SurChat from "@app";
-import Actions from "@flux/actions";
 import componentConnected2store from "@flux/connect";
 import {BlockProps} from "@core/block";
 import Icon, {IconVar} from "@lib-components/icon";
 import IconButton from "@lib-components/icon_button";
 import ProfileCard from "@lib-components/profile_card";
 import DropdownMenu from "@lib-modules/dropdown_menu";
-
-const chatsList = SurChat.instance.chatsList;
 
 export type ChatProfileCardProps = BlockProps & 
 {
@@ -42,14 +39,14 @@ class ChatProfileCard extends ProfileCard
                     {
                         title: 'Удалить чат пользователя',
                         icon: IconVar.x_mark,
-                        // TODO нужен экшен для удаления чата
                         action: () => 
                         {
-                            const activeChat = chatsList.activeChat;
+                            const {chatsList} = SurChat.instance;
+                            const {activeChat} = chatsList;
+
                             if (activeChat)
                             {
-                                // TODO preloader
-                                Actions.deleteChat(activeChat.id)
+                                chatsList.deleteChat(activeChat.id)
                                     .catch(() => alert('Ошибка при удалении чата: операция не выполнена'));
                             }
                             else
@@ -64,10 +61,10 @@ class ChatProfileCard extends ProfileCard
 }
 export default componentConnected2store< ChatProfileCardProps >(ChatProfileCard, () => 
 {
-    const activeChat = chatsList.activeChat;
+    const {activeChat} = SurChat.instance.chatsList;
 
-    console.log('ChatProfileCard set props');
+    console.log('ChatProfileCard componentConnected2store', {image: activeChat?.avatar || '', name: activeChat?.title || ''});
     
-    return {image: activeChat?.avatar, name: activeChat?.title ?? ''};
+    return {image: activeChat?.avatar || '', name: activeChat?.title || ''};
 },
 'openedChat');

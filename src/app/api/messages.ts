@@ -17,6 +17,7 @@ export enum MessengerEvents {
 export default class Messenger extends EventBus implements MessengerApi
 {
     protected static readonly MANUALLY_CLOSE_CODE = 1000;    
+    protected static readonly AWAIT_WS_OPEN_TIME = 1000;
     protected static readonly AWAIT_WS_RESULT_TIME = 3000;
     protected static readonly RECONNECT_DELAY = 1000;
     protected static readonly PING_DELAY = 20000;
@@ -24,14 +25,14 @@ export default class Messenger extends EventBus implements MessengerApi
     protected _socket : WebSocket;
     protected _restartTimer : number; 
     protected _pingTimer : number; 
+    protected _inited = false;
 
     constructor (
         protected _userId : number, 
         protected _chatId : number, 
         protected _token : string)
     {
-        super();
-        this.open();     
+        super(); 
     }
     get state ()
     {
@@ -40,6 +41,20 @@ export default class Messenger extends EventBus implements MessengerApi
     get isOpened () 
     {
         return this._socket && this.state === WebSocket.OPEN;
+    }
+    init ()
+    {   
+        return new Promise< void >(resolve => 
+        {
+            if (!this._inited)
+            {
+                this.open();
+
+                setTimeout( () => resolve(), Messenger.AWAIT_WS_OPEN_TIME );
+            }
+            else
+                resolve();
+        });
     }
     open ()
     {
@@ -103,12 +118,12 @@ export default class Messenger extends EventBus implements MessengerApi
 
         if (this.isOpened) 
         {
-            this._socket.close(Messenger.MANUALLY_CLOSE_CODE, 'manually closed');
+            this._socket.close(Messenger.MANUALLY_CLOSE_CODE, 'manually closed (Messenger.close)');
         }
     }  
     static processMessage (data : any)
     {
-        const {user_id: userId, time, ...messageData} = data;
+        const {user_id: userId, time, ...messageData} = data
         const datetime = new Date(time);
 
         return {...messageData, userId, datetime} as Message;
@@ -124,8 +139,6 @@ export default class Messenger extends EventBus implements MessengerApi
             try 
             {
                 const data = JSON.parse(event.data);
-
-                // console.log('message', data); // 
 
                 if (Array.isArray(data))
                 {
@@ -145,7 +158,6 @@ export default class Messenger extends EventBus implements MessengerApi
                         case 'message':
                         case 'file':
                         case 'sticker':
-                            // console.log(data);
                             this.emit( MessengerEvents.message, Messenger.processMessage(data) );                          
                             break;
 
@@ -158,7 +170,7 @@ export default class Messenger extends EventBus implements MessengerApi
                             break;
 
                         default:
-                            console.log('Unknown type data', data);
+                            console.warn('Unknown type data', data);
                             break;
                     }
             } catch {
@@ -180,7 +192,7 @@ export default class Messenger extends EventBus implements MessengerApi
         });
         this._socket.addEventListener('error', error => 
         {
-            console.log('error', error); // 
+            console.error('Messenger ws error', error);
             this.emit(MessengerEvents.error, error);
         });
     }

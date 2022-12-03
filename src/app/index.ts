@@ -10,6 +10,14 @@ import MainContainer from '@app-modules/main';
 import Spinner from '@lib-components/spinner';
 import { cloneDeep } from '@lib-utils-kit';
 
+
+import Actions from '@flux/actions';
+
+// FIXME too many logic in class:
+// localize routing in AppRouter extends Router
+// work with store in AppStore extends Store
+// mb localize user define func in @models/user
+
 export default class SurChat implements App
 {
     static readonly NAME = 'Sur chat';
@@ -41,22 +49,27 @@ export default class SurChat implements App
     private constructor()
     {
         this.title = SurChat._INITIALIZE_MSG;
-        this._container = new MainContainer( SurChat._ROOT_NODE, new Spinner({ size: 'large' }) ).mount(); 
+        this._container = new MainContainer( SurChat._ROOT_NODE, new Spinner({ size: 'large' })).mount(); 
         
         this._router = new Router();
-
         this._store = new Store( SurChat._initStoreState, `${SurChat.NAME} store` );
-
-        this._store.oneTime(Store.getEventName4path('currentUser'), () => 
-        {
-            const {currentUser} = this.storeState;
-
-            // console.log('one time currentUser handler');
-            return this._isUserDefined = !!currentUser;
-        });
 
         this._user = new CurrentUser(this);
         this._chatsList = new ChatsList(this); 
+
+        this._store.on(Store.getEventName4path('currentUser'), () => 
+        {
+            const isUserAuthorized = this.user.isAuthorized;
+
+            const isUserBecameAuthorized = !this._isUserDefined && isUserAuthorized;
+            if (isUserBecameAuthorized)
+            {
+                Actions.toggleChatsLoader(false)
+                    .then( () => Actions.getChatsList() )
+                    .finally( () => Actions.toggleChatsLoader(false) );
+            }
+            this._isUserDefined = isUserAuthorized;
+        });
     }
 
     static get instance ()
@@ -112,7 +125,6 @@ export default class SurChat implements App
         return this._chatsList;
     }
 
-    // TODO убрать весь сахар: .page .go2page ? 
     set pages (pages : Page[])
     {
         pages.forEach( page => this._router.use(page) );
@@ -123,8 +135,6 @@ export default class SurChat implements App
     }
     init ()
     {
-        // console.log('app init');
-        
         this._prepareLinks4routing();
         this._prepareAuthRedirects();
         
@@ -184,19 +194,19 @@ export default class SurChat implements App
     {
         this._store.on( Store.getEventName4path('currentUser'), () => 
         {
-            const {currentUser} = this.storeState;
-            
-            // console.log('and now will redirect!', this._isUserDefined, currentUser);
+            const isUserAuthorized = this.user.isAuthorized;
 
-            if (this._isUserDefined && null === currentUser)
+            const isUserBecameAuthorized = !this._isUserDefined && isUserAuthorized;
+            const isUserBecameUnknown = this._isUserDefined && !isUserAuthorized;
+
+            if (isUserBecameUnknown)
             {
                 this._router.go( Page.url( SurChat.AUTH_PAGE_NAME ));
             }
-            else if (!this._isUserDefined && currentUser)
+            else if (isUserBecameAuthorized)
             {
                 this._router.go( Page.url( SurChat.CHAT_PAGE_NAME ));
             }
-            this._isUserDefined = !!currentUser;
         });
     }
 }

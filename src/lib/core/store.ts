@@ -107,26 +107,32 @@ export default class Store extends EventBus
     }
     on (event : SingleOrPlural< string >, callback : Handler)
     {
-        const events = typeof event == 'string' ? [event] : Array.from(event);
-
-        // every listeners also subscribed on cleared and reinited events cause it affects all state
-        events.push(StoreEvents.reinited);
-        events.push(StoreEvents.cleared);
-
-        events.forEach( event => super.on(event, callback) );
-
+        this._processEvent(event).forEach( event => super.on(event, callback) );
+        return this;
+    }
+    off (event : SingleOrPlural< string >, callback : Handler)
+    {
+        this._processEvent(event).forEach( event => super.off(event, callback) );
         return this;
     }
     emit (event : string) 
     {
-        // TODO get out after debugging 
         console.log('store emit', event);
-
         super.emit(event);
     }
     static getEventName4path (path: string, event : StoreEvents = StoreEvents.updated)
     {
         return `${event}:${path}`;
+    }
+    protected _processEvent (event : SingleOrPlural< string >)
+    {
+        const events = typeof event == 'string' ? [event] : Array.from(event);
+
+        // every listeners also subscribed on cleared and reinited events cause it affects on all state
+        events.push(StoreEvents.reinited);
+        events.push(StoreEvents.cleared);
+
+        return events;
     }
     protected _init (initState : PlainObject)
     {

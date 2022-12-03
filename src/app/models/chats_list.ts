@@ -1,9 +1,12 @@
 import {PlainObject} from "@core/types";
 import SurChat from "@app";
-import Chat from "@models/chat";
-import chats from '@data/chats.json'; 
+import Store from "@core/store";
+import Actions from "@flux/actions";
+import {AppErrorCode} from "@models/types";
+import Chat, { ChatType } from "@models/chat";
+import {createAppError} from "@app-utils-kit";
+import dummyChats from '@data/chats.json'; 
 import DummyChat from "@models/dummy_chat";
-import Store, { StoreEvents } from "@core/store";
 
 export default class ChatsList 
 {
@@ -15,6 +18,140 @@ export default class ChatsList
         this._processChats();
         
         this._app.store.on( Store.getEventName4path('chats'), () => this._processChats() );
+
+        // open chat at start after got its in store
+        this._app.store.oneTime( Store.getEventName4path('chats'), () => 
+        {
+            Actions.toggleChatsLoader(false)
+                .then( () => Promise.allSettled( Object.values( this.list ).map( chat => chat.init() )) )
+                .then( () => this._openNextChat() )
+                .finally( () => Actions.toggleChatsLoader(false) );
+        });
+    }    
+    get list ()
+    {
+        return this._chats;
+    }
+    get activeChat ()
+    {
+        const chatId = this._app.storeState.openedChat;
+
+        if (chatId)
+        {
+            return this.getChat(+chatId);
+        }
+        return null;
+    }
+    getChat (chatId : number)
+    {
+        if (chatId in this._chats)
+        {
+            return this._chats[chatId];
+        }
+        return null;
+    }
+    createChat (loginOrTitle : string, type : ChatType)
+    {
+        return Actions.toggleChatsLoader(true)
+            .then(() =>
+            {
+                if (ChatType.user == type)
+                {
+                    const login = loginOrTitle;
+                    return Actions.createUserChat(login);
+                }
+                else
+                {
+                    const title = loginOrTitle;
+                    return Actions.createGroupChat(title);
+                }
+            })
+            .then(chatId => 
+            {
+                if (chatId)
+                {
+                    const chat = this.getChat(chatId);
+                    if (chat)
+                    {
+                        return chat.init().then( () => Actions.openChat(chatId) );
+                    }
+                }
+            })
+            .finally( () => Actions.toggleChatsLoader(false) );
+    }
+    openChat (chatId : number)
+    {
+        const {activeChat} = this;
+        const chat2open = this.getChat(chatId);
+
+        if (chat2open)
+        {
+            if (activeChat?.id != chat2open.id)
+            {
+                return Actions.toggleMessagesLoader(true)
+                    .then(() => 
+                    {
+                        if (activeChat)
+                        {
+                            return Actions.closeChat( activeChat.id );
+                        }
+                    })
+                    .then( () => chat2open.loadMessages() )
+                    .then( () => Actions.openChat(chatId) ) 
+                    .finally( () => Actions.toggleMessagesLoader(false) );
+            }
+            return Promise.resolve();
+        }
+        else
+            return Promise.reject( createAppError(`unknown chat ${chatId}`, AppErrorCode.dev, 'ChatsList.openChat') );
+    }
+    deleteChat (chatId : number)
+    {
+        if (chatId in this._chats)
+        {
+            return Actions.toggleChatsLoader(true)
+                .then( () => Actions.deleteChat(chatId) )
+                .then( () => Actions.closeChat(chatId) )
+                .then( () => this._openNextChat() )
+                .finally( () => Actions.toggleChatsLoader(false) );    
+        }
+        return Promise.reject( createAppError(`unknown chat ${chatId}`, AppErrorCode.dev, 'ChatsList.openChat') ); 
+    }
+    protected _openNextChat ()
+    {
+        const chat2open = this._getChat2openNext();
+        if (chat2open)
+        {
+            return this.openChat( chat2open.id );
+        }
+        return Promise.resolve();
+    }
+    protected _getChat2openNext ()
+    {
+        return Object.values(this._chats).reduce((chat2open, chat) => 
+        {
+            let resChat2open : Chat | null = chat2open;
+
+            if (resChat2open)
+            {
+                const chatlastMsg = chat.lastMessage;
+                const chat2openlastMsg = (resChat2open as Chat).lastMessage;
+
+                if (chatlastMsg && 
+                (
+                    !chat2openlastMsg
+                    || 
+                    chatlastMsg.datetime > chat2openlastMsg.datetime
+                )) {
+                    resChat2open = chat;
+                }
+            }
+            else
+                resChat2open = chat;
+            
+            return resChat2open;
+        }, 
+        null);
     }
     protected _processChats ()
     {
@@ -30,85 +167,36 @@ export default class ChatsList
             delete this._chats[id];
         });
     }
-    get list ()
-    {
-        return this._chats;
-    }
-    get activeChat ()
-    {
-        const chatId = this._app.storeState.openedChat;
-
-        if (chatId)
-        {
-            return this.getChat(chatId);
-        }
-        return null;
-    }
-    getChat (chatId : string)
-    {
-        if (chatId in this._chats)
-        {
-            return this._chats[chatId];
-        }
-        return null;
-    }
-    getChat2open ()
-    {
-        return Object.values(this._chats).reduce((chat2open, chat) => 
-        {
-            let resChat2open : Chat | null = chat2open;
-
-            if (resChat2open)
-            {
-                const chatlastMsg = chat.lastMessage;
-                const chat2openlastMsg = (resChat2open as Chat).lastMessage;
-
-                if (chatlastMsg && 
-                (
-                    !chat2openlastMsg
-                    || 
-                    chatlastMsg > chat2openlastMsg
-                )) {
-                    resChat2open = chat;
-                }
-            }
-            else
-                resChat2open = chat;
-            
-            return resChat2open;
-        }, 
-        null);
-    }
     // TODO below depricated 
     get dummyList ()
     {
         // parcel can ref to image, only if it static string
         // so we can`t do it dynamically (get image from json)  
-        if (chats['chat1'])
+        if (dummyChats['chat1'])
         {
             const chat1imageUrl = new URL(
                 '../../../static/images/hatt.jpg',
                 import.meta.url
             );
-            chats['chat1'].image = chat1imageUrl.pathname;
+            dummyChats['chat1'].image = chat1imageUrl.pathname;
         }
-        if (chats['chat2'])
+        if (dummyChats['chat2'])
         {
             const chat2imageUrl = new URL(
                 '../../../static/images/grimes.jpg',
                 import.meta.url
             );
-            chats['chat2'].image = chat2imageUrl.pathname;
+            dummyChats['chat2'].image = chat2imageUrl.pathname;
         }
-        if (chats['chat3'])
+        if (dummyChats['chat3'])
         {
             const chat3imageUrl = new URL(
                 '../../../static/images/michael.jpg',
                 import.meta.url
             );
-            chats['chat3'].image = chat3imageUrl.pathname;
+            dummyChats['chat3'].image = chat3imageUrl.pathname;
         }
-        return chats;
+        return dummyChats;
     }
     get dummyActiveChat ()
     {

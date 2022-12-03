@@ -1,5 +1,7 @@
+import {Handler, PlainObject} from '@core/types';
 import SurChat from '@app';
 import componentConnected2store from '@flux/connect';
+import Store from '@core/store';
 import Templator from '@core/templator';
 import {BlockProps} from '@core/block';
 import {BemParams} from '@core/block/bem';
@@ -9,12 +11,18 @@ import InputText from '@lib-components/input-text';
 import IconButton from '@lib-components/icon_button';
 import Icon, {IconVar} from '@lib-components/icon';
 import Spinner from '@lib-components/spinner';
-import MessageComponent, {MessageProps} from './components/message';
+import {ChatMessage} from '@models/types';
+import MessageComponent, {MessageProps, MessageTypes} from './components/message';
+import {datePrettify} from '@lib-utils-kit';
 import mount from '@lib-utils/mount';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-export type MessagesData = Record< string, MessageProps > | MessageProps;
+type MessagePropsExt = MessageProps &
+{
+    messageId : number
+}
+export type MessagesData = PlainObject< MessagePropsExt > | MessagePropsExt;
 export type MessagesModuleProps = BlockProps & 
 {
     messagesData : MessagesData,
@@ -22,6 +30,8 @@ export type MessagesModuleProps = BlockProps &
 }
 class MessagesModule extends ComponentBlock
 {
+    protected _openedChat : string | null;
+
     constructor (props : MessagesModuleProps)
     {
         const {messages, loader} = MessagesModule._prepareProps(props);
@@ -33,7 +43,7 @@ class MessagesModule extends ComponentBlock
         }, 
         ['click', () => 
         {
-            const activeChat = SurChat.instance.chatsList.activeChat;
+            const {activeChat} = SurChat.instance.chatsList;
             if (activeChat)
             {
                 const msgContent = inputSend.value.trim();
@@ -100,9 +110,13 @@ class MessagesModule extends ComponentBlock
             buttonAttach
         });
         window.messages = this;
+
+        this._prepareNewMsgHandler();
     }
     setProps (nextProps : Partial< MessagesModuleProps >)
     {
+        console.log();
+
         const props : Partial< MessagesModuleProps > = {};
 
         const {messages, loader} = MessagesModule._prepareProps(nextProps);
@@ -127,7 +141,7 @@ class MessagesModule extends ComponentBlock
                     props.messages = messages;
             }
             else
-                props.messages = messages;
+                props.messages = null;
         }
         if ('messagesData' in nextProps)
         {
@@ -140,7 +154,7 @@ class MessagesModule extends ComponentBlock
     {
         if ('messagesData' in props)
         {
-            const messagesData = props.messagesData;
+            let messagesData = props.messagesData;
             if (messagesData && Object.keys(messagesData).length > 0)
             {
                 const messages : Record< string, MessageComponent > = {};
@@ -148,15 +162,15 @@ class MessagesModule extends ComponentBlock
                 const isSingleMsgData = 'msg' in messagesData;            
                 if (isSingleMsgData)
                 {
-                    const message = MessagesModule._createMessageComponent(messagesData as MessageProps);
-                    messages[message.id] = message;
+                    const messageProps = messagesData as MessagePropsExt;
+
+                    messagesData = {[messageProps.messageId]: messageProps};
                 }
-                else
-                    Object.values(messagesData).forEach(messageProps => 
-                    {   
-                        const message = MessagesModule._createMessageComponent(messageProps);
-                        messages[message.id] = message;
-                    });
+                Object.values(messagesData).reverse().forEach(messageProps => 
+                {   
+                    const message = MessagesModule._createMessageComponent(messageProps);
+                    messages[messageProps.messageId] = message;
+                });
 
                 props.messages = messages;
             }
@@ -171,14 +185,60 @@ class MessagesModule extends ComponentBlock
         }    
         return props;
     } 
-    protected static _createMessageComponent (props : MessageProps)
+    protected static _createMessageComponent (props : MessagePropsExt)
     {
-        props.tag = 'li';
-
         const message = new MessageComponent(props);
         message.bemMix([ '_messages', 'listItem' ]);     
 
         return message;
+    }
+    protected _prepareNewMsgHandler ()
+    {
+        const app = SurChat.instance;
+
+        this._openedChat = null;
+
+        const newMsgHandler : Handler = () => 
+        {   
+            if (this._openedChat)
+            {
+                const chatId = +this._openedChat;
+                
+                const message = SurChat.instance.storeState.chats?.[ chatId ].lastMessage;
+                if (message)
+                {
+                    const newMessage = { ...message, chatId, isRead: false } as ChatMessage;
+
+                    this.setProps({ messagesData: MessagesModule.processChatMessage2props(newMessage) });
+                }
+            }
+        }
+        app.store.on( Store.getEventName4path('openedChat'), () =>
+        {
+            if (this._openedChat)
+            {
+                app.store.off( Store.getEventName4path(`chats.${this._openedChat}.lastMessage`), newMsgHandler );
+            }
+
+            const {openedChat} = app.storeState; 
+            this._openedChat = openedChat;   
+
+            if (openedChat)
+            {
+                app.store.on( Store.getEventName4path(`chats.${openedChat}.lastMessage`), newMsgHandler );
+            }
+        });
+    }
+    static processChatMessage2props (chatMessage : ChatMessage)
+    {
+        return {
+            messageId: chatMessage.id,
+            msg: chatMessage.content,
+            datetime: datePrettify(chatMessage.datetime),    
+            of: chatMessage.userId == SurChat.instance.user.data?.id ? 'you' : 'chat',
+            type: MessageTypes.text,
+            tag: 'li',
+        } as MessagePropsExt;
     }
     protected _prepareBemParams ()
     {
@@ -190,8 +250,22 @@ class MessagesModule extends ComponentBlock
         return new Templator(tpl);
     }
 }
-export default componentConnected2store< MessagesData >(MessagesModule, () => 
+export default componentConnected2store< MessagesModuleProps >(MessagesModule, storeState => 
 {
-    // return {messagesData: activeChat.dummyMessages as Record< string, MessageProps >};
-    return {messagesData: null, showLoader: true};
-});
+    const app = SurChat.instance;
+    const {activeChat} = app.chatsList;
+    // const curUser = app.user.data;
+
+    const messagesData : MessagesData = {};
+    const showLoader = storeState.showChatsLoader;
+
+    activeChat?.messages.reduce((messagesData, chatMessage) => 
+    {
+        messagesData[chatMessage.id] = MessagesModule.processChatMessage2props(chatMessage);
+        return messagesData;
+    },
+    messagesData);
+
+    return {messagesData, showLoader};
+},
+['openedChat', 'showMessagesLoader']);

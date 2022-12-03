@@ -95,7 +95,7 @@ export function merge (lhs : PlainObject, rhs : PlainObject) : PlainObject
     });
     return lhs;
 }
-export function setValInPath (obj: PlainObject | unknown, path: string, value: unknown): PlainObject | unknown 
+export function setValInPath (obj : PlainObject | unknown, path : string, value : unknown): PlainObject | unknown 
 {
     if (!(obj instanceof Object))
     {
@@ -131,33 +131,58 @@ export function trim (str : string, trimSymbols? : string)
 
     return str.replace(new RegExp(`(?:^[${trimRegexpClsSymbols}]*)|(?:[${trimRegexpClsSymbols}]*$)`), '');
 }
-export function isEqual (a: PlainObject, b: PlainObject): boolean 
-{
-    if (String(Object.keys(a)) != String(Object.keys(b)))
-    {
+
+
+export function isEqual(lhs: PlainObject, rhs: PlainObject) {
+    if (Object.keys(lhs).length !== Object.keys(rhs).length) {
         return false;
     }
-    return Object.keys(a).every(prop => 
-    {
-        const propA = a[prop];
-        const propB = b[prop];
 
-        if (propA === propB)
-        {
-            return true;
-        }
-        else if (
-            propA instanceof Object
-            &&
-            propB instanceof Object
-        ) 
-        {
-            return isEqual(propA as PlainObject, propB as PlainObject);
-        }
-        else
+    for (const [key, value] of Object.entries(lhs)) {
+        const rightValue = rhs[key];
+        if (isArrayOrObject(value) && isArrayOrObject(rightValue)) {
+            if (isEqual(value, rightValue)) {
+                continue;
+            }
             return false;
-    });
+        }
+
+        if (value !== rightValue) {
+            return false;
+        }
+    }
+
+    return true;
 }
+// export function isEqual (a: PlainObject, b: PlainObject): boolean 
+// {
+//     if (String(Object.keys(a)) != String(Object.keys(b)))
+//     {
+//         return false;
+//     }
+//     return Object.keys(a).every(prop => 
+//     {
+//         const propA = a[prop];
+//         const propB = b[prop];
+
+//         if (propA === propB)
+//         {
+//             return true;
+//         }
+//         else if (
+//             propA instanceof Object
+//             &&
+//             propB instanceof Object
+//         ) 
+//         {
+//             return isEqual(propA as PlainObject, propB as PlainObject);
+//         }
+//         else
+//             return false;
+//     });
+// }
+
+
 export function cloneDeep (obj : [] | PlainObject = {}) 
 {
     let cloned : unknown[] | PlainObject; 
@@ -190,4 +215,46 @@ export function cloneDeep (obj : [] | PlainObject = {})
         });
     }
     return cloned;
+}
+
+export function datePrettify (date : Date)
+{
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    
+    const TODAY_MS = today.getTime();
+    const DAY_AGO_MS = 60*60*24*1000;
+    const AVAREGE_MONTH_DAYS = 29.3;
+    const SIX_DAYS_AGO_MS = DAY_AGO_MS*6;
+    const ELEVEN_MONTHS_AGO_MS = AVAREGE_MONTH_DAYS*DAY_AGO_MS*11;
+    
+    const almostWeekAgo = new Date(TODAY_MS - SIX_DAYS_AGO_MS);
+    const almostYearAgo = new Date(TODAY_MS - ELEVEN_MONTHS_AGO_MS);
+
+    const weekDays = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+    const monthNames = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля',
+        'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+
+    if (date > today)
+    {
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+
+        return `${hours > 9 ? hours : `0${hours}`}:${minutes > 9 ? minutes : `0${minutes}`}`;
+    }
+    else if (date > almostWeekAgo)
+    {
+        return weekDays[date.getDay()];
+    }
+    else if (date > almostYearAgo)
+    {
+        return `${date.getDate()} ${monthNames[date.getMonth()]}`; 
+    }
+    else 
+    {
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+
+        return `${day > 9 ? day : `0${day}`}.${month > 9 ? month : `0${month}`}.${date.getFullYear()}`;
+    }
 }

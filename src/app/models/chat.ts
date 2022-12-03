@@ -15,7 +15,6 @@ export enum ChatType
 export default class Chat
 {
     unreadCnt : number;
-
     protected _id : number;
     protected _createdBy : number;
     protected _avatar : string | null;
@@ -25,7 +24,8 @@ export default class Chat
     protected _messenger : Messenger;
     protected _userId : number;
     protected _type : ChatType;
-
+    protected _messagesHistory : ChatMessage[];
+    
     constructor (
         protected _app : SurChat, 
         fields : ChatFields)
@@ -43,11 +43,11 @@ export default class Chat
         this._userId = this._app.user.data?.id ?? 0;
 
         (this._messenger = new Messenger( this._userId, this._id, this._token ))
-                .on(MessengerEvents.message, message => 
+                .on( MessengerEvents.message, message => 
                 {
                     Actions.recieveLastMessage(this._id, message as Message);
                 })
-                .on(MessengerEvents.error, error => console.error(error));
+                .on( MessengerEvents.error, error => console.error(error) );
 
         this._processChatType();
     }
@@ -60,9 +60,9 @@ export default class Chat
         if (ChatType.user == this._type)
         {
             const collocutor = this.collocutor;
-
             if (collocutor)
             {
+                console.log('collocutor 121212');
                 return collocutor.nickname;
             }
         }
@@ -88,14 +88,13 @@ export default class Chat
     get members ()
     {
         return this._members
-            .map( userId => (this._app.storeState.chatUsers?.[ String(userId) ] ?? null) )
+            .map( userId => (this._app.storeState.chatUsers?.[userId] ?? null) )
             .filter(userFields => !!userFields)
             .map( userFields => new ChatUser(userFields) );
     }  
     get collocutor ()
     {
         const collocutorId = this._members.filter( user => user != this._userId )?.[0];
-
         if (collocutorId)
         {
             const collocutor = this._app.storeState.chatUsers?.[ String(collocutorId) ];
@@ -103,8 +102,20 @@ export default class Chat
             return collocutor ? new ChatUser( collocutor ) : null;
         }
         return null;
-    }  
+    }
+    get lastMessage ()
+    {
+        return this._app.storeState.chats?.[this._id].lastMessage;
+    }
     get messages ()
+    {
+        return this._messagesHistory;
+    }
+    init ()
+    {
+        return this._messenger.init();
+    }
+    loadMessages ()
     {
         return chatsApi.getNewMsgCnt(this._id)
             .then(unreadCnt => 
@@ -121,12 +132,12 @@ export default class Chat
                     return messages;
                 })();
             })
-            .catch(error => apiErrorHandler(error));
-    }
-    get lastMessage ()
-    {
-        return this._app.storeState.chats?.[ String(this._id) ].lastMessage;
-    }
+            .then(messages => 
+            {
+                this._messagesHistory = messages;
+            })
+            .catch( error => apiErrorHandler(error) );
+    }    
     sendMessage (content : string, type : MessageType = 'message')
     {
         return this._messenger.send(content, type);

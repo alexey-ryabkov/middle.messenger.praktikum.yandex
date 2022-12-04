@@ -4,7 +4,7 @@
 $spinner-sizes: ('small': 14px, 'regular': 24px, 'large': 46px);
     
 .spinner {
-    font-size: map.get($spinner-sizes, 'regular');;
+    font-size: map.get($spinner-sizes, 'regular');
     position: relative;
     display: inline-block;
     width: 1em;
@@ -13,30 +13,33 @@ $spinner-sizes: ('small': 14px, 'regular': 24px, 'large': 46px);
     &__ {
         &blade {
             position: absolute;
-            left: .4629em;
+            left: 0.4629em;
             bottom: 0;
-            width: .074em;
-            height: .2777em;
-            border-radius: .5em;
+            width: 0.074em;
+            height: 0.2777em;
+            border-radius: 0.5em;
             background-color: transparent;
-            transform-origin: center -.2222em;
+            transform-origin: center -0.2222em;
         }
     }
 
     &-- {
+
+        @include gen-props('&size_', [font-size], $spinner-sizes);
+
         &color_ {
             &light {
                 .spinner__blade {
-                    animation: spinner-fade-light 1s infinite linear;
                     $animation-delay: 0s;
                     $blade-rotation: 0deg;
+                    animation: spinner-fade-light 1s infinite linear;
                 
                     @for $i from 1 through 12 {
                         &:nth-child(#{$i}) {
+                            $blade-rotation: $blade-rotation + 30;
+                            $animation-delay: $animation-delay + 0.083;
                             animation-delay: $animation-delay;
                             transform: rotate($blade-rotation);
-                            $blade-rotation: $blade-rotation + 30;
-                            $animation-delay: $animation-delay + .083;
                         }
                     }
                 }
@@ -44,23 +47,21 @@ $spinner-sizes: ('small': 14px, 'regular': 24px, 'large': 46px);
 
             &dark {
                 .spinner__blade {
-                    animation: spinner-fade-dark 1s infinite linear;
                     $animation-delay: 0s;
                     $blade-rotation: 0deg;
+                    animation: spinner-fade-dark 1s infinite linear;
                 
                     @for $i from 1 through 12 {
                         &:nth-child(#{$i}) {
+                            $blade-rotation: $blade-rotation + 30;
+                            $animation-delay: $animation-delay + 0.083;
                             animation-delay: $animation-delay;
                             transform: rotate($blade-rotation);
-                            $blade-rotation: $blade-rotation + 30;
-                            $animation-delay: $animation-delay + .083;
                         }
                     }
                 }
             }
         }
-
-        @include gen-props('&size_', [font-size], $spinner-sizes);
 
         &centered {
             @include absolute-center;

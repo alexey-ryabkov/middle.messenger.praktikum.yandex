@@ -327,25 +327,9 @@ $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6
         }
     }
 
-    .message {
-        display: inline-block;
-        max-width: 70%;
-        min-width: 100px;
-    
-        &__ {
-            &time {
-                text-align: right;
-            }
-        }
-    
-        &-- {
-            &of_ {
-                &you {
-                    background: $primary-color;
-                    color: white;
-                }
-            }
-        }
+    .message--of_you {
+        background: $primary-color;
+        color: white;
     }
 
     .badge {

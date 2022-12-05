@@ -50,9 +50,9 @@ export default class Store extends EventBus
         }, 
         this._state);
     }
-    set (path: string, value: unknown, type : StoreSetStateType = StoreSetStateType.merge)
+    set (path: string, value: unknown, type : StoreSetStateType = StoreSetStateType.merge, floatStoreEvent = true)
     {
-        console.log('store set', path, value);
+        //console.log('store set', path, value, type, floatStoreEvent);
 
         if (!path)
         {
@@ -89,15 +89,28 @@ export default class Store extends EventBus
             // merge new value into state
             setValInPath(this._state, path, value);
 
-        this.emit( StoreEvents.updated );
-
-        let partOfPath = '';
-        pathArr.forEach(part => 
+        // emit store event on all path parts if floatStoreEvent param is true
+        let partialPath = path;
+        do
         {
-            partOfPath = !partOfPath ? part : `${partOfPath}.${part}`;
+            this.emit( Store.getEventName4path(partialPath) );
 
-            this.emit( Store.getEventName4path(partOfPath) );
-        });        
+            if (!floatStoreEvent)
+            {
+                break;
+            }
+            // TODO use string methods
+            const partialPathArr = partialPath.split('.');
+            partialPathArr.pop();
+
+            partialPath = partialPathArr.join('.');
+        }
+        while (partialPath);   
+        
+        if (floatStoreEvent)
+        {
+            this.emit( StoreEvents.updated );
+        }
     }
     clear ()
     {

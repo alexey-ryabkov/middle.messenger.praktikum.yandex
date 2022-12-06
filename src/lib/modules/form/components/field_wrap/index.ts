@@ -1,21 +1,22 @@
 import Templator from '@core/templator';
+import {FormField} from '@core/types';
 import {BlockProps} from '@core/block';
 import ComponentBlock from '@core/block/component';
-import {BemCompParams, BemParams} from '@core/block/bem';
+import {BemParams} from '@core/block/bem';
 import NotificationMsg, {NotificationLevel} from '@lib-components/notification';
-import {FormField} from '@core/types';
+import mount from '@lib-utils/mount';
 import tpl from './tpl.hbs';
-
 
 export type FormFieldWrapProps = BlockProps & {
     field : FormField,
-    error? : string
+    error? : string,
+    notification? : NotificationMsg | null
 };
 export default class FormFieldWrap extends ComponentBlock 
 {
     constructor (props : FormFieldWrapProps)
     {
-        super( FormFieldWrap._prepareProps(props) );
+        super( props );
     }
     protected _prepareBemParams ()
     {
@@ -27,25 +28,42 @@ export default class FormFieldWrap extends ComponentBlock
     }
     setProps (nextProps: Partial< FormFieldWrapProps >)
     {
-        FormFieldWrap._prepareProps(nextProps);
+        this._processErrors(nextProps);
         super.setProps(nextProps);  
     }    
-    protected static _prepareProps (props : Partial< FormFieldWrapProps >)
+    protected _processErrors (props : Partial< FormFieldWrapProps >)
     {
-        if (props.error)
+        if ('error' in props)
         {
-            props.notification = new NotificationMsg({ text: props.error, level: NotificationLevel.error });
-            props.notification.bemMix(['form', 'fieldNotification']);
+            let notification = this.props.notification;
+            
+            const text = props.error;
+            if (text)
+            {
+                if (!notification)
+                {
+                    notification = new NotificationMsg({ text, level: NotificationLevel.error });
+                    notification.bemMix(['form', 'fieldNotification']);
+                    mount(notification.element, this.element);
+                }
+                else
+                    notification.setProps({ text });
+            }
+            else if (notification)
+            {
+                notification.element.remove();
+                notification = null;
+            }
+            props.notification = notification;
         }
-        else
-            props.notification = null;
-
         return props;
-    } 
-    // componentDidUpdate ()
-    // {
-    //     return false;
-    // }  
+    }
+    componentDidUpdate ()
+    {
+        // we don`t need re-render this comp by props change, changes handling directly with children
+        // (see FormFieldWrap._processErrors for field notify and Form.setProps for field value)
+        return false;
+    }  
     protected get _template () 
     {
         return new Templator(tpl);

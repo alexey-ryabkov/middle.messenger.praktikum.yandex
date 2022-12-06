@@ -25,8 +25,6 @@ export type FormProps = BlockProps &
     message? : string,
 };
 
-// TODO у поля картинки свойство image
-
 function validate (
     fieldWrap : FormFieldWrap, 
     fieldDef : FormField,
@@ -118,9 +116,8 @@ export default class Form extends ComponentBlock
 
                 const formData = new FormData( this._formElement );
 
-                // TODO return for validating
-                // if (!errors.length)
-                // {
+                if (!errors.length)
+                {
                     const button = this.props.button as Button;
                     button.setProps({ showLoader: true, disabled: true });
 
@@ -128,6 +125,7 @@ export default class Form extends ComponentBlock
                         .then( () => 
                         {
                             this.setProps({ message: 'Изменения успешно сохранены' });
+                            
                             // TODO use updated:openedPage store event for hide notifications after user left page
                             setTimeout(() =>
                             {
@@ -145,7 +143,7 @@ export default class Form extends ComponentBlock
                             this.setProps({ error });
                         })
                         .finally( () => button.setProps({ showLoader: false, disabled: false }) );
-                // }
+                }
             }],
             {
                 node: 'form', 

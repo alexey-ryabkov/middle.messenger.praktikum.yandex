@@ -12,10 +12,6 @@ import {isEqual} from "@lib-utils-kit";
 import {createAppError} from "@app-utils-kit";
 
 
-
-// TODO если мы авторизуемся авторматом после регистрации нужен ли defineUser ?
-// (not valid cookie)
-
 export default class Actions 
 {
     static defineUser ()
@@ -78,25 +74,38 @@ export default class Actions
         return chatsApi.getChatsList()
             .then(rawChats =>
             {
-                const chats : PlainObject< ChatFields > = {};
-
-                rawChats.reduce((chats, chat) =>
+                return (async () => 
                 {
-                    // rest api don`t give us userId by login ( /user/search ) for current user. so fix it here
-                    if (chat.lastMessage && !chat.lastMessage.userId)
+                    const chats : PlainObject< ChatFields > = {};
+
+                    for (const chat of rawChats)
                     {
-                        chat.lastMessage.userId = app.user.data?.id ?? 0;
-                    }                    
-                    chats[chat.id] = chat;
-                    return chats;
-                }, 
-                chats);
+                        const curUserId = app.user.data?.id ?? 0;
 
-                if (!isEqual(chats, app.storeState.chats))
-                {
-                    console.log('Actions.getChatsList store.set chats', chats, StoreSetStateType.replace);
-                    app.store.set('chats', chats, StoreSetStateType.replace);
-                }
+                        // rest api don`t give us userId by login ( /user/search ) for current user. so fix it here
+                        if (chat.lastMessage && !chat.lastMessage.userId)
+                        {
+                            chat.lastMessage.userId = curUserId;
+                        }         
+                        
+                        // get collocutor data
+                        if (Chat.isUserType(chat))
+                        {
+                            const collocutorId = chat.members.filter( user => user != curUserId )?.[0];
+
+                            chat.collocutor = collocutorId 
+                                ? await userApi.getProfileByID( collocutorId ).catch( error => apiErrorHandler( error ))
+                                : null;
+                        }
+                        chats[chat.id] = chat;
+                    }
+
+                    if (!isEqual(chats, app.storeState.chats))
+                    {
+                        console.log('Actions.getChatsList store.set chats', chats, StoreSetStateType.replace);
+                        app.store.set('chats', chats, StoreSetStateType.replace);
+                    }
+                })();
             })
             .catch( error => apiErrorHandler(error) );
     } 

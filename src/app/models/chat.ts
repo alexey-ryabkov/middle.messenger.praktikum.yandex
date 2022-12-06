@@ -3,7 +3,6 @@ import {ChatFields, ChatMessage, Message, MessageType} from '@models/types';
 import {apiErrorHandler} from '@api/rest';
 import chatsApi from '@api/chats';
 import Messenger, {MessengerEvents} from '@api/messages';
-import CurrentUser from '@models/current_user';
 import ChatUser from '@models/chat_user';
 import Actions from '@flux/actions';
 
@@ -20,11 +19,12 @@ export default class Chat
     protected _avatar : string | null;
     protected _token : string;
     protected _title : string;
-    protected _members: number[];
+    protected _members : number[];
     protected _messenger : Messenger;
     protected _userId : number;
     protected _type : ChatType;
     protected _messagesHistory : ChatMessage[];
+    protected _collocutor : ChatUser | null = null;
     
     constructor (
         protected _app : SurChat, 
@@ -37,7 +37,7 @@ export default class Chat
             token: this._token = '',        
             title: this._title = '',
             unreadCnt: this.unreadCnt = 0,
-            members: this._members = [],             
+            members: this._members = [],   
         } = fields);
 
         this._userId = this._app.user.data?.id ?? 0;
@@ -49,7 +49,13 @@ export default class Chat
                 })
                 .on( MessengerEvents.error, error => console.error(error) );
 
-        this._processChatType();
+        this._type = Chat.isUserType( fields ) ? ChatType.user : ChatType.group;
+
+        const {collocutor} = fields;
+        if (collocutor && this._isUserChat)
+        {
+            this._collocutor = new ChatUser(collocutor);
+        }
     }
     get id ()
     {
@@ -57,27 +63,17 @@ export default class Chat
     }
     get title ()
     {
-        if (ChatType.user == this._type)
+        if (this._isUserChat)
         {
-            const collocutor = this.collocutor;
-            if (collocutor)
-            {
-                console.log('collocutor 121212');
-                return collocutor.nickname;
-            }
+            return this.collocutor?.nickname || this._title;
         }
         return this._title;        
     }
     get avatar ()
     {
-        if (ChatType.user == this._type)
+        if (this._isUserChat)
         {
-            const collocutor = this.collocutor;
-
-            if (collocutor)
-            {
-                return collocutor.avatar;
-            }
+            return this.collocutor?.avatar || this._avatar;
         }
         return this._avatar;        
     }
@@ -94,14 +90,7 @@ export default class Chat
     }  
     get collocutor ()
     {
-        const collocutorId = this._members.filter( user => user != this._userId )?.[0];
-        if (collocutorId)
-        {
-            const collocutor = this._app.storeState.chatUsers?.[ String(collocutorId) ];
-
-            return collocutor ? new ChatUser( collocutor ) : null;
-        }
-        return null;
+        return this._collocutor;
     }
     get lastMessage ()
     {
@@ -110,6 +99,10 @@ export default class Chat
     get messages ()
     {
         return this._messagesHistory;
+    }
+    protected get _isUserChat ()
+    {
+        return ChatType.user == this._type;
     }
     init ()
     {
@@ -145,15 +138,11 @@ export default class Chat
     onDelete ()
     {
         this._messenger.close();
-    }
-    protected _isUserChat ()
+    }    
+    static isUserType (chatFields : ChatFields)
     {
-        return ChatType.user == this._type;
-    }
-    protected _processChatType ()
-    {
-        // TODO define by ' vs ' substr in title and 2 == this._members.length 
-        this._type = ChatType.user;
+        // TODO also check ' vs ' substr in title
+        return 2 == chatFields.members.length;
     }
     static getUserChatName(user : ChatUser, collocutor : ChatUser)
     {

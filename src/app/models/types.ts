@@ -103,6 +103,7 @@ export type ChatFields =
     lastMessage : Message | null,
     members : number[],
     token : string,
+    collocutor? : ChatUserFields | null,
 }
 export interface ChatsListApi
 {

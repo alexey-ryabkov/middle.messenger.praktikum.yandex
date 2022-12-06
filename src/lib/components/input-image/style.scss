@@ -12,6 +12,10 @@
     min-height: 80px;
 
     &__ {
+        &input {
+            display: none;
+        }
+
         &image {
             flex-grow: 0;
         }

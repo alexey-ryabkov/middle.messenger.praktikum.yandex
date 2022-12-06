@@ -7,16 +7,18 @@ import tpl from './tpl.hbs';
 import './style.scss';
 
 export type InputImageProps = FormFieldProps & {
-    image? : string
+    image? : string | null
 };
 export default class InputImage extends FormFieldComponent 
 {
     constructor (props : InputImageProps)
     {
-        props.avatar = InputImage._processAvatar(props);
+        InputImage._processProps(props);
 
         super(props);
-    }
+
+        this._processBlockBem();
+    }    
     protected _prepareBemParams (params : BemCompParams)
     {
         const props = params.props as InputImageProps;
@@ -53,52 +55,74 @@ export default class InputImage extends FormFieldComponent
                     freezeEvent(event);
                     this._toggleDropZone(false);
 
-                    const dragRes = event?.dataTransfer?.files;
-                    if (dragRes)
+                    const files = event?.dataTransfer?.files;
+                    if (files)
                     {
-                        const file = dragRes[0];
-
-                        if (['image/jpeg', 'image/png'].includes(file.type)) 
-                        {
-                            this._uploadFile(file);
-                            this._previewFile(file);
-                        }
-                        else
-                            alert('Неподдерживаемый формат изображения');
+                        this._uploadFiles(files);
+                        
                     }
                 }],
             ];
         }
         return bem;
     }
-    setProps (nextProps: Partial< InputImageProps >): void 
+    setProps (nextProps: Partial< InputImageProps >) 
     {
-        if (InputImage._processAvatar(nextProps))
+        InputImage._processProps(nextProps);
+
+        super.setProps(nextProps);
+
+        this._processBlockBem();
+    }
+    get value () 
+    {
+        return this.props.avatar ? this.props.avatar.props.image : '';
+    }
+    set value (image : string) 
+    {
+        if (image)
+        {
+            let avatar = this.props.avatar;
+            if (!avatar)
+            {
+                avatar = new Avatar({ image, size: 'large' });
+
+                this.delBemMods([ ['empty'] ]);
+
+                this.setProps({ avatar });
+            }
+            else
+                avatar.setProps({ image });
+        }
+        else
+            this.setProps({ avatar: null });
+    }
+    protected static _processProps (props : Partial< InputImageProps >)
+    {
+        if ('image' in props)
+        {
+            const {image} = props;
+            if (image)
+            {
+                const avatar = new Avatar({ 
+                    image, 
+                    size: 'large'
+                });
+                (props.avatar = avatar).bemMix(['inputImage', 'image']);
+            }
+            else 
+                props.avatar = null;  
+        }
+        return props;
+    }
+    protected _processBlockBem ()
+    {
+        if (this.props.avatar)
         {
             this.delBemMods([[ 'empty' ]]);
         }
         else
             this.addBemMods([[ 'empty' ]]);
-
-        super.setProps(nextProps);
-    }
-    protected static _processAvatar (props : any) : Avatar | ''
-    {
-        let avatar : Avatar | '' = '';
-
-        const {image} = props;
-        if (image)
-        {
-            avatar = new Avatar({ 
-                image, 
-                size: 'large'
-            });
-            avatar.bemMix(['inputImage', 'image']);
-        }   
-
-        props.avatar = avatar;
-
-        return avatar;
     }
     protected _toggleDropZone (flag : boolean) 
     {
@@ -109,55 +133,42 @@ export default class InputImage extends FormFieldComponent
         else
             this.delBemMods([ ['active'] ]);
     }
-    protected _previewFile (file : File)
+    protected _uploadFiles (files : FileList)
     {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-
-        reader.onloadend = () => 
+        const file = files[0];
+        if (['image/jpeg', 'image/png'].includes(file.type)) 
         {
-            const image = reader.result;
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
 
-            if (typeof image == 'string')
-            {   
-                let avatar = this.props.avatar;
-
-                if (!avatar)
-                {
-                    avatar = new Avatar({ 
-                        image,
-                        size: 'large' 
-                    });
-
-                    this.delBemMods([ ['empty'] ]);
-
-                    this.setProps({ avatar });
+            reader.onloadend = () => 
+            {
+                const image = reader.result;
+                if (typeof image == 'string')
+                {   
+                    this.value = image;
+                    this.files = files;
                 }
-                else
-                    avatar.setProps({ image });
             }
-        }                
+        }
+        else
+            alert('Неподдерживаемый формат изображения');
+    }      
+    get files () 
+    {
+        return this._input.files;
+    }
+    set files (files : FileList | null) 
+    {
+        this._input.files = files;
     }
     protected get _input ()
     {
-        // FIXME 
+        // FIXME while have to call it 
         this.processElems();
         
         const input = <unknown> this.elems['input'];
         return (input as HTMLInputElement);
-    }
-    protected _uploadFile (file : File)
-    {
-        // TODO
-    }
-    get value () 
-    {
-        // TODO 
-        return '';
-    }
-    set value (value : string) 
-    {
-        // TODO 
     }
     protected get _template () 
     {

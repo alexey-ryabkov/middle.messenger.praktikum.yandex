@@ -1,7 +1,8 @@
 import {PlainObject} from "@core/types";
-import {AppError, AppErrorCode, AuthorizeData, ChangeAuthData, ChatFields, ChatUserFields, 
+import {AppErrorCode, AuthorizeData, ChangeAuthData, ChatFields, ChatUserFields, 
     Message, ProfileData, RegistrateData} from "@models/types";
 import SurChat from "@app";
+import {StoreSetStateType} from "@core/store";
 import {apiErrorHandler} from "@api/rest";
 import chatsApi from "@api/chats";
 import userApi from "@api/user";
@@ -9,7 +10,8 @@ import ChatUser from "@models/chat_user";
 import Chat from "@models/chat";
 import {isEqual} from "@lib-utils-kit";
 import {createAppError} from "@app-utils-kit";
-import { StoreSetStateType } from "@core/store";
+
+
 
 // TODO если мы авторизуемся авторматом после регистрации нужен ли defineUser ?
 // (not valid cookie)
@@ -18,32 +20,59 @@ export default class Actions
 {
     static defineUser ()
     {
-        return userApi.getProfile()                
-            .then( profile => Actions._processProfileData(profile) )
-            .catch( error => apiErrorHandler(error) );
+        console.log('Actions.defineUser fired');
+        return userApi.getProfile()
+            .then( profile => 
+            {
+                const app = SurChat.instance;
+                const curProfile = app.storeState.currentUser;
+
+                if (!curProfile || !isEqual( profile, curProfile ))
+                {
+                    console.log('Actions.defineUser store.set currentUser', profile);
+                    app.store.set( 'currentUser', profile ); 
+                }
+            })
+            .catch( error => apiErrorHandler( error ));
     }
     static createUser (data : RegistrateData)
     {
-        return userApi.registrate(data).then( () => Actions.defineUser() );
+        console.log('Actions.createUser fired');
+        return userApi.registrate( data )
+            .then( () => Actions.defineUser() ) 
+            .catch( error => apiErrorHandler( error ));
     }
     static authorizeUser (data : AuthorizeData)
     {
-        return userApi.authorize(data).then( () => Actions.defineUser() );
+        console.log('Actions.authorizeUser fired');
+        return userApi.authorize( data )
+            .then( () => Actions.defineUser() )
+            .catch( error => apiErrorHandler( error ));
     }
     static changeUserProfile (data : ProfileData)
     {
-        return userApi.setProfile(data).then( () => Actions.defineUser() );
+        console.log('Actions.changeUserProfile fired');
+        return userApi.setProfile( data )
+            .then( () => Actions.defineUser() )
+            .catch( error => apiErrorHandler( error ));
     }
     static changeUserAuthData (data : ChangeAuthData)
     {
-        return userApi.changeAuthData(data).then( () => Actions.defineUser() );
+        console.log('Actions.changeUserAuthData fired');
+        return userApi.changeAuthData( data )
+            .then( () => Actions.defineUser() )
+            .catch( error => apiErrorHandler( error ));;
     }
     static logoutUser ()
     {
-        return userApi.logout().then( () => Actions.defineUser() );
+        console.log('Actions.logoutUser fired');
+        return userApi.logout()
+            .then( () => Actions.defineUser() )
+            .catch( error => apiErrorHandler( error ));
     }       
     static getChatsList ()
     {   
+        console.log('Actions.getChatsList fired');
         const app = SurChat.instance;
 
         return chatsApi.getChatsList()
@@ -65,6 +94,7 @@ export default class Actions
 
                 if (!isEqual(chats, app.storeState.chats))
                 {
+                    console.log('Actions.getChatsList store.set chats', chats, StoreSetStateType.replace);
                     app.store.set('chats', chats, StoreSetStateType.replace);
                 }
             })
@@ -72,6 +102,7 @@ export default class Actions
     } 
     static createUserChat (login : string)
     {
+        console.log('Actions.createUserChat fired');
         const curUser = SurChat.instance.user.data;
 
         if (!curUser)
@@ -100,6 +131,7 @@ export default class Actions
     }
     static openChat (chatId : number) 
     {
+        console.log('Actions.openChat fired');
         const id = String(chatId);
         const app = SurChat.instance;
 
@@ -117,34 +149,43 @@ export default class Actions
 
                 if (!isEqual(chatUsers, app.storeState.chatUsers))
                 {
+                    console.log('Actions.openChat store.set chatUsers', chatUsers, StoreSetStateType.replace);
                     app.store.set( 'chatUsers', chatUsers, StoreSetStateType.replace );
                 }
             })
             .catch( error => apiErrorHandler(error) )
             .finally(() => 
             {                    
+                console.log('Actions.openChat store.set openedChat', id);
                 app.store.set( 'openedChat', id );
             });
     }
     static closeChat (chatId : number) 
     {
+        console.log('Actions.closeChat fired');
         const app = SurChat.instance;
 
         const id = String(chatId);
         if (id == app.storeState.openedChat)
         {
+            console.log('Actions.closeChat store.set openedChat', null);
             app.store.set( 'openedChat', null );
-            app.store.set('chatUsers', {}, StoreSetStateType.replace);
+            //
+            console.log('Actions.closeChat store.set chatUsers', {}, StoreSetStateType.replace);
+            app.store.set( 'chatUsers', {}, StoreSetStateType.replace );
         }
         return Promise.resolve();
     }
     static deleteChat (chatId : number) 
     {
+        console.log('Actions.deleteChat fired');
         return chatsApi.deleteChat( chatId )
-            .then( () => Actions.getChatsList() );
+            .then( () => Actions.getChatsList() )
+            .catch( error => apiErrorHandler(error) );
     } 
     static recieveLastMessage (chatId : number, msg : Message)
     {
+        console.log('Actions.recieveLastMessage fired');
         const app = SurChat.instance;
 
         const chat = app.storeState.chats?.[chatId];
@@ -153,29 +194,22 @@ export default class Actions
             chat.lastMessage = msg;
             chat.unreadCnt++;
 
-            app.store.set( `chats.${chatId}`, chat );
+            console.log(`Actions.recieveLastMessage store.set chats.${chatId}`, chat, StoreSetStateType.merge, false);
+            app.store.set( `chats.${chatId}`, chat, StoreSetStateType.merge, false );
         }
         return Promise.resolve();
     } 
     static toggleChatsLoader (flag : boolean) 
     {
-        SurChat.instance.store.set( 'showChatsLoader', flag );
+        // console.log('Actions.toggleChatsLoader store.set toggleChatsLoader', flag);
+        // SurChat.instance.store.set( 'showChatsLoader', flag );
         return Promise.resolve();
     } 
     static toggleMessagesLoader (flag : boolean) 
     {
-        SurChat.instance.store.set( 'showMessagesLoader', flag );
+        // console.log('Actions.toggleMessagesLoader store.set toggleMessagesLoader', flag);
+        // SurChat.instance.store.set( 'showMessagesLoader', flag );
         return Promise.resolve();
-    } 
-    protected static _processProfileData (profile : ChatUserFields)
-    {
-        const app = SurChat.instance;
-        const curProfile = app.storeState.currentUser;
-
-        if (!curProfile || !isEqual( profile, curProfile ))
-        {
-            app.store.set( 'currentUser', profile ); 
-        }
-    } 
+    }
 }
 window.actions = Actions;

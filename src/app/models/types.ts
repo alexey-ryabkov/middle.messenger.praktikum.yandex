@@ -9,6 +9,7 @@ export type AppStoreScheme =
     chatUsers : PlainObject< ChatUserFields >,
     showChatsLoader : boolean,
     showMessagesLoader : boolean,
+    openedPage : string | null,
 };
 
 export type ChatUserProfile =
@@ -35,12 +36,17 @@ export type UserField = Field &
 }; 
 export type RegistrateData = Omit< CurrentUserFields, 'avatar' | 'nickname' | 'id' >;
 export type AuthorizeData = { login: string, password: string };
-export type ChangeAuthData = { login: string, oldPassword: string, newPassword: string };
-export type ProfileData = Omit< ChatUserProfile, 'login' >;
+export type ChangeAuthData = { 
+    login: string, 
+    oldPassword: string, 
+    newPassword: string
+};
+export type ProfileData = Omit< ChatUserProfile, 'login' | 'avatar' > & {
+    avatar : FormData | null
+};
 
 export interface AuthUserApi
 {
-    // registrate (data : RegistrateData) : Promise< ChatUserFields >;
     registrate (data : RegistrateData) : Promise< number >;
     authorize (data : AuthorizeData) : Promise< void >;
     changeAuthData (data : ChangeAuthData) : Promise< void >;
@@ -109,6 +115,12 @@ export interface ChatApi
 {
     getUsers (chatId : number) : Promise< ChatUserFields[] >;
     getNewMsgCnt (chatId : number) : Promise< number >;
+}
+
+export interface FileApi
+{
+    get (file : string) : string;
+    upload (file : FormData) : Promise< void >;
 }
 
 export enum AppErrorCode

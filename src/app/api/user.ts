@@ -2,13 +2,10 @@ import { PlainObject } from "@core/types";
 import {AuthUserApi, ChatUserApi, UserProfileApi, 
     RegistrateData, AuthorizeData, ChangeAuthData, ProfileData, ChatUserFields} from "@models/types"; 
 import {restAuthApi, restUsersApi} from "@api/rest";
+import {isEqual} from "@lib-utils-kit";
 
 export class UserApi implements AuthUserApi, ChatUserApi, UserProfileApi
 {
-    // registrate (data : RegistrateData) 
-    // {
-    //     return restAuthApi.post('/signup', data).then( userData => UserApi.processUserData(userData) );
-    // }
     registrate (data : RegistrateData) 
     {
         return restAuthApi.post('/signup', data).then( result => result.id as number );
@@ -56,21 +53,31 @@ export class UserApi implements AuthUserApi, ChatUserApi, UserProfileApi
         return restAuthApi.get('/user')
                     .then(profile =>
                     {
+                        delete profile.id;
+
                         const {avatar, nickname, ...userData} = data;
-                        const profileData = {...profile, ...userData, display_name: nickname};
+                        const profileData = {...userData, display_name: nickname, login: profile.login};
 
-                        console.log(profileData, avatar);
-
-                        return restUsersApi.put('/profile', profileData).then(() => {return});
-
-                        // if (profile.avatar != avatar)
-
-                        // TODO
-                        // return Promise.all([
-                        //     restUsersApi.put('/profile', profileData),
-                        //     restUsersApi.put('/profile/avatar', avatar)
-                        //     // , dataType: 'formdata'
-                        // ]);
+                        const hasProfileChanged = !isEqual(profileData, profile);
+                        if (avatar || hasProfileChanged)
+                        {
+                            if (avatar && hasProfileChanged)
+                            {
+                                return Promise.all([
+                                    restUsersApi.put('/profile', profileData),
+                                    restUsersApi.put('/profile/avatar', avatar)
+                                ])
+                                .then(() => {return});
+                            }
+                            else if (hasProfileChanged)
+                            {
+                                return restUsersApi.put('/profile', profileData).then(() => {return});
+                            }
+                            else if (avatar)
+                            {
+                                return restUsersApi.put('/profile/avatar', avatar).then(() => {return});
+                            }                                                          
+                        }
                     });
     }
     getProfile ()

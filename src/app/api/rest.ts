@@ -7,7 +7,7 @@ import {createAppError} from "@app-utils-kit"
 const API_HOST = 'https://ya-praktikum.tech';
 const API_BASE_URL = `${API_HOST}/api/v2`;
 
-export function apiErrorHandler (error : Error) 
+export function apiErrorHandler (error : Error)
 {
     if (!('cause' in error))
     {
@@ -32,21 +32,16 @@ export function apiErrorHandler (error : Error)
             // ... so reinit store if we`s authorized before
             app.resetStoreState(); 
         }
+
+        // FIXME it will become uncaught besides auth form
+        throw createAppError(msg, AppErrorCode.userInput, '', additional);
     }
     else
-    {
         // dev (api) error
-        throw createAppError(msg, AppErrorCode.dev, 'rest api (in actions)', additional);
-    }
+        throw createAppError(msg, AppErrorCode.dev, 'rest api (in controller)', additional);
 }
-/* TODO ошибка в клиентском коде
-пропускаем только AppErrorCode.userInput, остальные мьютим, выводя в консоль 
-export function userErrorHandler (error : AppError) 
-{
-    const {code, msg} = (error as AppError).cause;
-    // rest api error [${code}]
-    // console.error(`${msg}${ additional ? ` (${additional})` : '' }`);
-} */
+
+type RestApiData = FormData | PlainObject;
 
 class RestApi extends Http
 {
@@ -55,73 +50,66 @@ class RestApi extends Http
         super(API_BASE_URL + apiPath);
     }
     get = (url? : string) => this._apiRequest(url);
-    put = (url? : string, data : PlainObject = {}) => this._apiRequest(url, HTTPMethods.PUT, data);
-    post = (url? : string, data : PlainObject = {}) => this._apiRequest(url, HTTPMethods.POST, data);
-    delete = (url? : string, data : PlainObject = {}) => this._apiRequest(url, HTTPMethods.DELETE, data);
+    put = (url? : string, data : RestApiData = {}) => this._apiRequest(url, HTTPMethods.PUT, data);
+    post = (url? : string, data : RestApiData = {}) => this._apiRequest(url, HTTPMethods.POST, data);
+    delete = (url? : string, data : RestApiData = {}) => this._apiRequest(url, HTTPMethods.DELETE, data);
 
-    protected _apiRequest (url = '', method : HTTPMethods = HTTPMethods.GET, data? : object, 
-    // TODO
-    isFormData = false) 
+    protected _apiRequest (url = '', method : HTTPMethods = HTTPMethods.GET, data? : RestApiData) 
     {
         const options : HttpOptsFull = {
             method,
             responseType: 'json',
             headers: {}
         }
-        // TODO form data for avatar
-        // TODO options.headers['accept'] = 'application/json';
 
         if (data)
         {
-            if (!isFormData)
+            if (data instanceof FormData)
             {
-                options.data = JSON.stringify(data);
-                // TODO
-                options.headers['content-type'] = 'application/json; charset=utf-8';
+                options.data = data;
             }
             else
-                options.data = data;
-        }
+            {
+                options.data = JSON.stringify(data);                
+                options.headers = {'content-type': 'application/json; charset=utf-8'};
+            }
+        }        
         return super._request(url, options)
                         .then(xhr => xhr.response)
                         .catch(error => 
                         {
-                            // TODO use createAppError for http request aborted 
                             let code = error.cause?.code || 0;                            
-                            const additional = error?.cause?.response?.error;
-                            
                             let msg = error?.cause?.response?.reason;
-                            if (!msg)
+                            const additional = error?.cause?.response?.error;
+
+                            switch (code)
                             {
-                                switch (code)
-                                {
-                                    case AppErrorCode.restApiRequest:
-                                    case 409:
-                                        code = AppErrorCode.restApiRequest;
-                                        msg = 'bad request';
-                                        break;
+                                case AppErrorCode.restApiRequest:
+                                case 409:
+                                    code = AppErrorCode.restApiRequest;
+                                    msg = msg || 'bad request';
+                                    break;
 
-                                    case AppErrorCode.restApiAuth:
-                                        msg = 'unauthorized';
-                                        break;
+                                case AppErrorCode.restApiAuth:
+                                    msg = msg || 'unauthorized';
+                                    break;
 
-                                    case AppErrorCode.restApiAccess:
-                                        msg = 'no access';
-                                        break;
+                                case AppErrorCode.restApiAccess:
+                                    msg = msg || 'no access';
+                                    break;
 
-                                    case AppErrorCode.restApiPath:
-                                        msg = 'non-existent path';
-                                        break;
+                                case AppErrorCode.restApiPath:
+                                    msg = msg || 'non-existent path';
+                                    break;
 
-                                    case AppErrorCode.restApiServer:
-                                        msg = 'unexpected error';
-                                        break;
+                                case AppErrorCode.restApiServer:
+                                    msg = msg || 'unexpected error';
+                                    break;
 
-                                    default:
-                                        code = AppErrorCode.unknown;
-                                        msg = 'unknown error';
-                                        break;
-                                }
+                                default:
+                                    code = AppErrorCode.unknown;
+                                    msg = msg || 'unknown error';
+                                    break;
                             }
                             throw createAppError(msg, code, 'rest api', additional);
                         });

@@ -46,6 +46,8 @@ function validate (
 
 export default class Form extends ComponentBlock 
 {
+    protected static readonly _SUCCESS_MSG_VISIBLE_TIME = 5000;
+
     constructor (props : FormProps)
     {
         const {formFields, action = '#', method = 'post', onSubmit, link, notification} = props;
@@ -123,7 +125,16 @@ export default class Form extends ComponentBlock
                     button.setProps({ showLoader: true, disabled: true });
 
                     onSubmit( formData )
-                        .then( () => this.setProps({ message: 'Изменения успешно сохранены' }) )
+                        .then( () => 
+                        {
+                            this.setProps({ message: 'Изменения успешно сохранены' });
+                            // TODO use updated:openedPage store event for hide notifications after user left page
+                            setTimeout(() =>
+                            {
+                                this.setProps({ message: '' });
+                            },
+                            Form._SUCCESS_MSG_VISIBLE_TIME);
+                        })
                         .catch( error =>
                         {
                             error = getUserError(error);

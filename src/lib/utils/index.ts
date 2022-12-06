@@ -217,7 +217,7 @@ export function cloneDeep (obj : [] | PlainObject = {})
     return cloned;
 }
 
-export function datePrettify (date : Date)
+export function datePrettify (date : Date, withTime = false)
 {
     const today = new Date();
     today.setHours(0,0,0,0);
@@ -235,26 +235,29 @@ export function datePrettify (date : Date)
     const monthNames = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля',
         'августа', 'сентября', 'октября', 'ноября', 'декабря'];
 
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const time = `${hours > 9 ? hours : `0${hours}`}:${minutes > 9 ? minutes : `0${minutes}`}`;
+
+    let prettified = '';
     if (date > today)
     {
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-
-        return `${hours > 9 ? hours : `0${hours}`}:${minutes > 9 ? minutes : `0${minutes}`}`;
+        return time;
     }
     else if (date > almostWeekAgo)
     {
-        return weekDays[date.getDay()];
+        prettified = weekDays[date.getDay()];
     }
     else if (date > almostYearAgo)
     {
-        return `${date.getDate()} ${monthNames[date.getMonth()]}`; 
+        prettified = `${date.getDate()} ${monthNames[date.getMonth()]}`; 
     }
     else 
     {
         const day = date.getDate();
         const month = date.getMonth() + 1;
 
-        return `${day > 9 ? day : `0${day}`}.${month > 9 ? month : `0${month}`}.${date.getFullYear()}`;
+        prettified = `${day > 9 ? day : `0${day}`}.${month > 9 ? month : `0${month}`}.${date.getFullYear()}`;
     }
+    return prettified + (withTime ? ` ${time}` : '');
 }

@@ -1,8 +1,8 @@
+import resourcesApi from "@api/resources";
 import {ChatUserFields} from "@models/types";
 
 export default class ChatUser implements ChatUserFields
 {
-    avatar : string | null;    
     first_name : string;
     second_name : string;    
     email : string;
@@ -11,13 +11,14 @@ export default class ChatUser implements ChatUserFields
     protected _id : number;
     protected _login : string;
     protected _nickname : string;
+    protected _avatar : string | null;    
 
     constructor (fields : ChatUserFields)
     {
         ({
             id : this._id,
             login : this._login,
-            avatar : this.avatar = null,            
+            avatar : this._avatar = null,            
             first_name : this.first_name = '',
             second_name : this.second_name = '',
             email : this.email = '',
@@ -43,5 +44,9 @@ export default class ChatUser implements ChatUserFields
                             ? this.login
                             : fullname
                         : this._nickname;
+    }
+    get avatar ()
+    {
+        return this._avatar ? resourcesApi.get(this._avatar) : null;
     }
 }

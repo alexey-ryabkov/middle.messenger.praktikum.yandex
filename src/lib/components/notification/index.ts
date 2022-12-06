@@ -14,6 +14,7 @@ export enum NotificationLevel
     warning = 'warning',
     info = 'info',
     help = 'help',
+    success = 'success',
 }
 const level2icon : Record< NotificationLevel, IconVar > = 
 {
@@ -21,6 +22,7 @@ const level2icon : Record< NotificationLevel, IconVar > =
     warning: IconVar.flag,
     info: IconVar.circle_info,
     help: IconVar.circle_question,
+    success: IconVar.checkmark
 }
 
 export type NotificationProps = BlockProps & 

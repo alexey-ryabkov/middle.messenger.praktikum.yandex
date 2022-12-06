@@ -25,22 +25,14 @@ const page = new class extends Page
                     name: 'login',
                     label: 'Логин'             
                 }),
-                [
-                    [ InputText.validationEvents, isEmptyValidator ],                    
-                    [ InputText.validationEvents, loginValidator ],
-                    [ InputText.validationEvents, lengthValidator, [3, 20] ],
-                ]
+                [[ InputText.validationEvents, isEmptyValidator ]]
             ], [
                 new InputText({
                     name: 'password',
                     label: 'Пароль',
                     type: 'password'
                 }),
-                [
-                    [ InputText.validationEvents, isEmptyValidator ],
-                    [ InputText.validationEvents, passwordValidator ],
-                    [ InputText.validationEvents, lengthValidator, [8, 40] ],
-                ]  
+                [[ InputText.validationEvents, isEmptyValidator ]]  
             ]],
             btnLabel: 'Войти',
             onSubmit: (data : FormData) =>

@@ -2,7 +2,7 @@ import SurChat from '@app';
 import Templator from '@core/templator';
 import Page, {PageAccess} from '@core/page';
 import ContainerBlock from '@core/block/container';
-import ChatsModule from '@app-modules/chats_list';
+import ChatsModule from '@app-modules/chats';
 import MessagesModule from '@app-modules/messages';
 import LeftcolWindowLayout from '@lib-layouts/leftcol_window';
 import UserProfileCard from '@app-components/user_profile_card';

@@ -2,7 +2,8 @@
 import {App, AppContainer} from '@core/types';
 import Page, {PageAccess} from '@core/page';
 import Router from '@core/router';
-import Store, { StoreEvents } from '@core/store';
+import Store, {StoreEvents} from '@core/store';
+import Actions from '@flux/actions';
 import {AppStoreScheme} from '@models/types';
 import ChatsList from '@models/chats_list'; 
 import CurrentUser from '@models/current_user';
@@ -11,9 +12,7 @@ import Spinner from '@lib-components/spinner';
 import { cloneDeep } from '@lib-utils-kit';
 
 
-import Actions from '@flux/actions';
-
-// FIXME too many logic in class:
+// FIXME too many logic in the class:
 // localize routing in AppRouter extends Router
 // work with store in AppStore extends Store
 // mb localize user define func in @models/user
@@ -31,8 +30,10 @@ export default class SurChat implements App
         chats: {}, 
         openedChat: null,
         chatUsers: {},
-        showChatsLoader : true,
-        showMessagesLoader : true,
+        showChatsLoader : false,
+        showMessagesLoader : false,
+        // TODO 
+        openedPage : null,
     };
     protected static readonly _INITIALIZE_MSG = 'Загрузка приложения...';    
     protected static readonly _ROOT_NODE = document.body;    
@@ -46,7 +47,7 @@ export default class SurChat implements App
 
     private static _instance : SurChat;
 
-    private constructor()
+    private constructor ()
     {
         this.title = SurChat._INITIALIZE_MSG;
         this._container = new MainContainer( SurChat._ROOT_NODE, new Spinner({ size: 'large' })).mount(); 
@@ -57,16 +58,16 @@ export default class SurChat implements App
         this._user = new CurrentUser(this);
         this._chatsList = new ChatsList(this); 
 
-        this._store.on(Store.getEventName4path('currentUser'), () => 
+        this._store.oneTime(Store.getEventName4path('currentUser'), () => 
         {
+            console.log('store.on fired, SurChat.constructor', Store.getEventName4path('currentUser'));
+
             const isUserAuthorized = this.user.isAuthorized;
 
             const isUserBecameAuthorized = !this._isUserDefined && isUserAuthorized;
             if (isUserBecameAuthorized)
             {
-                Actions.toggleChatsLoader(false)
-                    .then( () => Actions.getChatsList() )
-                    .finally( () => Actions.toggleChatsLoader(false) );
+                this._loadChats();
             }
             this._isUserDefined = isUserAuthorized;
         });
@@ -92,7 +93,7 @@ export default class SurChat implements App
 
     get store ()
     {
-        // TODO mb HOC to forbid use Store.state & Store.get instead storeState below
+        // TODO mb HOC to forbid using Store.state & Store.get instead storeState below
         return this._store;
     }
     get storeState ()
@@ -171,6 +172,35 @@ export default class SurChat implements App
             return this._router.go( Page.url( SurChat.CHAT_PAGE_NAME ));
         }
         return false;
+    }    
+    protected _prepareAuthRedirects ()
+    {
+        this._store.on( Store.getEventName4path('currentUser'), () => 
+        {
+            console.log('store.on fired, SurChat._prepareAuthRedirects', Store.getEventName4path('currentUser'));
+
+            const isUserAuthorized = this.user.isAuthorized;
+
+            const isUserBecameAuthorized = !this._isUserDefined && isUserAuthorized;
+            const isUserBecameUnknown = this._isUserDefined && !isUserAuthorized;
+
+            if (isUserBecameUnknown)
+            {
+                this._router.go( Page.url( SurChat.AUTH_PAGE_NAME ));
+            }
+            else if (isUserBecameAuthorized)
+            {
+                this._loadChats();
+                this._router.go( Page.url( SurChat.CHAT_PAGE_NAME ));                
+            }
+            this._isUserDefined = isUserAuthorized;
+        });
+    }
+    protected _loadChats ()
+    {
+        // Actions.toggleChatsLoader(false)
+        //     .then( () => Actions.getChatsList() )
+        //     .finally( () => Actions.toggleChatsLoader(false) );
     }
     protected _prepareLinks4routing ()
     {
@@ -187,25 +217,6 @@ export default class SurChat implements App
                 {
                     this.go2url(url);
                 }        
-            }
-        });
-    }
-    protected _prepareAuthRedirects ()
-    {
-        this._store.on( Store.getEventName4path('currentUser'), () => 
-        {
-            const isUserAuthorized = this.user.isAuthorized;
-
-            const isUserBecameAuthorized = !this._isUserDefined && isUserAuthorized;
-            const isUserBecameUnknown = this._isUserDefined && !isUserAuthorized;
-
-            if (isUserBecameUnknown)
-            {
-                this._router.go( Page.url( SurChat.AUTH_PAGE_NAME ));
-            }
-            else if (isUserBecameAuthorized)
-            {
-                this._router.go( Page.url( SurChat.CHAT_PAGE_NAME ));
             }
         });
     }

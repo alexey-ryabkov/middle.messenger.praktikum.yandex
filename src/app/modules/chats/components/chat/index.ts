@@ -1,7 +1,7 @@
 import Templator from '@core/templator';
 import ComponentBlock from '@core/block/component';
 import {BemCompParams, BemParams} from '@core/block/bem';
-import {BlockProps} from '@core/block';
+import {BlockEvents, BlockProps} from '@core/block';
 import Avatar from '@lib-components/avatar';
 import Caption, {CaptionSize, CaptionWeight} from '@lib-components/caption';
 import tpl from './tpl.hbs';
@@ -22,11 +22,11 @@ export type ChatProps = BlockProps &
 };
 export default class ChatComponent extends ComponentBlock 
 {
-    constructor (props : ChatProps)
+    constructor (props : ChatProps, events? : BlockEvents)
     {
         const {avatar, caption} = ChatComponent._prepareProps(props);
 
-        super( {avatar, caption, ...props}, [], { node : props?.tag ?? 'div' });
+        super( {avatar, caption, ...props}, events, { node : props?.tag ?? 'div' });
     }
     setProps (nextProps: Partial< ChatProps >)
     {

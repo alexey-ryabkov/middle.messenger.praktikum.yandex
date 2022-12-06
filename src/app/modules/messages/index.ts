@@ -22,11 +22,16 @@ type MessagePropsExt = MessageProps &
 {
     messageId : number
 }
-export type MessagesData = PlainObject< MessagePropsExt > | MessagePropsExt;
+type MessagesData = PlainObject< MessagePropsExt > | MessagePropsExt;
+type MessageGroups = PlainObject< MessageComponent[] >;
+
+// TODO complete rework msgGroups
+
 export type MessagesModuleProps = BlockProps & 
 {
     messagesData : MessagesData,
     showLoader : boolean,
+    activeChatId? : number,
 }
 class MessagesModule extends ComponentBlock
 {
@@ -34,7 +39,7 @@ class MessagesModule extends ComponentBlock
 
     constructor (props : MessagesModuleProps)
     {
-        const {messages, loader} = MessagesModule._prepareProps(props);
+        const {messages, msgGroups, loader, noActiveChat} = MessagesModule._prepareProps(props);
 
         const buttonSend = new IconButton({ 
             icon: new Icon({ variant: IconVar.plane }), 
@@ -49,6 +54,7 @@ class MessagesModule extends ComponentBlock
                 const msgContent = inputSend.value.trim();
                 if (msgContent)
                 {
+                    inputSend.value = '';
                     activeChat.sendMessage(msgContent);
                 }
                 else
@@ -104,10 +110,12 @@ class MessagesModule extends ComponentBlock
 
         super({
             messages, 
+            msgGroups,
             loader,
             inputSend, 
             buttonSend, 
-            buttonAttach
+            buttonAttach,
+            noActiveChat,
         });
         window.messages = this;
 
@@ -115,11 +123,9 @@ class MessagesModule extends ComponentBlock
     }
     setProps (nextProps : Partial< MessagesModuleProps >)
     {
-        console.log();
+        const {messages, loader, noActiveChat} = MessagesModule._prepareProps(nextProps);
 
-        const props : Partial< MessagesModuleProps > = {};
-
-        const {messages, loader} = MessagesModule._prepareProps(nextProps);
+        const props : Partial< MessagesModuleProps > = {noActiveChat};
         
         if ('messagesData' in nextProps)
         {
@@ -138,12 +144,19 @@ class MessagesModule extends ComponentBlock
                     this.processElems();
                 }
                 else
+                {
                     props.messages = messages;
+
+                    if ('msgGroups' in nextProps)
+                    {
+                        props.msgGroups = nextProps.msgGroups;
+                    }
+                }   
             }
             else
                 props.messages = null;
         }
-        if ('messagesData' in nextProps)
+        if ('showLoader' in nextProps)
         {
             props.loader = loader;
         }
@@ -157,7 +170,8 @@ class MessagesModule extends ComponentBlock
             let messagesData = props.messagesData;
             if (messagesData && Object.keys(messagesData).length > 0)
             {
-                const messages : Record< string, MessageComponent > = {};
+                const messages : PlainObject< MessageComponent > = {};
+                const msgGroups : MessageComponent[] = [];//MessageGroups = {};
             
                 const isSingleMsgData = 'msg' in messagesData;            
                 if (isSingleMsgData)
@@ -166,13 +180,27 @@ class MessagesModule extends ComponentBlock
 
                     messagesData = {[messageProps.messageId]: messageProps};
                 }
-                Object.values(messagesData).reverse().forEach(messageProps => 
+
+                Object.values(messagesData as PlainObject< MessagePropsExt >).reverse().forEach(messageProps => 
                 {   
                     const message = MessagesModule._createMessageComponent(messageProps);
                     messages[messageProps.messageId] = message;
+
+                    //const {datetime, time} = messageProps;
+                    // const dateGroup = 'сегодня'; // datetime == time ? 'сегодня' : datetime.split(' ')[0];
+                    // if (!(dateGroup in msgGroups))
+                    // {
+                    //     msgGroups[dateGroup] = [];
+                    // }
+                    // msgGroups[dateGroup].push(message);
+
+                    msgGroups.push(message);
                 });
 
+                // console.log('msgGroups', msgGroups);
+
                 props.messages = messages;
+                props.msgGroups = msgGroups;
             }
             else            
                 props.messages = null;
@@ -180,9 +208,11 @@ class MessagesModule extends ComponentBlock
         if ('showLoader' in props)
         {
             props.loader = props.showLoader
-                ? new Spinner({ centered: true })
+                ? new Spinner({ centered: true, color: 'light' })
                 : '';
-        }    
+        }
+        props.noActiveChat = !props.activeChatId;
+
         return props;
     } 
     protected static _createMessageComponent (props : MessagePropsExt)
@@ -209,15 +239,19 @@ class MessagesModule extends ComponentBlock
                 {
                     const newMessage = { ...message, chatId, isRead: false } as ChatMessage;
 
+                    console.log('_prepareNewMsgHandler', MessagesModule.processChatMessage2props(newMessage));
+
                     this.setProps({ messagesData: MessagesModule.processChatMessage2props(newMessage) });
                 }
             }
         }
         app.store.on( Store.getEventName4path('openedChat'), () =>
         {
+            console.log(`store.on fired, MessagesModule._prepareNewMsgHandler`, Store.getEventName4path('openedChat'));
+
             if (this._openedChat)
             {
-                app.store.off( Store.getEventName4path(`chats.${this._openedChat}.lastMessage`), newMsgHandler );
+                app.store.off( Store.getEventName4path(`chats.${this._openedChat}`), newMsgHandler );
             }
 
             const {openedChat} = app.storeState; 
@@ -225,16 +259,22 @@ class MessagesModule extends ComponentBlock
 
             if (openedChat)
             {
-                app.store.on( Store.getEventName4path(`chats.${openedChat}.lastMessage`), newMsgHandler );
+                app.store.on( Store.getEventName4path(`chats.${openedChat}`), () =>
+                {
+                    console.log(`store.on fired, newMsgHandler (MessagesModule)`, Store.getEventName4path(`chats.${openedChat}`));
+                    newMsgHandler();
+                 });
             }
         });
     }
     static processChatMessage2props (chatMessage : ChatMessage)
     {
+        const datetime = datePrettify(chatMessage.datetime, true);        
         return {
             messageId: chatMessage.id,
             msg: chatMessage.content,
-            datetime: datePrettify(chatMessage.datetime),    
+            datetime : datetime,
+            time: datetime.split(' ')?.[1] || datetime,    
             of: chatMessage.userId == SurChat.instance.user.data?.id ? 'you' : 'chat',
             type: MessageTypes.text,
             tag: 'li',
@@ -254,7 +294,6 @@ export default componentConnected2store< MessagesModuleProps >(MessagesModule, s
 {
     const app = SurChat.instance;
     const {activeChat} = app.chatsList;
-    // const curUser = app.user.data;
 
     const messagesData : MessagesData = {};
     const showLoader = storeState.showChatsLoader;
@@ -266,6 +305,6 @@ export default componentConnected2store< MessagesModuleProps >(MessagesModule, s
     },
     messagesData);
 
-    return {messagesData, showLoader};
+    return {messagesData, showLoader, activeChatId: activeChat?.id};
 },
 ['openedChat', 'showMessagesLoader']);

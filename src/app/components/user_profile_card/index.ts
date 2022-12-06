@@ -52,9 +52,7 @@ class UserProfileCard extends ProfileCard
 export default componentConnected2store< UserProfileCardProps >(UserProfileCard, () => 
 {
     const curUser = SurChat.instance.user.data;
-
-    console.log('UserProfileCard componentConnected2store', {image: curUser?.avatar || '', name: curUser?.nickname || ''});
-
+    
     return {image: curUser?.avatar || '', name: curUser?.nickname || ''};
 },
 'currentUser');

@@ -12,7 +12,8 @@ export enum MessageTypes {
 export type MessageProps = BlockProps & 
 {
     msg : string,
-    datetime : string,    
+    datetime : string,
+    time? : string,    
     of : 'you' | 'chat',
     type? : MessageTypes,
     tag? : string

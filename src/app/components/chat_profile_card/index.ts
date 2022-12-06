@@ -47,7 +47,11 @@ class ChatProfileCard extends ProfileCard
                             if (activeChat)
                             {
                                 chatsList.deleteChat(activeChat.id)
-                                    .catch(() => alert('Ошибка при удалении чата: операция не выполнена'));
+                                    .catch(error => 
+                                    {
+                                        console.error(error);
+                                        alert('Ошибка при удалении чата: операция не выполнена');
+                                    });
                             }
                             else
                                 alert('Ошибка при удалении чата: неизвестный чат, операция не выполнена');
@@ -62,8 +66,6 @@ class ChatProfileCard extends ProfileCard
 export default componentConnected2store< ChatProfileCardProps >(ChatProfileCard, () => 
 {
     const {activeChat} = SurChat.instance.chatsList;
-
-    console.log('ChatProfileCard componentConnected2store', {image: activeChat?.avatar || '', name: activeChat?.title || ''});
     
     return {image: activeChat?.avatar || '', name: activeChat?.title || ''};
 },

@@ -49,7 +49,11 @@ class ChatsModule extends ComponentBlock
                     if (login)
                     {
                         SurChat.instance.chatsList.createChat( login as string, ChatType.user )
-                            .catch( () => alert('При создании чата произошла ошибка') );
+                            .catch( error => 
+                            {
+                                console.error(error);
+                                alert('При создании чата произошла ошибка') 
+                            });
                     }
                     else
                         alert('Некорректный логин');
@@ -131,7 +135,7 @@ class ChatsModule extends ComponentBlock
         if ('showLoader' in props)
         {
             props.loader = props.showLoader
-                ? new Spinner({ centered: true })
+                ? new Spinner({ centered: true, color: 'dark' })
                 : '';
         }        
         return props;
@@ -145,21 +149,15 @@ class ChatsModule extends ComponentBlock
                 (
                     ChatComponent, 
                     () => {
-                        ChatsModule._processChatPropsForLastMsg(chatId, props);
-
-                        console.log('ChatComponent componentConnected2store', props);
-                        
-                        return {...props};
+                        // const nextProps = ChatsModule._processChatPropsForLastMsg(chatId, props);
+                        return {...ChatsModule._processChatPropsForLastMsg(chatId, props)};
                     },
-                    // FIXME its need to use store.off after chat delete, or just use store event path of higher level
-                    `chats.${chatId}.lastMessage`
+                    `chats.${chatId}`
                 )
             ) (null, ['click', () =>
                 {
                     const {chatsList} = SurChat.instance;
                     const {activeChat} = chatsList;
-                    
-                    console.log('click on chat!');
 
                     if (activeChat?.id != chatId)
                     {
@@ -171,7 +169,11 @@ class ChatsModule extends ComponentBlock
                         }
                         chat.setProps({ isActive: true });
 
-                        chatsList.openChat( chatId ).catch( () => alert('Возникла ошибка при открытии чата') );
+                        chatsList.openChat( chatId ).catch( error => 
+                        {
+                            console.error(error);
+                            alert('Возникла ошибка при открытии чата') 
+                        });
                     }                              
                 }]
             );
@@ -202,6 +204,7 @@ class ChatsModule extends ComponentBlock
         }
         return props;
     }
+    // TODO он и при close вызывается 
     protected _prepareOpenChatHandler ()
     {
         const app = SurChat.instance;
@@ -210,9 +213,11 @@ class ChatsModule extends ComponentBlock
 
         app.store.on( Store.getEventName4path('openedChat'), () =>
         {
+            console.log(`store.on fired, ChatsModule._prepareOpenChatHandler`, Store.getEventName4path('openedChat'));
+
             if (this._openedChat)
             {
-                (this.props as ChatsModuleProps).chatsData[this._openedChat].setProps({ isActive: false });
+                this.props.chats?.[this._openedChat].setProps({ isActive: false });
             }
 
             const {openedChat} = app.storeState; 
@@ -220,8 +225,11 @@ class ChatsModule extends ComponentBlock
 
             if (openedChat)
             {
-                // TODO reset unreadMsg to zero 
-                (this.props as ChatsModuleProps).chats[openedChat].setProps({ isActive: true });
+                this.props.chats?.[openedChat].setProps(
+                { 
+                    isActive: true,
+                    newMsgCnt: 0
+                });
             }
         });
     }
@@ -253,13 +261,12 @@ export default componentConnected2store< ChatsModuleProps >(ChatsModule, storeSt
         {
             chatId: String(chat.id),
             image: chat.avatar || '',
-            // FIXME неверный тайтл передается 
             name: chat.title,
             isActive : chat.id == activeChat?.id,
             newMsgCnt: chat.unreadCnt,
             tag: 'li',
         };
-        const lastMessage = chat.lastMessage;
+        const {lastMessage} = chat;
         if (lastMessage)
         {
             chatData = {
@@ -274,7 +281,6 @@ export default componentConnected2store< ChatsModuleProps >(ChatsModule, storeSt
     },
     chatsData);
     
-    console.log('ChatsModule componentConnected2store', {chatsData, showLoader});
     return {chatsData, showLoader};
 },
 ['chats', 'showChatsLoader']);

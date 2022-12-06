@@ -1,8 +1,13 @@
+import {FileApi} from "@models/types";
 import {restResourcesApi} from "./rest";
 
-class ResourcesApi
+class ResourcesApi implements FileApi
 {
-    static upload (file : FormData)
+    get (file : string)
+    {
+        return restResourcesApi.API_BASE_URL + file;
+    }
+    upload (file : FormData)
     {
         return restResourcesApi.post('', file) 
             .then(res => 

@@ -1,35 +1,7 @@
 import SurChat from '@app';
-import userProfile from '@data/user.json'; 
-// import { FieldValidator } from '@lib-utils/form_validation';
+import {UserField} from '@models/types';
 import ChatUser from '@models/chat_user';
-import {ChatUserFields, UserField} from '@models/types';
-import {isEmptyValidator, lengthValidator, loginValidator} from '@lib-utils/form_validation';
-
-// const app = SurChat.instance;
-
-// export const userFields : UserField[] = [
-//     {
-//         name: 'nickname',
-//         label: 'Никнейм'
-//     }
-// ];
-
-// TODO для регистрации и авторизации эти поля также буду нужны, а их не будет без ChatUserFields 
-
-// const userFieldParams = 
-// {
-//     login:
-//     {
-//         label: 'Логин',
-//         validators: [
-//             [ isEmptyValidator ],
-//             [ loginValidator ],
-//             [ lengthValidator, [3, 20] ],     
-//         ],
-//     }, 
-//     nickname: 'Никнейм',
-//     first_name: 'Имя'
-// };
+import userProfile from '@data/user.json'; 
 
 export default class CurrentUser
 {
@@ -37,18 +9,13 @@ export default class CurrentUser
 
     constructor (
         protected _app : SurChat
-    ) {
-        // TODO work with CurrentUserFields, field getter with desc for form pages (see in *-api branch)
+    ) {        
     }
-    // get fields ()
-    // {
-    //     return this._fields;
-    // }
-    // // TODO string in ... 
-    // getField (name : string)
-    // {
-    //     return this._fields[name];
-    // }
+    get fields ()
+    {
+        // TODO work with CurrentUserFields, field getter with desc for form pages (see in *-api branch)
+        return this._fields;
+    }
     get data ()
     {
         const user = this._app.storeState.currentUser;
@@ -83,101 +50,3 @@ export default class CurrentUser
         return profile;
     }
 }
-// formFields: [                
-//     [
-//         new InputImage({
-//             name: 'avatar',
-//             label: 'Аватар',
-//             image: userProfile.image
-//         })
-//     ], [
-//         new InputText({
-//             name: 'nickname',
-//             label: 'Никнейм',   
-//             value: userProfile.nickname                 
-//         }),
-//         [
-//             [ InputText.validationEvents, isEmptyValidator ],
-//         ]
-//     ], [
-//         new InputText({
-//             name: 'phone',
-//             label: 'Телефон',   
-//             value: userProfile.phone                 
-//         }),
-//         [
-//             [ InputText.validationEvents, isEmptyValidator ],
-//             [ InputText.validationEvents, phoneValidator ],
-//             [ InputText.validationEvents, lengthValidator, [10, 15] ],
-//         ]
-//     ], [
-//         new InputText({
-//             name: 'email',
-//             label: 'Почта',   
-//             value: userProfile.email                 
-//         }),
-//         [
-//             [ InputText.validationEvents, isEmptyValidator ],
-//             [ InputText.validationEvents, emailValidator ],
-//         ]
-//     ], [
-//         new InputText({
-//             name: 'first_name',
-//             label: 'Имя',   
-//             value: userProfile.first_name                 
-//         }),
-//         [
-//             [ InputText.validationEvents, isEmptyValidator ],
-//             [ InputText.validationEvents, nameValidator ],
-//         ]
-//     ], [
-//         new InputText({
-//             name: 'second_name',
-//             label: 'Фамилия',   
-//             value: userProfile.second_name                 
-//         }),
-//         [
-//             [ InputText.validationEvents, isEmptyValidator ],
-//             [ InputText.validationEvents, nameValidator ],
-//         ]
-//     ]],
-/* 
-
-@todo надо связать это с уже написанными валидаторами
-только теперь значение берется не из поля
-а из объекта
-
-type ProfileFields
-{
-    first_name : string,
-    phone : string,
-    ...
-}
-type FieldDef
-{
-    name : string, in ProfileFields
-    label : string,
-    validators : () => boolean,
-    value : string
-} 
-отличается от FormField который интерфейс для блоков полей формы 
-является для него родителем 
-
-ниже прописать статикой (или в json вынести)
-UserFields
-
-это использовать на page-ах 
-user.getField('login').validators
-
-для возврата profile
-getFields(['nickname', ...])
-а модуль сам сможет взять 
-nickname, avatar
-
-только берет он из стора 
-
-оптимизировать не только обновление пропсов но и запросы к апи чтоб не шли при каждой отрисовке 
-
-*/
-
-// Pick< ProfileFields, 'login' | 'password' >

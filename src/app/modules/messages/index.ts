@@ -117,7 +117,6 @@ class MessagesModule extends ComponentBlock
             buttonAttach,
             noActiveChat,
         });
-        window.messages = this;
 
         this._prepareNewMsgHandler();
     }

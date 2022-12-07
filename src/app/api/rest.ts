@@ -11,7 +11,7 @@ export function apiErrorHandler (error : Error) : never
 {
     if (!('cause' in error))
     {
-        // dev? (no api) error
+        // dev (no api) error
         throw createAppError(error.message, AppErrorCode.unknown, 'actions');
     }
 
@@ -33,7 +33,7 @@ export function apiErrorHandler (error : Error) : never
             app.resetStoreState(); 
         }
 
-        // FIXME it will become uncaught besides auth form
+        // FIXME it will become uncaught besides auth form...
         throw createAppError(msg, AppErrorCode.userInput, '', additional);
     }
     else
@@ -119,8 +119,3 @@ export const restAuthApi = new RestApi('/auth');
 export const restUsersApi = new RestApi('/user');
 export const restChatsApi = new RestApi('/chats');
 export const restResourcesApi = new RestApi('/resources');
-
-window.restAuthApi = restAuthApi;
-window.restUsersApi = restUsersApi;
-window.restChatsApi = restChatsApi;
-window.restResourcesApi = restResourcesApi;

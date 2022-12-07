@@ -52,8 +52,6 @@ export default class Store extends EventBus
     }
     set (path: string, value: unknown, type : StoreSetStateType = StoreSetStateType.merge, floatStoreEvent = true)
     {
-        //console.log('store set', path, value, type, floatStoreEvent);
-
         if (!path)
         {
             return;

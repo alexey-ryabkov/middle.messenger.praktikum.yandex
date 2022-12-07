@@ -51,7 +51,6 @@ export default class Http
             data, 
             headers = {}, 
             timeout = 5000, 
-            // dataType,
             responseType = '',
             credentials = true,
         } = options;

@@ -11,7 +11,6 @@ export type DropdownMenuOptionProps = BlockProps & {
     icon? : IconVar,
     url? : string,
     action? : Handler,
-    // action? : EventHandler,
 };
 
 export default class DropdownMenuOption extends ComponentBlock 

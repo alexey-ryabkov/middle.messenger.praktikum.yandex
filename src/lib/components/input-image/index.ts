@@ -164,7 +164,7 @@ export default class InputImage extends FormFieldComponent
     }
     protected get _input ()
     {
-        // FIXME while have to call it 
+        // FIXME now we have to call it 
         this.processElems();
         
         const input = <unknown> this.elems['input'];

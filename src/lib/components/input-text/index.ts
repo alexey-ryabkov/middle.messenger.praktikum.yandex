@@ -52,7 +52,7 @@ export default class InputText extends FormFieldComponent
     }
     protected get _input ()
     {
-        // FIXME 
+        // FIXME now we have to call it
         this.processElems();
 
         const input = <unknown> this.elems['input'];

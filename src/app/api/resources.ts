@@ -10,12 +10,12 @@ class ResourcesApi implements FileApi
     upload (file : FormData)
     {
         return restResourcesApi.post('', file) 
-            .then(res => 
+            .then(() => 
             {
-                console.log(res);
+                // TODO
             }); 
     }
 }
-const resourcesApi = window.resourcesApi = new ResourcesApi();
+const resourcesApi = new ResourcesApi();
 
 export default resourcesApi;

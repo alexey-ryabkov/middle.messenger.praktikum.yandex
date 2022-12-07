@@ -95,6 +95,7 @@ export default abstract class Block extends EventEmitter
         {  
             this._id = id;
             // for node of HTMLElement it`s need to init component manually by mount method, otherwise go to init 
+            // FIXME not already, rework
             this._lifecircle.emit(Block._LIFE_EVENTS.INIT); 
         }
     }
@@ -111,7 +112,9 @@ export default abstract class Block extends EventEmitter
     {
         return this._props;
     }
-    mount () // for node of HTMLElement it`s need to init component manually by this method
+     // for node of HTMLElement it`s need to init component manually by this method
+    // FIXME not already, rework
+    mount ()
     {
         const {node} = this._meta; 
 
@@ -211,11 +214,7 @@ export default abstract class Block extends EventEmitter
         {
             set: (target, prop : string, value) =>
             {
-                // if (!this._flags.inSetPropsCall)
-                // {
-                //     throw new Error('No access');
-                // }
-                // FIXME                
+                // TODO throw new Error('No access');  if !this._flags.inSetPropsCall             
                 target[prop] = value;
 
                 this._flags.isPropsGotSet = true;

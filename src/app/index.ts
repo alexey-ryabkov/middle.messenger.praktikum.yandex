@@ -221,4 +221,3 @@ export default class SurChat implements App
         });
     }
 }
-window.app = SurChat.instance;

@@ -1,12 +1,10 @@
 import Templator from '@core/templator';
-// import {BlockEvents} from '@core/block';
 import {BlockProps} from '@core/block';
 import {BemCompParams, BemParams} from '@core/block/bem';
 import ComponentBlock from '@core/block/component';
 import Icon, {IconVar} from '@lib-components/icon';
 import tpl from './tpl.hbs';
 import './style.scss';
-
 
 export enum NotificationLevel 
 {

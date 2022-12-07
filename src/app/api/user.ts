@@ -90,6 +90,6 @@ export class UserApi implements AuthUserApi, ChatUserApi, UserProfileApi
         return {...fields, id, nickname: display_name} as ChatUserFields;
     }
 }
-const userApi = window.userApi = new UserApi();
+const userApi = new UserApi();
 
 export default userApi;

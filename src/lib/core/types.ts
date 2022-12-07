@@ -63,7 +63,7 @@ export interface FormField extends Field
 }
 export type FieldValidator = (field : Field, errorStack? : string[], params? : object) => boolean;
 
-export type FieldValidatorDef = [FieldValidator, object?]; // [validatorFunc, validatorParams]
+export type FieldValidatorDef = [FieldValidator, object?];
 
 export interface Routable
 {

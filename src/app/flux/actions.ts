@@ -57,7 +57,7 @@ export default class Actions
         console.log('Actions.changeUserAuthData fired');
         return userApi.changeAuthData( data )
             .then( () => Actions.defineUser() )
-            .catch( error => apiErrorHandler( error ));;
+            .catch( error => apiErrorHandler( error ));
     }
     static logoutUser ()
     {
@@ -221,4 +221,3 @@ export default class Actions
         return Promise.resolve();
     }
 }
-window.actions = Actions;

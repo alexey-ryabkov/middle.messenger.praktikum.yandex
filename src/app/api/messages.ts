@@ -217,4 +217,3 @@ export default class Messenger extends EventBus implements MessengerApi
         return {...Messenger.processMessage(messageData), chatId, isRead} as ChatMessage;
     }
 }
-window.messagesApi = Messenger;

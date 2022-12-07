@@ -106,6 +106,6 @@ class ChatsApi implements ChatsListApi, ChatApi
         return restChatsApi.post(`/token/${id}`).then( result => result.token as string );
     }
 }
-const chatsApi = window.chatsApi = new ChatsApi();
+const chatsApi = new ChatsApi();
 
 export default chatsApi;

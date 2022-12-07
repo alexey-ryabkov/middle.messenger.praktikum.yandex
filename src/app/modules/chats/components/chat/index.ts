@@ -27,6 +27,7 @@ export default class ChatComponent extends ComponentBlock
         const {avatar, caption} = ChatComponent._prepareProps(props);
 
         super( {avatar, caption, ...props}, events, { node : props?.tag ?? 'div' });
+        this._processAvatarProps();
     }
     setProps (nextProps: Partial< ChatProps >)
     {
@@ -50,7 +51,9 @@ export default class ChatComponent extends ComponentBlock
 
             this.bemMix([ 'icontainer', [['bg', 'glass']] ]);
         }
+
         super.setProps(nextProps);  
+        this._processAvatarProps();
     }  
     protected static _prepareProps (props : Partial< ChatProps > = {})
     {
@@ -73,7 +76,7 @@ export default class ChatComponent extends ComponentBlock
         {
             props.avatar = new Avatar({ 
                 image: props.image, 
-                size: 'regular'
+                size: 'regular',
             });
             props.avatar.bemMix([ 'chat', 'avatar' ]);
         }
@@ -87,6 +90,14 @@ export default class ChatComponent extends ComponentBlock
             props.caption.bemMix([ 'chat', 'name' ]);
         }
         return props;
+    }
+    protected _processAvatarProps ()
+    {
+        if (this.props.avatar)
+        {
+            const alt = `Аватар ${this.props.name || 'чата'}`;
+            this.props.avatar.setProps({ alt });
+        }
     }
     protected _prepareBemParams (params : BemCompParams)
     {

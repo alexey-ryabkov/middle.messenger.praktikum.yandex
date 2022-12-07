@@ -25,11 +25,14 @@ export default class ProfileCard extends ComponentBlock
             menu.bemMix(['profileCard', 'dropdownMenu']);
         }
         super({ avatar, caption, menu });
+        this._processAvatarProps();
     }    
     setProps (nextProps: Partial< ProfileCardProps >)
     {
         ProfileCard._prepareProps(nextProps);
+
         super.setProps(nextProps);  
+        this._processAvatarProps();
     }  
     protected static _prepareProps (props : Partial< ProfileCardProps >)
     {
@@ -57,6 +60,14 @@ export default class ProfileCard extends ComponentBlock
         }
         return props;
     } 
+    protected _processAvatarProps ()
+    {
+        if (this.props.avatar)
+        {
+            const alt = `Аватар ${this.props.name || 'профиля'} `;
+            this.props.avatar.setProps({ alt });
+        }
+    }
     protected _prepareBemParams ()
     {
         const bem : BemParams = {name: 'profileCard'};

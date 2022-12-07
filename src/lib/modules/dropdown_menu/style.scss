@@ -1,0 +1,136 @@
+.dropdownMenu {
+    &__ {
+        &menuBox {
+            position: relative;
+            z-index: 2000;
+            display: none;
+        }
+        
+        &menu {
+            inset: 1px auto auto -4.5px;
+            position: absolute;
+            border: 1px solid rgba(black, 10%);
+            min-width: 120px;
+            
+            .dropdownMenu__menuOptLink.link {
+                text-decoration: none;
+                border-bottom: 0;
+                opacity: 1;
+                white-space: nowrap;
+    
+                &:hover {
+                    color: white;
+                }
+            }
+        }
+
+        &menuOptions.icontainer__content {            
+            list-style: none;
+            padding: 6px;
+            margin: 0;            
+        }
+
+        &menuOpt:not(:last-child) {
+            border-bottom: 1px solid rgba(black, 10%);
+        }
+
+        &menuOptLink {
+            padding: 4px 8px;
+            min-height: 16px;
+            line-height: 16px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 2px;
+
+            &:hover {
+                background: #017aff;
+                border-radius: 3px;
+                border-bottom-color: transparent;
+
+                .dropdownMenu__menuOptTitle.link {
+                    color: white;
+                }
+
+                .icon__icnImg {
+                    fill: white;
+                }
+            }
+        }
+        
+        &menuOptIcon {
+            margin-left: -5px;
+            min-width: 22px;
+            text-align: center;
+
+            +.dropdownMenu__menuOptTitle {
+                position: relative;
+                top: 0.5px;
+            }
+        }
+
+        &menuOptTitle {
+            font-size: 11px;
+        }
+
+        &indicator {
+            inset: -10px auto auto 7px;
+            position: absolute;
+            width: 24px;
+            height: 18px;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAASCAYAAABB7B6eAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyNpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ4IDc5LjE2NDAzNiwgMjAxOS8wOC8xMy0wMTowNjo1NyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIxLjAgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjJDOUZDMTgyNjQyNTExRUQ4MkNDQTMzRjRFNUNDMjA5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjJDOUZDMTgzNjQyNTExRUQ4MkNDQTMzRjRFNUNDMjA5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MkM5RkMxODA2NDI1MTFFRDgyQ0NBMzNGNEU1Q0MyMDkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MkM5RkMxODE2NDI1MTFFRDgyQ0NBMzNGNEU1Q0MyMDkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5Omk0LAAACbklEQVR42mJgwA8YkWgw+////3A5JDZOwITLUKBmxsbGRpAhYINAbJhFIDFkNoyPzUIWdAGQoqamJpDFYNVANswXDIfnzhU8tWCpwY5Hdw8ALUS4iJER5jOQJf9BfAZsBsMUATUzQV3FBGIDaebzm7clPblz5/3bl6/+3zx1ekFISAgzCENDgQnqSyakYIUbjOJVkCIQRjKABWT40wcP/3/59On/JyB+//79/xsnTy20s7NjgYYCM5KjkIMQHmnwMAUpBGmEaT67cUsyyPBPUMO/QDHIkutnzi0yMDBghamH+QjJJ4xMsMgBRSII19fXg20+dOgQ45nNm+Ml9HXn8AsJwn38D0ozMzMzSCgrxq5ZtGjuy5cvmYCWM2ILcrDXrl69yvTq1SvGK1euMAkKCjJ9+PCBaee8BXnSBvpT+AQFwYbCnPQfFvsgMSYmBg5eXv0AFxd9GSam3duOHfuppqbG+PXrV4bw8HCQPCMonMGGb9++nenhw4eM7OzsTGunzqqVMdRr4eLng4fdP6jBTEgWwCzh5OdXFxQQdGf7/3/N4dOnf4JSkampKcO0adMYmUVERJhB3nvx4gVjV3W1UFNZVYu0vlYJBxcnVoP/o/kGZgmXkJC4rLCIm56w0J6Vu3d/On78OCMwfhgZ1dXV2YpCQgR19Y18xVWUa0QU5eUZgeHLhBTexIK/f/8yfHz2/OHLm7daL5w9vSm9tfUD46PrN+6zsLMrsAODg5WVFZ69STUc3aJvb94w/Pn1+yEjKOnhKj/+EVHO/CO1LIJp+oejoEIGxPiSCZ8mcoOJiUBpSjH4R2sLGOhpAUCAAQAE6D7dN0/Z8QAAAABJRU5ErkJggg==');
+        }
+    }
+
+    &-- {
+        &active {
+            .dropdownMenu__menuBox {
+                display: block;
+            }
+        }
+
+        &pos_ {
+            &topLeft {
+                .dropdownMenu__menu {
+                    inset: 0 auto auto -4.5px;
+                }
+
+                .dropdownMenu__indicator {
+                    inset: -10px auto auto 7px;
+                }
+            }
+
+            &topRight {
+                .dropdownMenu__menu {
+                    inset: 0 -4.5px auto auto;
+                }
+
+                .dropdownMenu__indicator {
+                    inset: -10px 7px auto auto;
+                }
+            }
+
+            &bottomLeft {
+                .dropdownMenu__menu {
+                    inset: 0 auto auto -4.5px;
+                }
+
+                .dropdownMenu__indicator {
+                    transform: scaleY(-1);
+                    inset: -43px auto auto 7px;
+                }
+            }
+
+            &bottomRight { 
+                .dropdownMenu__menu {
+                    inset: 0 -4.5px auto auto;
+                }
+
+                .dropdownMenu__indicator {
+                    transform: scaleY(-1);
+                    inset: -43px 7px auto auto;
+                }
+            }
+        }
+    }
+}

@@ -1,6 +1,10 @@
-@import '../main/vars';
+@use 'sass:map';
+
+@import '../../modules/main/vars';
 
 ._messages {
+    position: relative;
+    
     &__ {
         &box {
             box-sizing: border-box;
@@ -51,6 +55,22 @@
 
         &messageField {
             margin-right: 10px;
+
+            .inputText__input {
+                padding: 2px 12px;
+            }
         }
-    }    
+
+        &emptyMsg {
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            font-weight: map.get($font-weights, 'Light');
+            text-align: center;
+        }
+    } 
+    
+    .spinner {
+        transform: translate(11px, -23.5px);
+    }
 }

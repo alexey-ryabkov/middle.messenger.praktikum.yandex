@@ -1,6 +1,7 @@
-import {App} from '@models/types';
-import Templator from '@models/templator';
-import Layout from '@models/layout';
+import {App} from '@core/types';
+import Templator from '@core/templator';
+import {BemParams} from '@core/block/bem';
+import Layout from '@core/layout';
 import tpl from './tpl.hbs';
 import './style.scss';
 
@@ -10,8 +11,13 @@ export default class LeftcolWindowLayout extends Layout
 {
     constructor (app : App)
     {
-        super(app, { bem: {name: '_leftcolWindowLayout'} });
+        super(app);
     } 
+    protected _prepareBemParams ()
+    {
+        const bem : BemParams = {name: '_leftcolWindowLayout'};
+        return bem;
+    }
     protected get _template () 
     {
         return template; 

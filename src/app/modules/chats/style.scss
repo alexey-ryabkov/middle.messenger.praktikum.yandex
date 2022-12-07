@@ -1,0 +1,43 @@
+@use 'sass:map';
+
+@import '../../modules/main/vars';
+
+._chats {
+    position: relative;
+    
+    &__ {
+        &list {
+            list-style: none;
+            padding: 22px;
+            margin: 0 0 0 -22px;
+            height: 551px;
+            overflow: auto;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        &listItem {
+            margin-bottom: 8px;
+        }
+
+        &panel {
+            height: 47px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: -22px;
+            border-right: 1px solid $gray;
+            padding: 0 10px;
+        }
+
+        &noChatsMsg {
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            font-weight: map.get($font-weights, 'Light');
+        }
+    }
+
+    .spinner {
+        transform: translate(-11px, -23.5px);
+    }
+}

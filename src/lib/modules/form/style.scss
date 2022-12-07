@@ -23,6 +23,10 @@
             }            
         }
 
+        &submitNotification {
+            margin-bottom: 25px;
+        }
+
         &fieldNotification {
             padding: 5px 0 0 2px;
         }
@@ -38,10 +42,5 @@
             display: inline-block;
             margin: 10px auto;
         }
-    }
-
-    .notification {
-        font-size: 14px;
-        justify-content: center;
     }
 }

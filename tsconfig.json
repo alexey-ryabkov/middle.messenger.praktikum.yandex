@@ -3,7 +3,7 @@
         "module": "esnext",
         "moduleResolution": "node",
         "target": "ES2015",
-        "lib": ["DOM", "ESNext"],
+        "lib": ["DOM", "ESNext", "DOM.Iterable"],
         
         "resolveJsonModule": true,
         "esModuleInterop": true,
@@ -17,20 +17,27 @@
 
         "baseUrl": "./src",
         "paths": {
-            "@app": ["app"],
-            "@data/*": ["app/dummy_data/*"],
-            "@models/*": ["lib/models/*", "app/models/*"],
-            "@pages/*": ["app/pages/*"],
-            "@lib-layouts/*": ["lib/layouts/*"],
-            "@app-layouts/*": ["app/layouts/*"],
+            "@core/block": ["lib/core/block"],
+            "@core/*": ["lib/core/*"],
+
             "@lib-modules/*": ["lib/modules/*"],
-            "@app-modules/*": ["app/modules/*"],
+            "@lib-layouts/*": ["lib/layouts/*"],
             "@lib-components/*": ["lib/components/*"],
-            "@app-components/*": ["app/components/*"],
             "@lib-utils-kit": ["lib/utils"],
             "@lib-utils/*": ["lib/utils/*"],
+
+            "@app": ["app"],
+            "@app-modules/*": ["app/modules/*"],
+            "@app-layouts/*": ["app/layouts/*"],
+            "@app-components/*": ["app/components/*"],      
             "@app-utils-kit": ["app/utils"],
-            "@app-utils/*": ["app/utils/*"]
+            "@app-utils/*": ["app/utils/*"],
+
+            "@flux/*": ["app/flux/*"],
+            "@data/*": ["app/dummy_data/*"],
+            "@pages": ["app/pages"],
+            "@api/*": ["app/api/*"],
+            "@models/*": ["app/models/*"]            
         } 
     },
     "exclude": [

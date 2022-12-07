@@ -1,7 +1,7 @@
-import Templator from '@models/templator';
-import ComponentBlock from '@models/component_block';
-import {BemParams} from '@models/bem_block';
-import {BlockProps} from '@models/block';
+import Templator from '@core/templator';
+import ComponentBlock from '@core/block/component';
+import {BemCompParams, BemParams} from '@core/block/bem';
+import {BlockProps} from '@core/block';
 import tpl from './tpl.hbs';
 import './style.scss';
 
@@ -14,21 +14,28 @@ export default class Avatar extends ComponentBlock
 {
     constructor (props : AvatarProps)
     {
-        const bem : BemParams = { name: 'avatar', mods: {block: []} };
-
         if (!props.image)
         {
             const stubImg = new URL(
                 '../../../../static/images/avatar.jpg',
                 import.meta.url
             );
-            props.image = stubImg.pathname;
+            props.image = stubImg.pathname; 
         }
+        super(props);
+    }
+    protected _prepareBemParams (params : BemCompParams)
+    {
+        const props = params.props as AvatarProps;
+        const bem : BemParams = { 
+            name: 'avatar', 
+            mods: {block: []} 
+        };
         if ('size' in props && bem?.mods?.block)
         {
             bem.mods.block.push([ 'size', props.size ]);
         }
-        super({ props, bem });
+        return bem;
     }
     protected get _template () 
     {

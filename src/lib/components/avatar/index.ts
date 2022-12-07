@@ -8,7 +8,8 @@ import './style.scss';
 export type AvatarProps = BlockProps & 
 {
     image? : string,
-    size? : 'small' | 'regular' | 'large'
+    size? : 'small' | 'regular' | 'large',
+    alt? : string,
 };
 export default class Avatar extends ComponentBlock 
 {

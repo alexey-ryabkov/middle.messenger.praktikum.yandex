@@ -12,6 +12,7 @@ export default `
 </ul>   
 {{else}}
 <div class="_messages__box">    
+    {{#unless loader}}
     <div class="text _messages__emptyMsg">
     {{#if noActiveChat}}
     Выберите чат, чтобы отправить сообщение.
@@ -19,6 +20,7 @@ export default `
     Отправьте сообщение, используя поле внизу. Оно станет первым в этом чате!
     {{/if}} 
     </div>
+    {{/unless}}    
 </div>
 {{/if}} 
 {{{loader}}}

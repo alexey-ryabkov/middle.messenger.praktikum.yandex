@@ -1,4 +1,4 @@
-import {App} from '@core/types';
+import {ContainarableApp} from '@core/types';
 import Templator from '@core/templator';
 import {BemParams} from '@core/block/bem';
 import Layout, {LayoutProps} from '@core/layout';
@@ -14,7 +14,7 @@ export type CenteredFormLayoutProps = LayoutProps &
 };
 export default class CenteredFormLayout extends Layout
 {
-    constructor (app : App, props : CenteredFormLayoutProps, events? : BlockEvents)
+    constructor (app : ContainarableApp, props : CenteredFormLayoutProps, events? : BlockEvents)
     {
         const caption = new Caption({ caption: props.title, size: CaptionSize.h1 });
 

@@ -1,4 +1,4 @@
-import {App} from '@core/types';
+import {ContainarableApp} from '@core/types';
 import Templator from '@core/templator';
 import {BemParams} from '@core/block/bem';
 import Layout from '@core/layout';
@@ -9,7 +9,7 @@ const template = new Templator(tpl);
 
 export default class LeftcolWindowLayout extends Layout
 {
-    constructor (app : App)
+    constructor (app : ContainarableApp)
     {
         super(app);
     } 

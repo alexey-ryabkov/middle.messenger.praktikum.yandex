@@ -1,16 +1,15 @@
 import {PlainObject} from "@core/types";
 import {AppErrorCode, AuthorizeData, ChangeAuthData, ChatFields, ChatUserFields, 
-    Message, ProfileData, RegistrateData} from "@models/types";
+    Message, ProfileData, RegistrateData} from "@entities/types";
 import SurChat from "@app";
 import {StoreSetStateType} from "@core/store";
 import {apiErrorHandler} from "@api/rest";
 import chatsApi from "@api/chats";
 import userApi from "@api/user";
-import ChatUser from "@models/chat_user";
-import Chat from "@models/chat";
+import ChatUser from "@entities/chat_user";
+import Chat from "@entities/chat";
 import {isEqual} from "@lib-utils-kit";
 import {createAppError} from "@app-utils-kit";
-
 
 export default class Actions 
 {
@@ -210,12 +209,16 @@ export default class Actions
     } 
     static toggleChatsLoader (flag : boolean) 
     {
-        // FIXME (hide cause of bug) SurChat.instance.store.set( 'showChatsLoader', flag );
+        console.log('Actions.toggleChatsLoader store.set toggleChatsLoader', flag);
+
+        SurChat.instance.store.set( 'showChatsLoader', flag );
         return Promise.resolve();
     } 
     static toggleMessagesLoader (flag : boolean) 
     {
-        // FIXME (hide cause of bug) SurChat.instance.store.set( 'showMessagesLoader', flag );
+        console.log('Actions.toggleMessagesLoader store.set toggleMessagesLoader', flag);
+        
+        SurChat.instance.store.set( 'showMessagesLoader', flag );
         return Promise.resolve();
     }
 }

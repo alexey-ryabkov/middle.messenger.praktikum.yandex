@@ -1,7 +1,7 @@
 import SurChat from '@app';
 import Store from '@core/store';
 import Page, {PageAccess} from '@core/page';
-import {ProfileData} from '@models/types';
+import {ProfileData} from '@entities/types';
 import Actions from '@flux/actions';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';

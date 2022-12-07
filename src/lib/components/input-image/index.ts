@@ -85,8 +85,11 @@ export default class InputImage extends FormFieldComponent
             let avatar = this.props.avatar;
             if (!avatar)
             {
-                avatar = new Avatar({ image, size: 'large' });
-
+                avatar = new Avatar({ 
+                    image, 
+                    size: 'large', 
+                    alt: 'Аватар профиля' 
+                });
                 this.delBemMods([ ['empty'] ]);
 
                 this.setProps({ avatar });

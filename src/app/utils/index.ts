@@ -1,4 +1,4 @@
-import {AppError, AppErrorCode} from "@models/types";
+import {AppError, AppErrorCode} from "@entities/types";
 
 export function createAppError (msg : string, code = 0, module = '', additional? : string)
 {

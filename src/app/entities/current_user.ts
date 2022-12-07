@@ -1,6 +1,6 @@
 import SurChat from '@app';
-import {UserField} from '@models/types';
-import ChatUser from '@models/chat_user';
+import {UserField} from '@entities/types';
+import ChatUser from '@entities/chat_user';
 import userProfile from '@data/user.json'; 
 
 export default class CurrentUser

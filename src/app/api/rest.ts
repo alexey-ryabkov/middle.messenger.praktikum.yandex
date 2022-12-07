@@ -1,7 +1,7 @@
 import {PlainObject} from "@core/types";
 import Http, {HttpOptsFull, HTTPMethods} from "@core/http";
 import SurChat from "@app";
-import {AppError, AppErrorCode} from "@models/types";
+import {AppError, AppErrorCode} from "@entities/types";
 import {createAppError} from "@app-utils-kit"
 
 const API_HOST = 'https://ya-praktikum.tech';
@@ -42,26 +42,32 @@ export function apiErrorHandler (error : Error) : never
 }
 
 type RestApiData = FormData | PlainObject;
+type RestApiMethod = (url? : string, data? : RestApiData) => Promise< any >;
 
-class RestApi extends Http
+class RestApi 
 {
+    protected _http : Http;
+
     constructor (apiPath = '') 
     {
-        super(API_BASE_URL + apiPath);
+        this._http = new Http( API_BASE_URL + apiPath );
     }
-    get = (url? : string) => this._apiRequest(url);
-    put = (url? : string, data : RestApiData = {}) => this._apiRequest(url, HTTPMethods.PUT, data);
-    post = (url? : string, data : RestApiData = {}) => this._apiRequest(url, HTTPMethods.POST, data);
-    delete = (url? : string, data : RestApiData = {}) => this._apiRequest(url, HTTPMethods.DELETE, data);
+    get baseUrl ()
+    {
+        return this._http.BASE_URL;
+    }
+    get : RestApiMethod = (url) => this._request(url);
+    put : RestApiMethod = (url, data = {}) => this._request(url, HTTPMethods.PUT, data);
+    post : RestApiMethod = (url, data = {}) => this._request(url, HTTPMethods.POST, data);
+    delete : RestApiMethod = (url, data = {}) => this._request(url, HTTPMethods.DELETE, data);
 
-    protected _apiRequest (url = '', method : HTTPMethods = HTTPMethods.GET, data? : RestApiData) 
+    protected _request (url = '', method : HTTPMethods = HTTPMethods.GET, data? : RestApiData) 
     {
         const options : HttpOptsFull = {
             method,
             responseType: 'json',
             headers: {}
         }
-
         if (data)
         {
             if (data instanceof FormData)
@@ -74,45 +80,45 @@ class RestApi extends Http
                 options.headers = {'content-type': 'application/json; charset=utf-8'};
             }
         }        
-        return super._request(url, options)
-                        .then(xhr => xhr.response)
-                        .catch(error => 
-                        {
-                            let code = error.cause?.code || 0;                            
-                            let msg = error?.cause?.response?.reason;
-                            const additional = error?.cause?.response?.error;
+        return this._http.request(url, options)
+            .then(xhr => xhr.response)
+            .catch(error => 
+            {
+                let code = error.cause?.code || 0;                            
+                let msg = error?.cause?.response?.reason;
+                const additional = error?.cause?.response?.error;
 
-                            switch (code)
-                            {
-                                case AppErrorCode.restApiRequest:
-                                case 409:
-                                    code = AppErrorCode.restApiRequest;
-                                    msg = msg || 'bad request';
-                                    break;
+                switch (code)
+                {
+                    case AppErrorCode.restApiRequest:
+                    case 409:
+                        code = AppErrorCode.restApiRequest;
+                        msg = msg || 'bad request';
+                        break;
 
-                                case AppErrorCode.restApiAuth:
-                                    msg = msg || 'unauthorized';
-                                    break;
+                    case AppErrorCode.restApiAuth:
+                        msg = msg || 'unauthorized';
+                        break;
 
-                                case AppErrorCode.restApiAccess:
-                                    msg = msg || 'no access';
-                                    break;
+                    case AppErrorCode.restApiAccess:
+                        msg = msg || 'no access';
+                        break;
 
-                                case AppErrorCode.restApiPath:
-                                    msg = msg || 'non-existent path';
-                                    break;
+                    case AppErrorCode.restApiPath:
+                        msg = msg || 'non-existent path';
+                        break;
 
-                                case AppErrorCode.restApiServer:
-                                    msg = msg || 'unexpected error';
-                                    break;
+                    case AppErrorCode.restApiServer:
+                        msg = msg || 'unexpected error';
+                        break;
 
-                                default:
-                                    code = AppErrorCode.unknown;
-                                    msg = msg || 'unknown error';
-                                    break;
-                            }
-                            throw createAppError(msg, code, 'rest api', additional);
-                        });
+                    default:
+                        code = AppErrorCode.unknown;
+                        msg = msg || 'unknown error';
+                        break;
+                }
+                throw createAppError(msg, code, 'rest api', additional);
+            });
     }
 }
 export const restAuthApi = new RestApi('/auth');

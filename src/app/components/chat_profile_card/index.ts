@@ -25,6 +25,7 @@ class ChatProfileCard extends ProfileCard
                     size: 'regular',
                     importance: 'primary', 
                 }),
+                position: ['top', 'Right'], 
                 options: [
                     {
                         title: 'Профиль пользователя',

@@ -5,7 +5,7 @@ class ResourcesApi implements FileApi
 {
     get (file : string)
     {
-        return restResourcesApi.API_BASE_URL + file;
+        return restResourcesApi.baseUrl + file;
     }
     upload (file : FormData)
     {

@@ -131,58 +131,33 @@ export function trim (str : string, trimSymbols? : string)
 
     return str.replace(new RegExp(`(?:^[${trimRegexpClsSymbols}]*)|(?:[${trimRegexpClsSymbols}]*$)`), '');
 }
-
-
-export function isEqual(lhs: PlainObject, rhs: PlainObject) {
-    if (Object.keys(lhs).length !== Object.keys(rhs).length) {
+export function isEqual (a: PlainObject, b: PlainObject): boolean 
+{
+    if (String(Object.keys(a)) != String(Object.keys(b)))
+    {
         return false;
     }
+    return Object.keys(a).every(prop => 
+    {
+        const propA = a[prop];
+        const propB = b[prop];
 
-    for (const [key, value] of Object.entries(lhs)) {
-        const rightValue = rhs[key];
-        if (isArrayOrObject(value) && isArrayOrObject(rightValue)) {
-            if (isEqual(value, rightValue)) {
-                continue;
-            }
-            return false;
+        if (propA === propB)
+        {
+            return true;
         }
-
-        if (value !== rightValue) {
-            return false;
+        else if (
+            propA instanceof Object
+            &&
+            propB instanceof Object
+        ) 
+        {
+            return isEqual(propA as PlainObject, propB as PlainObject);
         }
-    }
-
-    return true;
+        else
+            return false;
+    });
 }
-// export function isEqual (a: PlainObject, b: PlainObject): boolean 
-// {
-//     if (String(Object.keys(a)) != String(Object.keys(b)))
-//     {
-//         return false;
-//     }
-//     return Object.keys(a).every(prop => 
-//     {
-//         const propA = a[prop];
-//         const propB = b[prop];
-
-//         if (propA === propB)
-//         {
-//             return true;
-//         }
-//         else if (
-//             propA instanceof Object
-//             &&
-//             propB instanceof Object
-//         ) 
-//         {
-//             return isEqual(propA as PlainObject, propB as PlainObject);
-//         }
-//         else
-//             return false;
-//     });
-// }
-
-
 export function cloneDeep (obj : [] | PlainObject = {}) 
 {
     let cloned : unknown[] | PlainObject; 

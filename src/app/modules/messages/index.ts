@@ -132,16 +132,19 @@ class MessagesModule extends ComponentBlock
             if (messages)
             {
                 const isSingleMessage = 1 == Object.keys(messages).length;
+
                 if (isSingleMessage)
                 {
-                    // FIXME now we need to call it twice
                     this.processElems();
+                }
 
+                if (isSingleMessage && this.elems['list'])
+                {
                     const message = Object.values(messages)[0] as MessageComponent;
 
                     mount(message.element, this.elems['list']);
 
-                    this.processElems();
+                    return;
                 }
                 else
                 {
@@ -298,7 +301,7 @@ export default componentConnected2store< MessagesModuleProps >(MessagesModule, s
     const messagesData : MessagesData = {};
     const showLoader = storeState.showChatsLoader;
 
-    activeChat?.messages.reduce((messagesData, chatMessage) => 
+    activeChat?.messages?.reduce((messagesData, chatMessage) => 
     {
         messagesData[chatMessage.id] = MessagesModule.processChatMessage2props(chatMessage);
         return messagesData;

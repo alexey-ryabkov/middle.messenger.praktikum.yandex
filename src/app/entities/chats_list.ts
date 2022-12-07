@@ -23,15 +23,13 @@ export default class ChatsList
             this._processChats(); 
         });
 
-        // open chat at start after got its in store
+        // open chat at start after got chats in store
         this._app.store.oneTime( Store.getEventName4path('chats'), () => 
         {
-            console.log('store.on fired, ChatsList.constructor', Store.getEventName4path('chats'));
+            console.log('store.oneTime fired, ChatsList.constructor', Store.getEventName4path('chats'));
 
-            Actions.toggleChatsLoader(false)
-                .then( () => Promise.allSettled( Object.values( this.chats ).map( chat => chat.init() )) )
-                .then( () => this._openNextChat() )
-                .finally( () => Actions.toggleChatsLoader(false) );
+            this._openNextChat()
+                .then( () => Actions.toggleMessagesLoader(false) );
         });
     }    
     get chats ()
@@ -95,6 +93,7 @@ export default class ChatsList
             if (activeChat?.id != chat2open.id)
             {
                 return Actions.toggleMessagesLoader(true)
+                    .then( () => chat2open.init() )
                     .then(() => 
                     {
                         if (activeChat)
@@ -167,7 +166,7 @@ export default class ChatsList
         const addChatIds : string[] = storeChatIds.filter(id => !curChatIds.includes(id));
         const delChatIds : string[] = curChatIds.filter(id => !storeChatIds.includes(id));
         
-        addChatIds.forEach(id => { this._chats[id] = new Chat( this._app, this._app.storeState.chats[id] ) });
+        addChatIds.forEach(id => { this._chats[id] = new Chat( this._app, this._app.storeState.chats[id] )});
         delChatIds.forEach(id => 
         { 
             this._chats[id].onDelete(); 

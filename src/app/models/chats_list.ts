@@ -17,11 +17,17 @@ export default class ChatsList
     ) {
         this._processChats();
         
-        this._app.store.on( Store.getEventName4path('chats'), () => this._processChats() );
+        this._app.store.on( Store.getEventName4path('chats'), () => 
+        {
+            console.log('store.on fired, ChatsList.constructor', Store.getEventName4path('chats'));
+            this._processChats(); 
+        });
 
         // open chat at start after got its in store
         this._app.store.oneTime( Store.getEventName4path('chats'), () => 
         {
+            console.log('store.on fired, ChatsList.constructor', Store.getEventName4path('chats'));
+
             Actions.toggleChatsLoader(false)
                 .then( () => Promise.allSettled( Object.values( this.list ).map( chat => chat.init() )) )
                 .then( () => this._openNextChat() )
@@ -157,6 +163,7 @@ export default class ChatsList
     {
         const curChatIds = Object.keys(this._chats);
         const storeChatIds = Object.keys(this._app.storeState.chats);
+        
         const addChatIds : string[] = storeChatIds.filter(id => !curChatIds.includes(id));
         const delChatIds : string[] = curChatIds.filter(id => !storeChatIds.includes(id));
         

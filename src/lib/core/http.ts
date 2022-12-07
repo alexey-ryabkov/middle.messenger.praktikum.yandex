@@ -45,9 +45,7 @@ export default class Http
     delete = (url : string, options : HttpOpts = {}) => this._request(url, {...options, method: HTTPMethods.DELETE});
 
     protected _request (url : string, options : HttpOptsFull = {}) 
-    {
-        console.log('RestApi request', url, options);
-        
+    {   
         const {
             method = HTTPMethods.GET, 
             data, 
@@ -61,6 +59,7 @@ export default class Http
         const isGetMethod = HTTPMethods.GET == method;
 
         url = this.API_BASE_URL + url;
+        console.log('RestApi request', url, options);
 
         return new Promise< XMLHttpRequest >((resolve, reject) => 
         {

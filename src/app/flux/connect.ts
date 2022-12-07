@@ -6,7 +6,7 @@ import {AppStoreScheme} from '@models/types';
 import ComponentBlock, {ComponentParams} from '@core/block/component';
 import {isEqual} from '@lib-utils-kit';
 
-type state2props< PropsType > = (state : AppStoreScheme) => PropsType;
+type state2props< PropsType > = (state : AppStoreScheme) => Partial< PropsType >;
 
 type CompConn2storeConstructor< PropsType > = 
 	new (
@@ -48,9 +48,9 @@ export default function componentConnected2store< CompProps extends BlockProps =
 			app.store.on(
 				trackStoreEvents ? trackStoreEvents : StoreEvents.updated, 
 				() => {	
-					console.log('componentConnected2store store.on', trackStoreEvents ? trackStoreEvents : StoreEvents.updated);
-					
 					const compNextState = mapStateToProps( app.storeState );
+
+					console.log(`componentConnector store.on fired`, trackStoreEvents ? trackStoreEvents : StoreEvents.updated, compNextState);
 					
 					if (!isEqual(compState, compNextState))
 					{

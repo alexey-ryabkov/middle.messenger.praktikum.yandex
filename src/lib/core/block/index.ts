@@ -2,7 +2,7 @@ import {v4 as makeUUID} from 'uuid';
 import EventEmitter from '@core/block/event_emitter';
 import EventBus from '@core/event_bus';
 import DefaultBlockProps from '@core/block/def_props';
-import {Nullable, SingleOrPlural, EventLsnr, CompilableTemplate} from '@core/types';
+import {Nullable, SingleOrPlural, EventLsnr, CompilableTemplate, PlainObject} from '@core/types';
 import CssClsHelperMixin, {CssCls, HTMLElementCssCls} from '@lib-utils/css_cls_helper';
 import EventsHelperMixin, {HTMLElementEvnts} from '@lib-utils/events_helper';
 import {isEqual} from '@lib-utils-kit';
@@ -34,7 +34,7 @@ export type BlockParams =
     attrs? :  BlockAttrs,  
     cssCls? : CssCls,    
     events? : BlockEvents,
-    settings? : Record< string, any >
+    settings? : PlainObject
 }
 export interface BlockPropsEngine
 {
@@ -145,6 +145,7 @@ export default abstract class Block extends EventEmitter
     }
     setAttrs (attrs : BlockAttrs)
     {
+        // TODO process boolean attr, disabled for example
         Object.entries(attrs).forEach(([name, value]) => 
         {
             this.element.setAttribute(name, String(value));
@@ -152,7 +153,10 @@ export default abstract class Block extends EventEmitter
     }    
     dispatchComponentDidMount = () => this._lifecircle.emit(Block._LIFE_EVENTS.FLOW_CDM);
 
-    compile = (template : CompilableTemplate) => this._propsEngine.compileWithProps(template);   
+    compile (template : CompilableTemplate) 
+    {
+        return this._propsEngine.compileWithProps(template);   
+    }
 
     show = () => this.element.style.display = 'block';
     hide = () => this.element.style.display = 'none';
@@ -173,15 +177,14 @@ export default abstract class Block extends EventEmitter
     }
     componentDidUpdate (oldProps : BlockProps, newProps : BlockProps) 
     {
-        // let didUpd = !this._key;
-        // if (newProps?.key && newProps.key !== this._key)
-        // {
-        //     this._key = newProps.key;
-        //     didUpd = true;
-        // }
-        // return didUpd; 
+        let didUpd = !isEqual(oldProps, newProps);
 
-        return !isEqual(oldProps, newProps);
+        if (!didUpd && newProps?.key && newProps.key !== this._key)
+        {
+            this._key = newProps.key;
+            didUpd = true;
+        }
+        return didUpd; 
     }
     abstract render () : DocumentFragment | HTMLElement;
 

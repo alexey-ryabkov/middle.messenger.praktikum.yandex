@@ -1,10 +1,11 @@
 import SurChat from '@app';
+import Actions from '@flux/actions';
 import {ChatFields, ChatMessage, Message, MessageType} from '@models/types';
 import {apiErrorHandler} from '@api/rest';
+import resourcesApi from '@api/resources';
 import chatsApi from '@api/chats';
 import Messenger, {MessengerEvents} from '@api/messages';
 import ChatUser from '@models/chat_user';
-import Actions from '@flux/actions';
 
 export enum ChatType
 {
@@ -71,11 +72,17 @@ export default class Chat
     }
     get avatar ()
     {
+        let avatar : string | null = null;
+
         if (this._isUserChat)
         {
-            return this.collocutor?.avatar || this._avatar;
+            avatar = this.collocutor?.avatar || null;
         }
-        return this._avatar;        
+        if (!avatar && this._avatar)
+        {
+            avatar = resourcesApi.get(this._avatar); 
+        }
+        return avatar;        
     }
     get createdBy ()
     {

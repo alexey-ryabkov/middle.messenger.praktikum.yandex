@@ -7,7 +7,7 @@ import {createAppError} from "@app-utils-kit"
 const API_HOST = 'https://ya-praktikum.tech';
 const API_BASE_URL = `${API_HOST}/api/v2`;
 
-export function apiErrorHandler (error : Error)
+export function apiErrorHandler (error : Error) : never
 {
     if (!('cause' in error))
     {

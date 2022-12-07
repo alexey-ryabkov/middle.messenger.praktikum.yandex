@@ -38,22 +38,7 @@ export default class CurrentUser
     constructor (
         protected _app : SurChat
     ) {
-        // TODO  брать из константы 
-        // TODO  ипо валидатором отдельный объект 
-        // Object.entries( 
-        // {
-        //     login: 'Логин',
-        //     nickname: 'Никнейм',
-        //     first_name: 'Имя'
-
-        // }).forEach(([name, label]) =>
-        // {
-        //     this._fields.push({ 
-        //         name, 
-        //         label, 
-        //         value: this[name], // для поля пароль не будет, его отдельно 
-        //     });
-        // });
+        // TODO work with CurrentUserFields, field getter with desc for form pages (see in *-api branch)
     }
     // get fields ()
     // {
@@ -71,7 +56,7 @@ export default class CurrentUser
     }
     get isAuthorized ()
     {
-        return !!this.data;
+        return null !== this.data;
     }
     static getField (name : string)
     {
@@ -147,9 +132,9 @@ export default class CurrentUser
 //         ]
 //     ], [
 //         new InputText({
-//             name: 'last_name',
+//             name: 'second_name',
 //             label: 'Фамилия',   
-//             value: userProfile.last_name                 
+//             value: userProfile.second_name                 
 //         }),
 //         [
 //             [ InputText.validationEvents, isEmptyValidator ],
@@ -168,8 +153,6 @@ type ProfileFields
     phone : string,
     ...
 }
-этот тип в интерфейс UserApi
-
 type FieldDef
 {
     name : string, in ProfileFields

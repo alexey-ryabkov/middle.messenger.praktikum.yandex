@@ -58,7 +58,7 @@ export interface Field
 } 
 export interface FormField extends Field
 { 
-    // TODO что-то не так с этим методом... 
+    // FIXME rename 
     setValidationHandlers (lsnrs : SingleOrPlural< EventLsnr >) : void 
 }
 export type FieldValidator = (field : Field, errorStack? : string[], params? : object) => boolean;

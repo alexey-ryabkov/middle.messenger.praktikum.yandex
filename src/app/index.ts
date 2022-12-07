@@ -198,9 +198,9 @@ export default class SurChat implements App
     }
     protected _loadChats ()
     {
-        // Actions.toggleChatsLoader(false)
-        //     .then( () => Actions.getChatsList() )
-        //     .finally( () => Actions.toggleChatsLoader(false) );
+        Actions.toggleChatsLoader(false)
+            .then( () => Actions.getChatsList() )
+            .finally( () => Actions.toggleChatsLoader(false) );
     }
     protected _prepareLinks4routing ()
     {

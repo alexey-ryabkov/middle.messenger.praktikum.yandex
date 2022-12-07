@@ -26,7 +26,7 @@ export default class Router
     }
     getRoute (pathname : string) 
     {
-        return [...this.routes].find(route => route.isPathnameMatch(pathname));
+        return [...this.routes].find( route => route.isPathnameMatch(pathname) ) ?? null;
     }
     use (route : Routable) 
     {
@@ -35,21 +35,26 @@ export default class Router
     }
     start () 
     {
-        window.onpopstate = ( (event : PopStateEvent) => this._onRoute(event.state.url) ).bind(this);
-
-        // const d = this._onRoute(location.pathname);
-        // console.log(d, location.pathname);
-        // return d;
+        window.onpopstate = ( (event : PopStateEvent) => 
+        {
+            let pathname = event.state?.url;
+            if (!pathname)
+            {
+                pathname = (event.currentTarget as Window).location.pathname;
+            }
+            this._onRoute(pathname);
+        })
+        .bind(this);
 
         return this._onRoute(this.curPathname);
     }    
     go (pathname: string, state : object = {}) 
     {
         const route = this._onRoute(pathname);
-
         if (route)
         {
-            this._history.pushState(state, route.title, pathname);
+            // TODO use store to pass route.title to app obj
+            this._history.pushState(state, '', pathname);
         }
         return route;
     }
@@ -60,7 +65,7 @@ export default class Router
     forward() 
     {
         this._history.forward();
-    }    
+    }
     protected _onRoute (pathname : string) 
     {
         const route = this.getRoute(pathname);

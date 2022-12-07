@@ -22,7 +22,7 @@ export default class ComponentBlock extends BemBlock
     {
         return this.compile(this._template); 
     }
-    // can`t define method and class as an abstract cause of @core/state/connect funcs    
+    // can`t define method and class as an abstract cause of @core/flux/connect funcs    
     protected _prepareBemParams (params? : BemCompParams) : BemParams
     {
         throw new Error('ComponentBlock _prepareBemCompParams method must be overridden in the subclass');

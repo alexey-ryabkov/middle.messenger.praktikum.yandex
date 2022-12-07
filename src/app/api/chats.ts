@@ -51,6 +51,7 @@ class ChatsApi implements ChatsListApi, ChatApi
     {
         return restChatsApi.get(`/new/${chatId}`).then( result => result.unread_count as number ); 
     }
+    // TODO divide this method (too many request is price for universality), mb refuse to use interfaces implementing (ChatsListApi, ChatApi, etc)
     protected _processChatsData (chatsData : PlainObject[])
     {
         return (async () => 

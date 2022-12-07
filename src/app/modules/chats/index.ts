@@ -6,7 +6,7 @@ import Templator from '@core/templator';
 import {BlockProps} from '@core/block';
 import {BemParams} from '@core/block/bem';
 import ComponentBlock from '@core/block/component';
-import {ChatType} from '@models/chat';
+import {ChatType} from '@entities/chat';
 import IconButton from '@lib-components/icon_button';
 import Icon, {IconVar} from '@lib-components/icon';
 import Spinner from '@lib-components/spinner';
@@ -231,7 +231,7 @@ class ChatsModule extends ComponentBlock
 export default componentConnected2store< ChatsModuleProps >(ChatsModule, storeState => 
 {
     const app = SurChat.instance;
-    const chats = app.chatsList.list;
+    const chats = app.chatsList.chats;
     const {activeChat} = app.chatsList;
     const curUser = app.user.data;
 

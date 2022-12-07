@@ -1,6 +1,6 @@
 import SurChat from '@app';
 import Page, {PageAccess} from '@core/page';
-import {AppErrorCode, RegistrateData} from '@models/types';
+import {AppErrorCode, RegistrateData} from '@entities/types';
 import Actions from '@flux/actions';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';

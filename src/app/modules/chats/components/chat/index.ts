@@ -7,7 +7,7 @@ import Caption, {CaptionSize, CaptionWeight} from '@lib-components/caption';
 import tpl from './tpl.hbs';
 import './style.scss';
 
-import ChatUser from '@models/chat_user';
+import ChatUser from '@entities/chat_user';
 
 export type ChatProps = BlockProps & 
 {

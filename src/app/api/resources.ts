@@ -1,4 +1,4 @@
-import {FileApi} from "@models/types";
+import {FileApi} from "@entities/types";
 import {restResourcesApi} from "./rest";
 
 class ResourcesApi implements FileApi

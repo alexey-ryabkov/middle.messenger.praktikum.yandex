@@ -1,4 +1,4 @@
-import {AppError, AppErrorCode, ChatMessage, Message, MessageType, MessengerApi} from "@models/types";
+import {AppError, AppErrorCode, ChatMessage, Message, MessageType, MessengerApi} from "@entities/types";
 import EventBus from "@core/event_bus";
 import {createAppError} from "@app-utils-kit";
 

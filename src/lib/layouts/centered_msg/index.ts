@@ -1,4 +1,4 @@
-import {App} from '@core/types';
+import {ContainarableApp} from '@core/types';
 import Templator from '@core/templator';
 import {BemParams} from '@core/block/bem';
 import Layout, {LayoutProps} from '@core/layout';
@@ -16,7 +16,7 @@ export type CenteredMsgLayoutProps = LayoutProps &
 };
 export default class CenteredMsgLayout extends Layout
 {
-    constructor (app : App, props : CenteredMsgLayoutProps)
+    constructor (app : ContainarableApp, props : CenteredMsgLayoutProps)
     {
         const caption = new Caption({caption: props.title});
 

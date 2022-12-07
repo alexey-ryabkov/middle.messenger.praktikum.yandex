@@ -2,7 +2,7 @@ import SurChat from '@app';
 import {SingleOrPlural} from '@core/types';
 import Store, {StoreEvents} from '@core/store';
 import {BlockEvents, BlockProps} from '@core/block';
-import {AppStoreScheme} from '@models/types';
+import {AppStoreScheme} from '@entities/types';
 import ComponentBlock, {ComponentParams} from '@core/block/component';
 import {isEqual} from '@lib-utils-kit';
 

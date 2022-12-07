@@ -1,7 +1,7 @@
 import {PlainObject} from "@core/types";
 import Http, {HttpOptsFull, HTTPMethods} from "@core/http";
 import SurChat from "@app";
-import {AppError, AppErrorCode} from "@models/types";
+import {AppError, AppErrorCode} from "@entities/types";
 import {createAppError} from "@app-utils-kit"
 
 const API_HOST = 'https://ya-praktikum.tech';

@@ -1,5 +1,5 @@
 import {PlainObject} from "@core/types";
-import {ChatApi, ChatsListApi, ChatFields, Message} from "@models/types"; 
+import {ChatApi, ChatsListApi, ChatFields, Message} from "@entities/types"; 
 import {restChatsApi} from "@api/rest";
 import userApi, {UserApi} from "@api/user";
 

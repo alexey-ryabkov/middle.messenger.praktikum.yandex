@@ -1,4 +1,4 @@
-import {App, AppContainer} from '@core/types';
+import {ContainarableApp, AppContainer} from '@core/types';
 import {BlockProps, BlockEvents} from '@core/block';
 import ComponentBlock, {ComponentParams} from '@core/block/component';
 import Block from '@core/block';
@@ -12,7 +12,7 @@ export default abstract class Layout extends ComponentBlock
     protected _events : BlockEvents;
     
     constructor (
-        app : App, 
+        app : ContainarableApp, 
         props? : LayoutProps, 
         events : BlockEvents = [], 
         params : ComponentParams = {})

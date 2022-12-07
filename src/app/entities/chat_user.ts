@@ -1,5 +1,5 @@
 import resourcesApi from "@api/resources";
-import {ChatUserFields} from "@models/types";
+import {ChatUserFields} from "@entities/types";
 
 export default class ChatUser implements ChatUserFields
 {

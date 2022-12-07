@@ -37,7 +37,7 @@
             "@data/*": ["app/dummy_data/*"],
             "@pages": ["app/pages"],
             "@api/*": ["app/api/*"],
-            "@models/*": ["app/models/*"]            
+            "@entities/*": ["app/entities/*"]            
         } 
     },
     "exclude": [

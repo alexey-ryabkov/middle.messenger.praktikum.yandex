@@ -22,7 +22,7 @@ export interface CompilableTemplate
 {
     compile (data : any) : string;
 }
-export interface App
+export interface ContainarableApp
 {
     get root () : HTMLElement;
     get container () : AppContainer;

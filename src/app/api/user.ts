@@ -1,6 +1,6 @@
 import { PlainObject } from "@core/types";
 import {AuthUserApi, ChatUserApi, UserProfileApi, 
-    RegistrateData, AuthorizeData, ChangeAuthData, ProfileData, ChatUserFields} from "@models/types"; 
+    RegistrateData, AuthorizeData, ChangeAuthData, ProfileData, ChatUserFields} from "@entities/types"; 
 import {restAuthApi, restUsersApi} from "@api/rest";
 import {isEqual} from "@lib-utils-kit";
 

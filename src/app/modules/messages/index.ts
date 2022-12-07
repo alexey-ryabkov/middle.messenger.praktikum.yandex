@@ -11,7 +11,7 @@ import InputText from '@lib-components/input-text';
 import IconButton from '@lib-components/icon_button';
 import Icon, {IconVar} from '@lib-components/icon';
 import Spinner from '@lib-components/spinner';
-import {ChatMessage} from '@models/types';
+import {ChatMessage} from '@entities/types';
 import MessageComponent, {MessageProps, MessageTypes} from './components/message';
 import {datePrettify} from '@lib-utils-kit';
 import mount from '@lib-utils/mount';

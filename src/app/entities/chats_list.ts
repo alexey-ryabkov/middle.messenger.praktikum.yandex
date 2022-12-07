@@ -2,11 +2,11 @@ import {PlainObject} from "@core/types";
 import SurChat from "@app";
 import Store from "@core/store";
 import Actions from "@flux/actions";
-import {AppErrorCode} from "@models/types";
-import Chat, { ChatType } from "@models/chat";
+import {AppErrorCode} from "@entities/types";
+import Chat, { ChatType } from "@entities/chat";
 import {createAppError} from "@app-utils-kit";
 import dummyChats from '@data/chats.json'; 
-import DummyChat from "@models/dummy_chat";
+import DummyChat from "@entities/dummy_chat";
 
 export default class ChatsList 
 {
@@ -29,12 +29,12 @@ export default class ChatsList
             console.log('store.on fired, ChatsList.constructor', Store.getEventName4path('chats'));
 
             Actions.toggleChatsLoader(false)
-                .then( () => Promise.allSettled( Object.values( this.list ).map( chat => chat.init() )) )
+                .then( () => Promise.allSettled( Object.values( this.chats ).map( chat => chat.init() )) )
                 .then( () => this._openNextChat() )
                 .finally( () => Actions.toggleChatsLoader(false) );
         });
     }    
-    get list ()
+    get chats ()
     {
         return this._chats;
     }

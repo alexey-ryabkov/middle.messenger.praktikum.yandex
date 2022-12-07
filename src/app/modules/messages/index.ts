@@ -188,18 +188,10 @@ class MessagesModule extends ComponentBlock
                     const message = MessagesModule._createMessageComponent(messageProps);
                     messages[messageProps.messageId] = message;
 
-                    //const {datetime, time} = messageProps;
-                    // const dateGroup = 'сегодня'; // datetime == time ? 'сегодня' : datetime.split(' ')[0];
-                    // if (!(dateGroup in msgGroups))
-                    // {
-                    //     msgGroups[dateGroup] = [];
-                    // }
-                    // msgGroups[dateGroup].push(message);
+                    // TODO group by date
 
                     msgGroups.push(message);
                 });
-
-                // console.log('msgGroups', msgGroups);
 
                 props.messages = messages;
                 props.msgGroups = msgGroups;

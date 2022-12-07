@@ -210,14 +210,16 @@ export default class Actions
     } 
     static toggleChatsLoader (flag : boolean) 
     {
-        // console.log('Actions.toggleChatsLoader store.set toggleChatsLoader', flag);
-        // SurChat.instance.store.set( 'showChatsLoader', flag );
+        console.log('Actions.toggleChatsLoader store.set toggleChatsLoader', flag);
+
+        SurChat.instance.store.set( 'showChatsLoader', flag );
         return Promise.resolve();
     } 
     static toggleMessagesLoader (flag : boolean) 
     {
-        // console.log('Actions.toggleMessagesLoader store.set toggleMessagesLoader', flag);
-        // SurChat.instance.store.set( 'showMessagesLoader', flag );
+        console.log('Actions.toggleMessagesLoader store.set toggleMessagesLoader', flag);
+        
+        SurChat.instance.store.set( 'showMessagesLoader', flag );
         return Promise.resolve();
     }
 }

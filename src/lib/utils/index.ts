@@ -233,3 +233,14 @@ export function datePrettify (date : Date, withTime = false)
     }
     return prettified + (withTime ? ` ${time}` : '');
 }
+export function waiter (time = 1000)
+{
+    return new Promise< void >(resolver =>
+    {
+        setTimeout(() =>
+        {
+            resolver();
+        }, 
+        time);
+    })
+}

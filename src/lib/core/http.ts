@@ -2,6 +2,7 @@ export function httpQueryStringify (data : Record< string, any >)
 {
     return Object.entries(data).map( ([key, value]) => `${key}=${value}` ).join('&');
 }
+
 export enum HTTPMethods {
     GET = 'GET',
     PUT = 'PUT',
@@ -20,31 +21,33 @@ export type HttpOptsFull = HttpOpts &
 {
     method? : HTTPMethods
 }
+type HTTPMethod = (url : string, options? : HttpOpts) => Promise< XMLHttpRequest >;
+
 export default class Http
 {
     constructor (
-        public readonly API_BASE_URL : string = ''
+        public readonly BASE_URL : string = ''
     ) {}
-    get (url : string, options : HttpOpts = {}) 
+    get : HTTPMethod = (url, options = {}) =>
     {
         const {data} = options;
 
         if (typeof data == 'object') 
         {
-            const stringifiedQuery = httpQueryStringify( data as Record< string, any > );
+            const stringifiedQuery = httpQueryStringify( data as Record< string, unknown > );
 
             if (stringifiedQuery)
             {
                 url += ( url.includes('?') ? '&' : '?' ) + stringifiedQuery;
             }
         }        
-        return this._request( url, {...options, method: HTTPMethods.GET} );    
+        return this.request( url, {...options, method: HTTPMethods.GET} );    
     }
-    put = (url : string, options : HttpOpts = {}) => this._request(url, {...options, method: HTTPMethods.PUT});
-    post = (url : string, options : HttpOpts = {}) => this._request(url, {...options, method: HTTPMethods.POST});
-    delete = (url : string, options : HttpOpts = {}) => this._request(url, {...options, method: HTTPMethods.DELETE});
+    put : HTTPMethod = (url, options = {}) => this.request(url, {...options, method: HTTPMethods.PUT});
+    post : HTTPMethod = (url, options = {}) => this.request(url, {...options, method: HTTPMethods.POST});
+    delete : HTTPMethod = (url, options = {}) => this.request(url, {...options, method: HTTPMethods.DELETE});
 
-    protected _request (url : string, options : HttpOptsFull = {}) 
+    request (url : string, options : HttpOptsFull = {}) 
     {   
         const {
             method = HTTPMethods.GET, 
@@ -57,7 +60,7 @@ export default class Http
 
         const isGetMethod = HTTPMethods.GET == method;
 
-        url = this.API_BASE_URL + url;
+        url = this.BASE_URL + url;
         console.log('RestApi request', url, options);
 
         return new Promise< XMLHttpRequest >((resolve, reject) => 

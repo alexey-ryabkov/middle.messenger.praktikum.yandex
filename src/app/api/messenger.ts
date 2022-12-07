@@ -17,7 +17,7 @@ export enum MessengerEvents {
 export default class Messenger extends EventBus implements MessengerApi
 {
     protected static readonly MANUALLY_CLOSE_CODE = 1000;    
-    protected static readonly AWAIT_WS_OPEN_TIME = 1000;
+    protected static readonly AWAIT_WS_OPEN_TIME = 1500;
     protected static readonly AWAIT_WS_RESULT_TIME = 3000;
     protected static readonly RECONNECT_DELAY = 1000;
     protected static readonly PING_DELAY = 20000;

@@ -4,7 +4,7 @@ import {ChatFields, ChatMessage, Message, MessageType} from '@models/types';
 import {apiErrorHandler} from '@api/rest';
 import resourcesApi from '@api/resources';
 import chatsApi from '@api/chats';
-import Messenger, {MessengerEvents} from '@api/messages';
+import Messenger, {MessengerEvents} from '@api/messenger';
 import ChatUser from '@models/chat_user';
 
 export enum ChatType

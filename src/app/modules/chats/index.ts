@@ -13,7 +13,6 @@ import Spinner from '@lib-components/spinner';
 import ChatComponent, {ChatProps} from './components/chat';
 import SearchComponent from './components/search';
 import {datePrettify} from '@lib-utils-kit';
-import mount, {MountType} from '@lib-utils/mount';
 import tpl from './tpl.hbs';
 import './style.scss';
 
@@ -80,7 +79,7 @@ class ChatsModule extends ComponentBlock
         {
             props.chats = chats ? chats : null;
         }
-        if ('chatsData' in nextProps)
+        if ('showLoader' in nextProps)
         {
             props.loader = loader;
         }

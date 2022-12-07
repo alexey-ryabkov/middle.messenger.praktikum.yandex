@@ -131,32 +131,30 @@ export function trim (str : string, trimSymbols? : string)
 
     return str.replace(new RegExp(`(?:^[${trimRegexpClsSymbols}]*)|(?:[${trimRegexpClsSymbols}]*$)`), '');
 }
-export function isEqual (a: PlainObject, b: PlainObject): boolean 
+export function isEqual (a: PlainObject, b: PlainObject) 
 {
-    if (String(Object.keys(a)) != String(Object.keys(b)))
+    if (Object.keys(a).length !== Object.keys(b).length) 
     {
         return false;
     }
-    return Object.keys(a).every(prop => 
+    for (const [key, value] of Object.entries(a)) 
     {
-        const propA = a[prop];
-        const propB = b[prop];
+        const bValue = b[key];
 
-        if (propA === propB)
+        if (isArrayOrObject(value) && isArrayOrObject(bValue)) 
         {
-            return true;
-        }
-        else if (
-            propA instanceof Object
-            &&
-            propB instanceof Object
-        ) 
-        {
-            return isEqual(propA as PlainObject, propB as PlainObject);
-        }
-        else
+            if (isEqual( value, bValue )) 
+            {
+                continue;
+            }
             return false;
-    });
+        }
+        if (value !== bValue) 
+        {
+            return false;
+        }
+    }
+    return true;
 }
 export function cloneDeep (obj : [] | PlainObject = {}) 
 {
@@ -191,7 +189,6 @@ export function cloneDeep (obj : [] | PlainObject = {})
     }
     return cloned;
 }
-
 export function datePrettify (date : Date, withTime = false)
 {
     const today = new Date();

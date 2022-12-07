@@ -33,27 +33,30 @@ export default function componentConnected2store< CompProps extends BlockProps =
 			events : BlockEvents = [], 
 			params : ComponentParams = {}) 
 		{
-			let compState = mapStateToProps( app.storeState );
-
 			let trackStoreEvents : string[] | null = null;
 			if (trackStorePath)
 			{
 				const trackStorePathes = typeof trackStorePath == 'string' 
-											? [trackStorePath] 
-											: Array.from(trackStorePath);
+					? [trackStorePath] 
+					: Array.from(trackStorePath);
 				
 				trackStoreEvents = trackStorePathes.map(path => Store.getEventName4path(path))
 			}			
 
+			let compState = mapStateToProps( app.storeState );
+			const storeEvent = trackStoreEvents ? trackStoreEvents : StoreEvents.updated;
+
 			app.store.on(
-				trackStoreEvents ? trackStoreEvents : StoreEvents.updated, 
+				storeEvent, 
 				() => {	
 					const compNextState = mapStateToProps( app.storeState );
 
-					console.log(`componentConnector store.on fired`, trackStoreEvents ? trackStoreEvents : StoreEvents.updated, compNextState);
+					console.log(`componentConnector store.on fired with event, cur comp props`, storeEvent, compState);
 					
 					if (!isEqual(compState, compNextState))
 					{
+						console.log(`componentConnector store.on will set props`, compNextState);
+
 						this.setProps({ ...compNextState });
 
 						compState = compNextState;

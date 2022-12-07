@@ -42,7 +42,7 @@ export function apiErrorHandler (error : Error) : never
 }
 
 type RestApiData = FormData | PlainObject;
-type RestApiMethod = (url? : string, data? : RestApiData) => Promise< unknown >;
+type RestApiMethod = (url? : string, data? : RestApiData) => Promise< any >;
 
 class RestApi 
 {

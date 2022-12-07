@@ -171,12 +171,13 @@ export default abstract class BemBlock extends Block implements BemEntity
     }
     processElems () 
     {
+        this._elems = {};
         this.element.querySelectorAll(`[class*='${this._name}${BemBlock.ELEMENT_SEPARATOR}']`).forEach(element => 
         {
             const elem : HTMLElementExt = makeHTMLElementExt(element);
 
             elem.getCssClsArr().forEach(cls => 
-            {               
+            {
                 const clsMatch = cls.match(new RegExp(`^${this._name}${BemBlock.ELEMENT_SEPARATOR}(\\w+)$`));
 
                 if (clsMatch)
@@ -186,7 +187,6 @@ export default abstract class BemBlock extends Block implements BemEntity
                 }
             });
         });
-
     }
     protected _processElemCssCls ()
     {

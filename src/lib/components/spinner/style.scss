@@ -2,6 +2,12 @@
 @import '../../scss/mixins';
 
 $spinner-sizes: ('small': 14px, 'regular': 24px, 'large': 46px);
+
+$spinner-blade-color: transparent;
+$spinner-fade-light-from: white;
+$spinner-fade-light-to: transparent;
+$spinner-fade-dark-from: black;
+$spinner-fade-dark-to: transparent;
     
 .spinner {
     font-size: map.get($spinner-sizes, 'regular');
@@ -18,7 +24,7 @@ $spinner-sizes: ('small': 14px, 'regular': 24px, 'large': 46px);
             width: 0.074em;
             height: 0.2777em;
             border-radius: 0.5em;
-            background-color: transparent;
+            background-color: $spinner-blade-color;
             transform-origin: center -0.2222em;
         }
     }
@@ -71,20 +77,20 @@ $spinner-sizes: ('small': 14px, 'regular': 24px, 'large': 46px);
 
 @keyframes spinner-fade-light {
     0% {
-        background-color: white;
+        background-color: $spinner-fade-light-from;
     }
 
     100% {
-        background-color: transparent;
+        background-color: $spinner-fade-light-to;
     }
 }
 
 @keyframes spinner-fade-dark {
     0% {
-        background-color: black;
+        background-color: $spinner-fade-dark-from;
     }
 
     100% {
-        background-color: transparent;
+        background-color: $spinner-fade-dark-to;
     }
 }

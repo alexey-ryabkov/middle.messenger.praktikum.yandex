@@ -11,7 +11,6 @@ import Chat from "@entities/chat";
 import {isEqual} from "@lib-utils-kit";
 import {createAppError} from "@app-utils-kit";
 
-
 export default class Actions 
 {
     static defineUser ()
@@ -210,12 +209,16 @@ export default class Actions
     } 
     static toggleChatsLoader (flag : boolean) 
     {
-        // FIXME (hide cause of bug) SurChat.instance.store.set( 'showChatsLoader', flag );
+        console.log('Actions.toggleChatsLoader store.set toggleChatsLoader', flag);
+
+        SurChat.instance.store.set( 'showChatsLoader', flag );
         return Promise.resolve();
     } 
     static toggleMessagesLoader (flag : boolean) 
     {
-        // FIXME (hide cause of bug) SurChat.instance.store.set( 'showMessagesLoader', flag );
+        console.log('Actions.toggleMessagesLoader store.set toggleMessagesLoader', flag);
+        
+        SurChat.instance.store.set( 'showMessagesLoader', flag );
         return Promise.resolve();
     }
 }

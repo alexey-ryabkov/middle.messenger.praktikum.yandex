@@ -2,20 +2,19 @@
 import {ContainarableApp, AppContainer} from '@core/types';
 import Page, {PageAccess} from '@core/page';
 import Router from '@core/router';
-import Store, {StoreEvents} from '@core/store';
+import Store from '@core/store';
 import Actions from '@flux/actions';
 import {AppStoreScheme} from '@entities/types';
 import ChatsList from '@entities/chats_list'; 
 import CurrentUser from '@entities/current_user';
 import MainContainer from '@app-modules/main';
 import Spinner from '@lib-components/spinner';
-import { cloneDeep } from '@lib-utils-kit';
-
+import {cloneDeep} from '@lib-utils-kit';
 
 // FIXME too many logic in the class:
 // localize routing in AppRouter extends Router
 // work with store in AppStore extends Store
-// mb localize user define func in @models/user
+// mb localize user define func in @entities/user
 
 export default class SurChat implements ContainarableApp
 {
@@ -30,8 +29,8 @@ export default class SurChat implements ContainarableApp
         chats: {}, 
         openedChat: null,
         chatUsers: {},
-        showChatsLoader : false,
-        showMessagesLoader : false,
+        showChatsLoader : true,
+        showMessagesLoader : true,
         // TODO 
         openedPage : null,
     };
@@ -60,7 +59,7 @@ export default class SurChat implements ContainarableApp
 
         this._store.oneTime(Store.getEventName4path('currentUser'), () => 
         {
-            console.log('store.on fired, SurChat.constructor', Store.getEventName4path('currentUser'));
+            console.log('store.oneTime fired, SurChat.constructor', Store.getEventName4path('currentUser'));
 
             const isUserAuthorized = this.user.isAuthorized;
 
@@ -198,8 +197,8 @@ export default class SurChat implements ContainarableApp
     }
     protected _loadChats ()
     {
-        Actions.toggleChatsLoader(false)
-            .then( () => Actions.getChatsList() )
+        Actions.toggleChatsLoader(true)
+            .then( () =>  Actions.getChatsList() )
             .finally( () => Actions.toggleChatsLoader(false) );
     }
     protected _prepareLinks4routing ()

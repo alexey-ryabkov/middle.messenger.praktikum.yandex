@@ -35,6 +35,7 @@ export type MessagesModuleProps = BlockProps &
 }
 class MessagesModule extends ComponentBlock
 {
+    protected _app : SurChat;
     protected _openedChat : string | null;
 
     constructor (props : MessagesModuleProps)
@@ -118,7 +119,9 @@ class MessagesModule extends ComponentBlock
             noActiveChat,
         });
 
+        this._app = SurChat.instance;
         this._prepareNewMsgHandler();
+        this._prepareToggleLoaderHandler();
     }
     setProps (nextProps : Partial< MessagesModuleProps >)
     {
@@ -131,12 +134,10 @@ class MessagesModule extends ComponentBlock
             if (messages)
             {
                 const isSingleMessage = 1 == Object.keys(messages).length;
-
                 if (isSingleMessage)
                 {
                     this.processElems();
                 }
-
                 if (isSingleMessage && this.elems['list'])
                 {
                     const message = Object.values(messages)[0] as MessageComponent;
@@ -162,7 +163,6 @@ class MessagesModule extends ComponentBlock
         {
             props.loader = loader;
         }
-
         super.setProps(props);
     }  
     protected static _prepareProps (props : Partial< MessagesModuleProps >)
@@ -202,10 +202,13 @@ class MessagesModule extends ComponentBlock
         if ('showLoader' in props)
         {
             props.loader = props.showLoader
-                ? new Spinner({ centered: true, color: 'light' })
+                ? new Spinner({ centered: true, color: 'dark' })
                 : '';
         }
-        props.noActiveChat = !props.activeChatId;
+        if ('activeChatId' in props)
+        {
+            props.noActiveChat = !props.activeChatId;
+        }
 
         return props;
     } 
@@ -274,6 +277,16 @@ class MessagesModule extends ComponentBlock
             tag: 'li',
         } as MessagePropsExt;
     }
+    protected _prepareToggleLoaderHandler ()
+    {
+        this._app.store.on( Store.getEventName4path('showMessagesLoader'), () => 
+        {
+            console.log('store.on fired, MessagesModule._prepareToggleLoaderHandler', Store.getEventName4path('showMessagesLoader'));
+            
+            const showLoader = this._app.storeState.showMessagesLoader;            
+            this.setProps({ showLoader });
+        });
+    }
     protected _prepareBemParams ()
     {
         const bem : BemParams = {name: '_messages'};
@@ -284,13 +297,12 @@ class MessagesModule extends ComponentBlock
         return new Templator(tpl);
     }
 }
-export default componentConnected2store< MessagesModuleProps >(MessagesModule, storeState => 
+export default componentConnected2store< MessagesModuleProps >(MessagesModule, () => 
 {
     const app = SurChat.instance;
     const {activeChat} = app.chatsList;
 
     const messagesData : MessagesData = {};
-    const showLoader = storeState.showChatsLoader;
 
     activeChat?.messages?.reduce((messagesData, chatMessage) => 
     {
@@ -299,6 +311,6 @@ export default componentConnected2store< MessagesModuleProps >(MessagesModule, s
     },
     messagesData);
 
-    return {messagesData, showLoader, activeChatId: activeChat?.id};
+    return {messagesData, activeChatId: activeChat?.id};
 },
-['openedChat', 'showMessagesLoader']);
+'openedChat');

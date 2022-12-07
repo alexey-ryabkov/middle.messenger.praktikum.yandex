@@ -28,6 +28,7 @@ export type ChatsModuleProps = BlockProps &
 }
 class ChatsModule extends ComponentBlock
 {
+    protected _app : SurChat;
     protected _openedChat : string | null;
 
     constructor (props : ChatsModuleProps)
@@ -67,7 +68,9 @@ class ChatsModule extends ComponentBlock
 
         super({ chats, loader, search, buttonAdd });
 
+        this._app = SurChat.instance;
         this._prepareOpenChatHandler();
+        this._prepareToggleLoaderHandler();
     }
     setProps (nextProps : Partial< ChatsModuleProps >)
     {   
@@ -171,7 +174,6 @@ class ChatsModule extends ComponentBlock
     protected static _processChatPropsForLastMsg (chatId : number, props : ChatPropsExt)
     {
         const app = SurChat.instance;
-
         const chat = app.chatsList.getChat( chatId );
         if (chat)
         {
@@ -192,11 +194,9 @@ class ChatsModule extends ComponentBlock
     }
     protected _prepareOpenChatHandler ()
     {
-        const app = SurChat.instance;
-
         this._openedChat = null;
 
-        app.store.on( Store.getEventName4path('openedChat'), () =>
+        this._app.store.on( Store.getEventName4path('openedChat'), () =>
         {
             console.log(`store.on fired, ChatsModule._prepareOpenChatHandler`, Store.getEventName4path('openedChat'));
 
@@ -205,7 +205,7 @@ class ChatsModule extends ComponentBlock
                 this.props.chats?.[this._openedChat]?.setProps({ isActive: false });
             }
 
-            const {openedChat} = app.storeState; 
+            const {openedChat} = this._app.storeState; 
             this._openedChat = openedChat; 
 
             if (openedChat)
@@ -218,6 +218,16 @@ class ChatsModule extends ComponentBlock
             }
         });
     }
+    protected _prepareToggleLoaderHandler ()
+    {
+        this._app.store.on( Store.getEventName4path('showChatsLoader'), () => 
+        {
+            console.log('store.on fired, ChatsModule._prepareToggleLoaderHandler', Store.getEventName4path('showChatsLoader'));
+            
+            const showLoader = this._app.storeState.showChatsLoader;            
+            this.setProps({ showLoader });
+        });
+    }
     protected _prepareBemParams ()
     {
         const bem : BemParams = {name: '_chats'};
@@ -228,7 +238,7 @@ class ChatsModule extends ComponentBlock
         return new Templator(tpl);
     }
 }
-export default componentConnected2store< ChatsModuleProps >(ChatsModule, storeState => 
+export default componentConnected2store< ChatsModuleProps >(ChatsModule, () => 
 {
     const app = SurChat.instance;
     const chats = app.chatsList.chats;
@@ -236,8 +246,6 @@ export default componentConnected2store< ChatsModuleProps >(ChatsModule, storeSt
     const curUser = app.user.data;
 
     const chatsData : ChatsData = {};
-    const showLoader = storeState.showChatsLoader;
-
     Object.values( chats ).reduce((chatsData, chat) => 
     {
         let chatData : ChatPropsExt = 
@@ -264,6 +272,6 @@ export default componentConnected2store< ChatsModuleProps >(ChatsModule, storeSt
     },
     chatsData);
     
-    return {chatsData, showLoader};
+    return {chatsData};
 },
-['chats', 'showChatsLoader']);
+'chats');

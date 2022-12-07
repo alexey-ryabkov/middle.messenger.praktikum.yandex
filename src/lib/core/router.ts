@@ -53,7 +53,6 @@ export default class Router
         const route = this._onRoute(pathname);
         if (route)
         {
-            // TODO use store to pass route.title to app obj
             this._history.pushState(state, '', pathname);
         }
         return route;

@@ -79,7 +79,8 @@ export default class SurChat implements App
     }
     protected set title (title : string)
     {
-        title = title.trim();
+        // TODO move it to AppRouter, when it becomes
+        title = '';
         document.title = `${SurChat.NAME}${title ? ': '+title : ''}`; 
     }
     get root ()
@@ -93,7 +94,6 @@ export default class SurChat implements App
 
     get store ()
     {
-        // TODO mb HOC to forbid using Store.state & Store.get instead storeState below
         return this._store;
     }
     get storeState ()

@@ -44,17 +44,24 @@ class ChatProfileCard extends ProfileCard
                             const {chatsList} = SurChat.instance;
                             const {activeChat} = chatsList;
 
-                            if (activeChat)
+                            if (confirm('Вы уверены, что хотите удалить чат?'))
                             {
-                                chatsList.deleteChat(activeChat.id)
-                                    .catch(error => 
-                                    {
-                                        console.error(error);
-                                        alert('Ошибка при удалении чата: операция не выполнена');
-                                    });
+                                if (activeChat)
+                                {
+                                    chatsList.deleteChat(activeChat.id)
+                                        .catch(error => 
+                                        {
+                                            console.error(error);
+                                            alert('Ошибка при удалении чата: операция не выполнена');
+                                        })
+                                        .finally(() => 
+                                        {
+                                            this.props.menu.hideMenu();
+                                        });
+                                }
+                                else
+                                    alert('Ошибка при удалении чата: неизвестный чат, операция не выполнена');
                             }
-                            else
-                                alert('Ошибка при удалении чата: неизвестный чат, операция не выполнена');
                         }
                     },
                 ]

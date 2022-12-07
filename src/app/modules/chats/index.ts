@@ -78,25 +78,7 @@ class ChatsModule extends ComponentBlock
         
         if ('chatsData' in nextProps)
         {
-            if (chats)
-            {
-                const isSingleChat = 1 == Object.keys(chats).length;
-                if (isSingleChat)
-                {
-                    // FIXME now we need to call it twice
-                    this.processElems();
-
-                    const chat = Object.values(chats)[0] as ChatComponent;
-
-                    mount(chat.element, this.elems['list'], MountType.prepend);
-
-                    this.processElems();
-                }
-                else
-                    props.chats = chats;
-            }
-            else
-                props.chats = null;
+            props.chats = chats ? chats : null;
         }
         if ('chatsData' in nextProps)
         {
@@ -149,8 +131,13 @@ class ChatsModule extends ComponentBlock
                 (
                     ChatComponent, 
                     () => {
-                        // const nextProps = ChatsModule._processChatPropsForLastMsg(chatId, props);
-                        return {...ChatsModule._processChatPropsForLastMsg(chatId, props)};
+                        // TODO temporary solution
+                        const chatCompProps = <unknown>{...chatComps[ chatId ]?.props, chatId} as ChatPropsExt;
+
+                        props.isActive = chatCompProps.isActive;
+                        props.newMsgCnt = chatCompProps.newMsgCnt;
+
+                        return {...ChatsModule._processChatPropsForLastMsg( chatId, props )};
                     },
                     `chats.${chatId}`
                 )
@@ -172,7 +159,7 @@ class ChatsModule extends ComponentBlock
                         chatsList.openChat( chatId ).catch( error => 
                         {
                             console.error(error);
-                            alert('Возникла ошибка при открытии чата') 
+                            alert('Возникла ошибка при открытии чата, попробуйте перезагрузить страницу') 
                         });
                     }                              
                 }]
@@ -204,7 +191,6 @@ class ChatsModule extends ComponentBlock
         }
         return props;
     }
-    // TODO он и при close вызывается 
     protected _prepareOpenChatHandler ()
     {
         const app = SurChat.instance;
@@ -217,7 +203,7 @@ class ChatsModule extends ComponentBlock
 
             if (this._openedChat)
             {
-                this.props.chats?.[this._openedChat].setProps({ isActive: false });
+                this.props.chats?.[this._openedChat]?.setProps({ isActive: false });
             }
 
             const {openedChat} = app.storeState; 
@@ -253,10 +239,8 @@ export default componentConnected2store< ChatsModuleProps >(ChatsModule, storeSt
     const chatsData : ChatsData = {};
     const showLoader = storeState.showChatsLoader;
 
-    Object.values(chats).reduce((chatsData, chat) => 
+    Object.values( chats ).reduce((chatsData, chat) => 
     {
-        // TODO so optimization with single chat addition wound`t work...
-
         let chatData : ChatPropsExt = 
         {
             chatId: String(chat.id),

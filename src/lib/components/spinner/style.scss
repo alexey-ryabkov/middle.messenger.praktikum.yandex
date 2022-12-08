@@ -1,0 +1,96 @@
+@use 'sass:map';
+@import '../../scss/mixins';
+
+$spinner-sizes: ('small': 14px, 'regular': 24px, 'large': 46px);
+
+$spinner-blade-color: transparent;
+$spinner-fade-light-from: white;
+$spinner-fade-light-to: transparent;
+$spinner-fade-dark-from: black;
+$spinner-fade-dark-to: transparent;
+    
+.spinner {
+    font-size: map.get($spinner-sizes, 'regular');
+    position: relative;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+
+    &__ {
+        &blade {
+            position: absolute;
+            left: 0.4629em;
+            bottom: 0;
+            width: 0.074em;
+            height: 0.2777em;
+            border-radius: 0.5em;
+            background-color: $spinner-blade-color;
+            transform-origin: center -0.2222em;
+        }
+    }
+
+    &-- {
+
+        @include gen-props('&size_', [font-size], $spinner-sizes);
+
+        &color_ {
+            &light {
+                .spinner__blade {
+                    $animation-delay: 0s;
+                    $blade-rotation: 0deg;
+                    animation: spinner-fade-light 1s infinite linear;
+                
+                    @for $i from 1 through 12 {
+                        &:nth-child(#{$i}) {
+                            $blade-rotation: $blade-rotation + 30;
+                            $animation-delay: $animation-delay + 0.083;
+                            animation-delay: $animation-delay;
+                            transform: rotate($blade-rotation);
+                        }
+                    }
+                }
+            }
+
+            &dark {
+                .spinner__blade {
+                    $animation-delay: 0s;
+                    $blade-rotation: 0deg;
+                    animation: spinner-fade-dark 1s infinite linear;
+                
+                    @for $i from 1 through 12 {
+                        &:nth-child(#{$i}) {
+                            $blade-rotation: $blade-rotation + 30;
+                            $animation-delay: $animation-delay + 0.083;
+                            animation-delay: $animation-delay;
+                            transform: rotate($blade-rotation);
+                        }
+                    }
+                }
+            }
+        }
+
+        &centered {
+            @include absolute-center;
+        }
+    }
+}
+
+@keyframes spinner-fade-light {
+    0% {
+        background-color: $spinner-fade-light-from;
+    }
+
+    100% {
+        background-color: $spinner-fade-light-to;
+    }
+}
+
+@keyframes spinner-fade-dark {
+    0% {
+        background-color: $spinner-fade-dark-from;
+    }
+
+    100% {
+        background-color: $spinner-fade-dark-to;
+    }
+}

@@ -1,5 +1,8 @@
 export default `
-{{#each fields}}
+{{#if notification}}
+{{{notification}}}
+{{/if}}
+{{#each fieldWraps}}
 <div class="form__fieldBox">
     <div class="form__fieldLabelWrap">
         <label class="form__fieldLabel">{{@key}}:</label>

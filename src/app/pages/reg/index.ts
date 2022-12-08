@@ -1,16 +1,18 @@
 import SurChat from '@app';
-import Page from '@models/page';
+import Page, {PageAccess} from '@core/page';
+import {AppErrorCode, RegistrateData} from '@entities/types';
+import Actions from '@flux/actions';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
 import InputText from '@lib-components/input-text';
 import {emailValidator, isEmptyValidator, lengthValidator, 
     loginValidator, nameValidator, passwordValidator,
     phoneValidator} from '@lib-utils/form_validation';
-import go2page from '@app-utils/dummy_routing';
+import {createAppError} from '@app-utils-kit';
 
 const blockName = '_pageReg';
 const pageName = 'Регистрация';
-const layout = new CenteredFormLayout(SurChat.instance, {title: pageName});
+const layout = new CenteredFormLayout( SurChat.instance, {title: pageName} );
 
 const page = new class extends Page
 {
@@ -61,7 +63,7 @@ const page = new class extends Page
                 ]
             ], [
                 new InputText({
-                    name: 'last_name',
+                    name: 'second_name',
                     label: 'Фамилия'              
                 }),
                 [
@@ -81,7 +83,7 @@ const page = new class extends Page
                 ]  
             ], [
                 new InputText({
-                    name: 'password_confirm',
+                    name: 'confirmPassword',
                     label: 'Пароль (еще раз)',
                     type: 'password'
                 }),
@@ -92,22 +94,30 @@ const page = new class extends Page
                 ]
             ]],
             btnLabel: 'Зарегистрироваться',
-            onSuccess: () => go2page( Page.url('chats') ),
+            onSubmit: (data : FormData) =>
+            {
+                const regData = <unknown>Object.fromEntries(data) as RegistrateData  & { confirmPassword? : string };
+
+                if (regData.confirmPassword != regData.password)
+                {
+                    return Promise.reject( createAppError('Пароль не совпадает с проверочным (поле "Пароль еще раз")', AppErrorCode.userInput) );
+                }
+                return Actions.createUser(regData);
+            },
             link: {
-                url: Page.url('auth'),
+                url: Page.url('sign-in'),
                 title: 'войти'
             }
         });
-
-        form.bemMix(['_centeredFormLayout', 'form']);
+        form.bemMix([ '_centeredFormLayout', 'form' ]);
 
         this._layout.areas = {form};
-        this._layout.elemBemMix('content', [blockName, 'content']); 
+        this._layout.elemBemMix( 'content', [blockName, 'content'] ); 
     }
     protected get _layout () 
     {
         return layout;
     }
-} ('reg', pageName, blockName);
+} ('sign-up', pageName, blockName, PageAccess.nonAuthorized);
 
 export default page;

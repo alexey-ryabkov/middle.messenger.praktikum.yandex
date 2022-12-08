@@ -1,19 +1,12 @@
-import go2page, {renderCurPage} from '@app-utils/dummy_routing';
+import SurChat from '@app';
+import * as pages from '@pages';
+import Actions from '@flux/actions';
 
-renderCurPage();
+const app = SurChat.instance;
+app.pages = Object.values( pages );
 
-document.body.addEventListener('click', event =>
-{
-    const element = event.target as Element;
-
-    if ('A' == element.tagName) 
+Actions.defineUser()
+    .finally(() => 
     {
-        event.preventDefault();
-
-        const href = element.getAttribute('href');
-        if (href)
-        {
-            go2page(href);
-        }        
-    }
-});
+        app.init(); 
+    });

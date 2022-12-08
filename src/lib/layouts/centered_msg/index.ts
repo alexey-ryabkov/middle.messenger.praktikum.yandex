@@ -1,6 +1,7 @@
-import {App} from '@models/types';
-import Templator from '@models/templator';
-import Layout, {LayoutProps} from '@models/layout';
+import {ContainarableApp} from '@core/types';
+import Templator from '@core/templator';
+import {BemParams} from '@core/block/bem';
+import Layout, {LayoutProps} from '@core/layout';
 import Caption from '@lib-components/caption';
 import tpl from './tpl.hbs';
 import './style.scss';
@@ -15,7 +16,7 @@ export type CenteredMsgLayoutProps = LayoutProps &
 };
 export default class CenteredMsgLayout extends Layout
 {
-    constructor (app : App, props : CenteredMsgLayoutProps)
+    constructor (app : ContainarableApp, props : CenteredMsgLayoutProps)
     {
         const caption = new Caption({caption: props.title});
 
@@ -23,8 +24,13 @@ export default class CenteredMsgLayout extends Layout
 
         props.caption = caption;
 
-        super(app, { props, bem: {name: '_centeredMsgLayout'} });
+        super(app, props);
     } 
+    protected _prepareBemParams ()
+    {
+        const bem : BemParams = {name: '_centeredMsgLayout'};
+        return bem;
+    }
     protected get _template () 
     {
         return template; 

@@ -106,28 +106,6 @@
     font-size: 13px;
 }
 
-.notification {
-    font-size: 12px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 4px;
-
-    &__ {
-        &icon {  
-            fill: inherit;
-        }
-    }
-
-    &-- {
-        &lvl_ {
-            &error {
-                color: red;
-            }
-        }
-    }
-}
-
 .badge {
     border-radius: 50%;
     color: white;
@@ -259,6 +237,11 @@ $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6
         }
     }
 
+    .form .notification {
+        font-size: 14px;
+        justify-content: center;
+    }
+
     .notification--lvl_ {
         &error {
             color: $red;            
@@ -283,9 +266,12 @@ $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6
         &--bg_ {
             &glass {
                 .caption,
-    
-                .form__fieldLabel,
+                .form__fieldLabel { 
+                    opacity: 0.85;
+                }
+
                 .notification { 
+                    color: white;
                     opacity: 0.75;
                 }
 
@@ -297,13 +283,6 @@ $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6
                 }
 
                 .notification {
-                    &--lvl_ {
-                        &error {
-                            color: white;
-                            opacity: 0.75;            
-                        }
-                    }
-
                     &__icon {  
                         fill: white;
                         opacity: 0.9;    
@@ -328,8 +307,7 @@ $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6
                     color: white;
                     opacity: 0.75;
                     border-bottom-color: rgba(white, 0.5);
-                }
-                
+                }                
             }
 
             &grayLight {
@@ -344,25 +322,9 @@ $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6
         }
     }
 
-    .message {
-        display: inline-block;
-        max-width: 70%;
-        min-width: 100px;
-    
-        &__ {
-            &time {
-                text-align: right;
-            }
-        }
-    
-        &-- {
-            &of_ {
-                &you {
-                    background: $primary-color;
-                    color: white;
-                }
-            }
-        }
+    .message--of_you {
+        background: $primary-color;
+        color: white;
     }
 
     .badge {

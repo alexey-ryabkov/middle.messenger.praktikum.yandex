@@ -1,31 +1,38 @@
-import Templator from '@models/templator';
-import ComponentBlock from '@models/component_block';
-import {BlockProps} from '@models/block';
-import {EventLsnr, FormField} from '@models/types';
+import Templator from '@core/templator';
+import {BlockProps} from '@core/block';
+import {BemParams} from '@core/block/bem';
+import ComponentBlock from '@core/block/component';
+import {EventLsnr, FormField, PlainObject} from '@core/types';
 import Button from '@lib-components/button';
-import FormFieldWrap from './components/field-wrap';
-import {FieldValidatorDef, FormFieldDef, validateField} from '@lib-utils/form_validation';
+import NotificationMsg, {NotificationLevel} from '@lib-components/notification';
+import FormFieldWrap from './components/field_wrap';
+import {FormFieldValidatorDef, FormFieldDef, validateFromField} from '@lib-utils/form_validation';
+import {getUserError} from '@app-utils-kit';
 import tpl from './tpl.hbs';
 import './style.scss';
 
+export type FormFieldValue = string | number | null;
 export type FormProps = BlockProps & 
 {
     formFields : FormFieldDef[],
+    fieldsValues? : PlainObject< FormFieldValue >
     action? : string,
     method? : string,
     btnLabel : string,
-    onSuccess? : () => void,
-    link? : {url : string, title : string},    
+    onSubmit : (data : FormData) => Promise< unknown >,
+    link? : {url : string, title : string},
+    error? : string,
+    message? : string,
 };
 
 function validate (
     fieldWrap : FormFieldWrap, 
     fieldDef : FormField,
-    validatorDefs : FieldValidatorDef[])
+    validatorDefs : FormFieldValidatorDef[])
 {
     const errors : string[] = [];
 
-    if (!validateField( fieldDef, validatorDefs, errors ))
+    if (!validateFromField( fieldDef, validatorDefs, errors ))
     {
         fieldWrap.setProps({ error: errors.join(' / ') })
     }
@@ -37,12 +44,16 @@ function validate (
 
 export default class Form extends ComponentBlock 
 {
+    protected static readonly _SUCCESS_MSG_VISIBLE_TIME = 5000;
+
     constructor (props : FormProps)
     {
-        const {action = '#', method = 'post', onSuccess, link} = props;        
-        const fields : Record< string, FormFieldWrap > = {};
+        const {formFields, action = '#', method = 'post', onSubmit, link, notification} = props;
+        
+        Form._prepareProps(props);        
 
-        const formFields = props.formFields;
+        const fieldWraps : PlainObject< FormFieldWrap > = {};
+        const fields : PlainObject< FormField > = {};
         
         formFields.forEach(formField => 
         {
@@ -62,11 +73,11 @@ export default class Form extends ComponentBlock
                         validationHandlers.push([ event, () => validate(fieldWrap, field, validatorDefs) ]);
                     });
                     
-                    // TODO not all fields can be validatable 
                     field.setValidationHandlers(validationHandlers);
                 });
             }    
-            fields[field.label] = fieldWrap;
+            fieldWraps[field.label] = fieldWrap;
+            fields[field.name] = field;
         });
 
         const button = new Button({ 
@@ -77,53 +88,112 @@ export default class Form extends ComponentBlock
         });
         button.bemMix(['form', 'submitButton']);
 
-        super({ 
-            node: 'form', 
+        super(
             // FIXME now have to do copy of fields 
-            props: {fields : {...fields}, button, link}, 
-            attrs: {action, method}, 
+            {notification, fieldWraps : {...fieldWraps}, fields, button, link}, 
 
-            events: ['submit', (event : Event) => 
+            ['submit', (event : Event) => 
             {
                 event.preventDefault();
 
-                const fieldValues : Record< string, string > = {};
-                
                 let i = 0;
                 let errors : string[] = [];
                 
-                Object.entries(fields).forEach(([, fieldWrap ]) => 
+                Object.entries(fieldWraps).forEach(([, fieldWrap ]) => 
                 {
                     const field = fieldWrap.props.field;
 
                     // FIXME now have to call it manually 
                     field.processElems();
 
-                    const fieldElement = field.elems['input'];
                     const [, validatorDefs] = formFields[ i++ ];
 
                     if (validatorDefs)
                     {
                         errors = errors.concat( validate(fieldWrap, field, validatorDefs) );
-                        fieldValues[ fieldElement.name ] = fieldElement.value;
                     }
                 });
 
+                const formData = new FormData( this._formElement );
+
                 if (!errors.length)
                 {
-                    if (onSuccess)
-                    {
-                        console.log(fieldValues);
-                        alert( Object.entries(fieldValues).map (([name, value]) => `${name}: ${value ? value : '–'}` ).join("\n") );
-                        onSuccess();
-                    }
-                    else
-                        console.log(fieldValues);                   
+                    const button = this.props.button as Button;
+                    button.setProps({ showLoader: true, disabled: true });
+
+                    onSubmit( formData )
+                        .then( () => 
+                        {
+                            this.setProps({ message: 'Изменения успешно сохранены' });
+                            
+                            // TODO use updated:openedPage store event for hide notifications after user left page
+                            setTimeout(() =>
+                            {
+                                this.setProps({ message: '' });
+                            },
+                            Form._SUCCESS_MSG_VISIBLE_TIME);
+                        })
+                        .catch( error =>
+                        {
+                            error = getUserError(error);
+                            if (!error)
+                            {
+                                error = 'При отправке формы возникла неизвестная ошибка';
+                            }
+                            this.setProps({ error });
+                        })
+                        .finally( () => button.setProps({ showLoader: false, disabled: false }) );
                 }
             }],
-            bem: {name: 'form'} 
-        });
+            {
+                node: 'form', 
+                attrs: {action, method}, 
+            });
     }
+    setProps (nextProps: Partial< FormProps >)
+    {
+        const {notification} = Form._prepareProps(nextProps);
+
+        if (nextProps.fieldsValues)
+        {
+            Object.entries(nextProps.fieldsValues).forEach(([name, value]) => 
+            {
+                if (name in this.props.fields)
+                {
+                    const field = this.props.fields[name];
+                    field.value = value;
+                }
+            });
+        }
+        super.setProps({notification});  
+    }     
+    protected static _prepareProps (props : Partial< FormProps >)
+    {
+        if ('error' in props || 'message' in props)
+        {
+            if (props.error || props.message)
+            {   
+                props.notification = new NotificationMsg({ 
+                    text: (props.error ? props.error : props.message) as string, 
+                    level: props.error ? NotificationLevel.error : NotificationLevel.success
+                });
+                props.notification.bemMix(['form', 'submitNotification']);
+            }
+            else
+                props.notification = null;
+        }
+        return props;
+    } 
+    protected get _formElement ()
+    {
+        const element = <unknown>this._element;
+        return element as HTMLFormElement;
+    } 
+    protected _prepareBemParams ()
+    {
+        const bem : BemParams = {name: 'form'};
+        return bem;
+    }  
     protected get _template () 
     {
         return new Templator(tpl);

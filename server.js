@@ -1,18 +1,18 @@
-const express = require('express');
-
-const DEFAULT_PAGE = '/?page=error404';
+const APP_NAME = 'Sur Chat';
+const BUILD_FOLDER = '/dist';
 const DEFAULT_PORT = 3000;
 
+const express = require('express');
 const app = express();
 
-app.use(express.static(`${__dirname}/dist`));
-app.use('/', function(req, res) 
+app.use( express.static(`${__dirname}${BUILD_FOLDER}`) );
+app.use('/', function({ res }) 
 {
-    res.redirect(DEFAULT_PAGE);
+    res.sendFile( `${__dirname}/dist/index.html` );
 });
 
 const appPort = process.env.PORT || DEFAULT_PORT;
 app.listen(appPort, () => 
 {
-    console.log(`Сервер для ${__dirname} запущен на localhost:${appPort}!`);
+    console.log( `Сервер для ${APP_NAME} запущен на localhost:${appPort}!` );
 });

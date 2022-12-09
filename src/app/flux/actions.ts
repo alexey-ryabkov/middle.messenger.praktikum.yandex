@@ -135,7 +135,7 @@ export default class Actions
     static createGroupChat (name : string)
     {
         // TODO 
-        return Promise.reject( createAppError('absent func', AppErrorCode.default, 'Actions.createGroupChat') );
+        return Promise.reject( createAppError(`absent func (create group chat ${name})`, AppErrorCode.default, 'Actions.createGroupChat') );
     }
     static openChat (chatId : number) 
     {

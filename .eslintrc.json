@@ -1,7 +1,8 @@
 {
     "env": {
         "browser": true,
-        "es2022": true
+        "es2022": true,
+        "node": true
     },
     "parser": "@typescript-eslint/parser",
     "plugins": [
@@ -13,6 +14,7 @@
     ],    
     "rules": {
         "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/ban-ts-ignore": "off",
         "no-unused-vars": 1,
         "no-undef": 2,
         "max-len": ["error", { "ignoreComments": true, "code": 150 }],

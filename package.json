@@ -3,15 +3,22 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "parcel build ./src/index.html && node ./server.js",
-    "dev": "parcel ./src/index.html --no-cache",
-    "build": "parcel build ./src/index.html",
-    "lint-ts": "node_modules/.bin/eslint --ext .ts ./src",
-    "lint-scss": "npx stylelint './src/**/*.scss'",
-    "lint-scss-fix": "npx stylelint './src/**/*.scss' --fix",
-    "start-parcel": "parcel build ./src/index-parcel.html && node ./server.js",
-    "dev-parcel": "parcel ./src/index-parcel.html --no-cache",
-    "build-parcel": "parcel build ./src/index-parcel.html"
+    "start": "npm run build && node ./server.js",
+    "build": "webpack --mode=production --define-process-env-node-env=production",
+
+    "build:dev": "webpack --mode=development",
+    "watch": "webpack --watch",
+    "dev2": "cross-env NODE_ENV=development webpack-dev-server --mode development --open",
+    "dev": "webpack serve --config webpack.config.js --open && webpack --watch",
+
+    "start:parcel": "parcel build ./src/index-parcel.html && node ./server.js",
+    "build:parcel": "parcel build ./src/index-parcel.html",
+    "dev:parcel": "parcel ./src/index-parcel.html --no-cache",
+
+    "lint": "npm run lint:ts && npm run lint:scss",
+    "lint:ts": "node_modules/.bin/eslint --ext .ts ./src",
+    "lint:scss": "npx stylelint './src/**/*.scss'",
+    "lint:scss-fix": "npx stylelint './src/**/*.scss' --fix"
   },
   "author": "Alexey Ryabkov",
   "license": "ISC",
@@ -23,6 +30,8 @@
     "@types/uuid": "8.3.4",
     "@typescript-eslint/eslint-plugin": "5.42.0",
     "@typescript-eslint/parser": "5.42.0",
+    "clean-webpack-plugin": "4.0.0",
+    "cross-env": "^7.0.3",
     "css-loader": "6.7.2",
     "eslint": "8.26.0",
     "file-loader": "6.2.0",
@@ -39,10 +48,12 @@
     "stylelint-config-sass-guidelines": "9.0.1",
     "ts-loader": "9.4.2",
     "ts-mocha": "10.0.0",
+    "tsconfig-paths-webpack-plugin": "4.0.0",
     "typescript": "4.8.4",
     "webpack": "5.75.0",
     "webpack-cli": "5.0.1",
-    "webpack-dev-server": "4.11.1"
+    "webpack-dev-server": "4.11.1",
+    "webpack-hot-middleware": "^2.25.3"
   },
   "dependencies": {
     "express": "4.18.2",

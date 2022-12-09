@@ -8,7 +8,10 @@
     "build": "parcel build ./src/index.html",
     "lint-ts": "node_modules/.bin/eslint --ext .ts ./src",
     "lint-scss": "npx stylelint './src/**/*.scss'",
-    "lint-scss-fix": "npx stylelint './src/**/*.scss' --fix"
+    "lint-scss-fix": "npx stylelint './src/**/*.scss' --fix",
+    "start-parcel": "parcel build ./src/index-parcel.html && node ./server.js",
+    "dev-parcel": "parcel ./src/index-parcel.html --no-cache",
+    "build-parcel": "parcel build ./src/index-parcel.html"
   },
   "author": "Alexey Ryabkov",
   "license": "ISC",

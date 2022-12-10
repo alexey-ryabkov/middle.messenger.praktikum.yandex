@@ -1,8 +1,9 @@
+import express from 'express';
+
 const APP_NAME = 'Sur Chat';
 const BUILD_FOLDER = '/dist';
 const DEFAULT_PORT = 3000;
 
-const express = require('express');
 const app = express();
 
 app.use( express.static(`${__dirname}${BUILD_FOLDER}`) );

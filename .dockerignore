@@ -1,0 +1,13 @@
+.parcel
+.git
+.vscode
+.editorconfig
+.eslint
+.nvmrc
+README.md
+netlify.toml
+package-lock.json
+node_modules
+dist
+dist-parcel
+static/layout

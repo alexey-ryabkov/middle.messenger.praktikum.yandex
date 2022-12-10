@@ -1,4 +1,4 @@
-import {EventHandler, Handler} from '@core/types';
+import {Handler} from '@core/types';
 import Templator from '@core/templator';
 import {BlockEvents, BlockProps} from '@core/block';
 import ComponentBlock from '@core/block/component';

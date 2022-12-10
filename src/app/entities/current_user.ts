@@ -25,14 +25,14 @@ export default class CurrentUser
     {
         return null !== this.data;
     }
-    static getField (name : string)
-    {
-        // TODO
-    }
-    static getFieldValidators (name : string)
-    {
-        // TODO
-    }
+    // static getField (name : string)
+    // {
+    //     // TODO
+    // }
+    // static getFieldValidators (name : string)
+    // {
+    //     // TODO
+    // }
     // TODO below depricated 
     get dummyProfile ()
     {  

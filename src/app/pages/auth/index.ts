@@ -5,7 +5,7 @@ import Actions from '@flux/actions';
 import Form from '@lib-modules/form';
 import CenteredFormLayout from '@lib-layouts/centered_form';
 import InputText from '@lib-components/input-text';
-import {isEmptyValidator, lengthValidator, loginValidator, passwordValidator} from '@lib-utils/form_validation';
+import {isEmptyValidator} from '@lib-utils/form_validation';
 
 const blockName = '_pageAuth';
 const pageName = 'Авторизация';

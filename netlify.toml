@@ -6,8 +6,8 @@
 # “publish” is the directory to publish (relative to the root of your repo).
 
 [build]
-  command = "npm run build"
-  publish = "dist" 
+  command = "npm run build:parcel"
+  publish = "dist-parcel" 
 [[redirects]]
   from = "/*"
   to = "/index.html"

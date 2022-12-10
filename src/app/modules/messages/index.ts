@@ -23,7 +23,7 @@ type MessagePropsExt = MessageProps &
     messageId : number
 }
 type MessagesData = PlainObject< MessagePropsExt > | MessagePropsExt;
-type MessageGroups = PlainObject< MessageComponent[] >;
+// type MessageGroups = PlainObject< MessageComponent[] >;
 
 // TODO complete rework msgGroups
 

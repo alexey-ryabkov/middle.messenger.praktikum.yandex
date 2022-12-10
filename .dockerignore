@@ -1,0 +1,9 @@
+.parcel
+.git
+.vscode
+.editorconfig
+node_modules
+package-lock.json
+dist
+static/layout
+README.md

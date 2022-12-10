@@ -10,5 +10,5 @@
   publish = "dist-parcel" 
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/index-parcel.html"
   status = 200

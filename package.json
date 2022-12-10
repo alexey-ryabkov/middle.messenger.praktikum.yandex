@@ -13,7 +13,7 @@
     "clean": "rm -rf node_modules/",
 
     "start:parcel": "npm run build:parcel && node ./server.js",
-    "build:parcel": "parcel build ./src/index-parcel.htm --dist-dir ./dist-parcel",
+    "build:parcel": "parcel build ./src/index-parcel.html --dist-dir ./dist-parcel",
     "dev:parcel": "parcel ./src/index-parcel.html --dist-dir ./dist-parcel --no-cache",
 
     "lint": "npm-run-all --parallel lint:scss lint:ts",

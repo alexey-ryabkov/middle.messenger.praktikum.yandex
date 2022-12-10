@@ -4,6 +4,7 @@
 .editorconfig
 .eslint
 .nvmrc
+.husky
 README.md
 netlify.toml
 package-lock.json

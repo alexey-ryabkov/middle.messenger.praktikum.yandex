@@ -1,3 +1,4 @@
 dist
+dist-parcel
 node_modules
 **/*.min.js

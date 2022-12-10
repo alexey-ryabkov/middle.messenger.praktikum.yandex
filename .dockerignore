@@ -2,8 +2,12 @@
 .git
 .vscode
 .editorconfig
-node_modules
-package-lock.json
-dist
-static/layout
+.eslint
+.nvmrc
 README.md
+netlify.toml
+package-lock.json
+node_modules
+dist
+dist-parcel
+static/layout

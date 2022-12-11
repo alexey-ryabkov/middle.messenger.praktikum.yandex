@@ -55,7 +55,7 @@ export default class Http
             headers = {}, 
             timeout = 5000, 
             responseType = '',
-            credentials = true,
+            credentials = false,
         } = options;
 
         const isGetMethod = HTTPMethods.GET == method;

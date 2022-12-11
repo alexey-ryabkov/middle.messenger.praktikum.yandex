@@ -1,5 +1,5 @@
 import {PlainObject} from "@core/types";
-import Http, {HttpOptsFull, HTTPMethods} from "@core/http";
+import Http, {HttpOptsFull, HTTPMethods, HttpOpts} from "@core/http";
 import SurChat from "@app";
 import {AppError, AppErrorCode} from "@entities/types";
 import {createAppError} from "@app-utils-kit"
@@ -24,6 +24,7 @@ export function apiErrorHandler (error : Error) : never
     }
     else if (AppErrorCode.restApiAuth == code)
     {
+        // TODO вернуть 
         const app = SurChat.instance;
 
         // we`re not authorized anymore ...
@@ -44,13 +45,16 @@ export function apiErrorHandler (error : Error) : never
 type RestApiData = FormData | PlainObject;
 type RestApiMethod = (url? : string, data? : RestApiData) => Promise< any >;
 
-class RestApi 
+export default class RestApi 
 {
     protected _http : Http;
 
-    constructor (apiPath = '') 
+    constructor (
+        apiPath = '', 
+        protected _requestOpts : HttpOpts = {},
+        apiBaseUrl = API_BASE_URL) 
     {
-        this._http = new Http( API_BASE_URL + apiPath );
+        this._http = new Http( apiBaseUrl + apiPath );
     }
     get baseUrl ()
     {
@@ -64,10 +68,14 @@ class RestApi
     protected _request (url = '', method : HTTPMethods = HTTPMethods.GET, data? : RestApiData) 
     {
         const options : HttpOptsFull = {
-            method,
-            responseType: 'json',
-            headers: {}
-        }
+            ...{
+                method,
+                responseType: 'json',
+                headers: {},
+                credentials: true,
+            }, 
+            ...this._requestOpts};
+
         if (data)
         {
             if (data instanceof FormData)

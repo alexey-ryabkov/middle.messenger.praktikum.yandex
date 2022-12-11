@@ -1,46 +1,10 @@
 import {PlainObject} from "@core/types";
 import Http, {HttpOptsFull, HTTPMethods, HttpOpts} from "@core/http";
-import SurChat from "@app";
-import {AppError, AppErrorCode} from "@entities/types";
+import {AppErrorCode} from "@entities/types"; // AppError, 
 import {createAppError} from "@app-utils-kit"
 
 const API_HOST = 'https://ya-praktikum.tech';
 const API_BASE_URL = `${API_HOST}/api/v2`;
-
-export function apiErrorHandler (error : Error) : never
-{
-    if (!('cause' in error))
-    {
-        // dev (no api) error
-        throw createAppError(error.message, AppErrorCode.unknown, 'actions');
-    }
-
-    const {code, msg, additional} = (error as AppError).cause;
-
-    if (AppErrorCode.restApiRequest == code)
-    {
-        // wrong data input from user  
-        throw createAppError(msg, AppErrorCode.userInput);
-    }
-    else if (AppErrorCode.restApiAuth == code)
-    {
-        // TODO вернуть 
-        const app = SurChat.instance;
-
-        // we`re not authorized anymore ...
-        if (app.storeState.currentUser)
-        {
-            // ... so reinit store if we`s authorized before
-            app.resetStoreState(); 
-        }
-
-        // FIXME it will become uncaught besides auth form...
-        throw createAppError(msg, AppErrorCode.userInput, '', additional);
-    }
-    else
-        // dev (api) error
-        throw createAppError(msg, AppErrorCode.dev, 'rest api (in controller)', additional);
-}
 
 type RestApiData = FormData | PlainObject;
 type RestApiMethod = (url? : string, data? : RestApiData) => Promise< any >;

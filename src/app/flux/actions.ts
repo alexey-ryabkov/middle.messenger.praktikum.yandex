@@ -3,13 +3,12 @@ import {AppErrorCode, AuthorizeData, ChangeAuthData, ChatFields, ChatUserFields,
     Message, ProfileData, RegistrateData} from "@entities/types";
 import SurChat from "@app";
 import {StoreSetStateType} from "@core/store";
-import {apiErrorHandler} from "@api/rest";
 import chatsApi from "@api/chats";
 import userApi from "@api/user";
 import ChatUser from "@entities/chat_user";
 import Chat from "@entities/chat";
 import {isEqual} from "@lib-utils-kit";
-import {createAppError} from "@app-utils-kit";
+import {apiErrorHandler, createAppError} from "@app-utils-kit";
 
 export default class Actions 
 {

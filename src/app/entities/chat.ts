@@ -1,11 +1,11 @@
 import SurChat from '@app';
 import Actions from '@flux/actions';
 import {ChatFields, ChatMessage, Message, MessageType} from '@entities/types';
-import {apiErrorHandler} from '@api/rest';
+import ChatUser from '@entities/chat_user';
 import resourcesApi from '@api/resources';
 import chatsApi from '@api/chats';
 import Messenger, {MessengerEvents} from '@api/messenger';
-import ChatUser from '@entities/chat_user';
+import {apiErrorHandler} from "@app-utils-kit";
 
 export enum ChatType
 {

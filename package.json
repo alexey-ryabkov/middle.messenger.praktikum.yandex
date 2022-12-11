@@ -18,7 +18,7 @@
     "lint:ts": "node_modules/.bin/eslint --ext .ts ./src",
     "lint:scss": "npx stylelint './src/**/*.scss'",
     "lint:scss-fix": "npx stylelint './src/**/*.scss' --fix",
-    "test": "ts-mocha src/**/*.spec.ts --require src/test/mock.ts",
+    "test": "ts-mocha src/**/*.spec.ts --require src/test/mock.ts --require ignore-styles --paths",
     "checker": "npm-run-all test lint",
     "prepare": "husky install"
   },
@@ -38,6 +38,7 @@
     "handlebars": "4.7.7",
     "html-webpack-plugin": "5.5.0",
     "husky": "8.0.2",
+    "ignore-styles": "5.0.1",
     "jsdom": "20.0.3",
     "mini-css-extract-plugin": "2.7.2",
     "node-polyfill-webpack-plugin": "2.0.1",

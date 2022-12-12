@@ -63,7 +63,8 @@ export default class Actions
         return userApi.logout()
             .then( () => Actions.defineUser() )
             .catch( error => apiErrorHandler( error ));
-    }       
+    }    
+
     static getChatsList ()
     {   
         console.log('Actions.getChatsList fired');
@@ -105,7 +106,7 @@ export default class Actions
                     }
                 })();
             })
-            .catch( error => apiErrorHandler(error) );
+            .catch( error => apiErrorHandler( error ));
     } 
     static createUserChat (login : string)
     {
@@ -116,7 +117,7 @@ export default class Actions
         {
             return Promise.reject( createAppError('no current user', AppErrorCode.default, 'Actions.createUserChat') );
         }
-        return userApi.search(login)
+        return userApi.search( login )
             .then(users =>
             {
                 if (users.length)
@@ -126,41 +127,25 @@ export default class Actions
                     return chatsApi.addUserChat( chatUser.id, Chat.getUserChatName(curUser, chatUser) );
                 }
                 else
-                    throw createAppError(`Пользователь с логином ${login} не найден`, AppErrorCode.default, 'createUserChat action');
+                    throw createAppError(`Пользователь с логином ${login} не найден`, AppErrorCode.userInput, 'createUserChat action');
             })
             .then( chatId => Actions.getChatsList().then( () => chatId ) )
-            .catch( error => apiErrorHandler(error) );
+            .catch( error => apiErrorHandler( error ));
     }
     static createGroupChat (name : string)
     {
-        // TODO 
-        return Promise.reject( createAppError(`absent func (create group chat ${name})`, AppErrorCode.default, 'Actions.createGroupChat') );
-    }
+        console.log('Actions.createGroupChat fired');
+        return chatsApi.addGroupChat( name )
+            .then( chatId => Actions.getChatsList().then( () => chatId ) )
+            .catch( error => apiErrorHandler( error ));
+    }    
     static openChat (chatId : number) 
     {
         console.log('Actions.openChat fired');
         const id = String(chatId);
         const app = SurChat.instance;
 
-        return chatsApi.getUsers(chatId)
-            .then(rawUsers =>
-            {
-                const chatUsers : PlainObject< ChatUserFields > = {};
-
-                rawUsers.reduce((chatUsers, user) =>
-                {
-                    chatUsers[user.id] = user;
-                    return chatUsers;
-                }, 
-                chatUsers);
-
-                if (!isEqual(chatUsers, app.storeState.chatUsers))
-                {
-                    console.log('Actions.openChat store.set chatUsers', chatUsers, StoreSetStateType.replace);
-                    app.store.set( 'chatUsers', chatUsers, StoreSetStateType.replace );
-                }
-            })
-            .catch( error => apiErrorHandler(error) )
+        return Actions.getChatUsers(chatId)
             .finally(() => 
             {                    
                 console.log('Actions.openChat store.set openedChat', id);
@@ -188,8 +173,59 @@ export default class Actions
         console.log('Actions.deleteChat fired');
         return chatsApi.deleteChat( chatId )
             .then( () => Actions.getChatsList() )
-            .catch( error => apiErrorHandler(error) );
+            .catch( error => apiErrorHandler( error ));
     } 
+
+    static getChatUsers (chatId : number)
+    {
+        console.log('Actions.getChatUsers fired');
+        const app = SurChat.instance;
+
+        return chatsApi.getUsers( chatId )
+            .then(rawUsers =>
+            {
+                const chatUsers : PlainObject< ChatUserFields > = {};
+
+                rawUsers.reduce((chatUsers, user) =>
+                {
+                    chatUsers[user.id] = user;
+                    return chatUsers;
+                }, 
+                chatUsers);
+
+                if (!isEqual(chatUsers, app.storeState.chatUsers))
+                {
+                    console.log('Actions.openChat store.set chatUsers', chatUsers, StoreSetStateType.replace);
+                    app.store.set( 'chatUsers', chatUsers, StoreSetStateType.replace );
+                }
+            })
+            .catch( error => apiErrorHandler( error ));
+    }
+    static addUser2chat (chatId : number, login : string)
+    {
+        console.log('Actions.addUser2chat fired');
+
+        return userApi.search( login )
+            .then( users =>
+            {
+                if (users.length)
+                {
+                    return users[0].id;
+                }
+                else
+                    throw createAppError(`Пользователь с логином ${login} не найден`, AppErrorCode.userInput, 'addUser2chat action');
+            })
+            .then( userId => chatsApi.addUser( chatId, userId ))
+            .then( () => Actions.getChatUsers( chatId ))
+            .catch( error => apiErrorHandler( error ));
+    }
+    static delUserFromChat (chatId : number, userId : number)
+    {
+        console.log('Actions.addUser2chat fired');
+        return chatsApi.delUser( chatId, userId )
+            .then( () => Actions.getChatUsers( chatId ))
+            .catch( error => apiErrorHandler( error ));
+    }
     static recieveLastMessage (chatId : number, msg : Message)
     {
         console.log('Actions.recieveLastMessage fired');
@@ -206,6 +242,7 @@ export default class Actions
         }
         return Promise.resolve();
     } 
+
     static toggleChatsLoader (flag : boolean) 
     {
         console.log('Actions.toggleChatsLoader store.set toggleChatsLoader', flag);

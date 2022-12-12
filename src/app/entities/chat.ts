@@ -53,7 +53,7 @@ export default class Chat
         this._type = Chat.isUserType( fields ) ? ChatType.user : ChatType.group;
 
         const {collocutor} = fields;
-        if (collocutor && this._isUserChat)
+        if (collocutor && this.isUserChat)
         {
             this._collocutor = new ChatUser(collocutor);
         }
@@ -62,9 +62,13 @@ export default class Chat
     {
         return this._id;
     }
+    get type ()
+    {
+        return this._type;
+    }
     get title ()
     {
-        if (this._isUserChat)
+        if (this.isUserChat)
         {
             return this.collocutor?.nickname || this._title;
         }
@@ -74,7 +78,7 @@ export default class Chat
     {
         let avatar : string | null = null;
 
-        if (this._isUserChat)
+        if (this.isUserChat)
         {
             avatar = this.collocutor?.avatar || null;
         }
@@ -86,7 +90,8 @@ export default class Chat
     }
     get createdBy ()
     {
-        return this._app.storeState.chatUsers?.[ this._createdBy ] ?? null;        
+        const createdByFields = this._app.storeState.chatUsers?.[ this._createdBy ];
+        return createdByFields ? new ChatUser(createdByFields) : null;        
     }
     get members ()
     {
@@ -107,13 +112,33 @@ export default class Chat
     {
         return this._messagesHistory;
     }
-    protected get _isUserChat ()
+    get isUserChat ()
     {
         return ChatType.user == this._type;
     }
     init ()
     {
         return this._messenger.init();
+    }
+    addMember (login : string)
+    {
+        if (!this.isUserChat)
+        {
+            return Actions.toggleMessagesLoader(true) 
+                .then( () => Actions.addUser2chat( this._id, login ))            
+                .finally( () => Actions.toggleMessagesLoader(false) );
+        }
+        return Promise.reject( 'Добавление пользователя доступно только для групповых чатов' );
+    }
+    delMember (userId : number)
+    {
+        if (!this.isUserChat)
+        {
+            return Actions.toggleMessagesLoader(true) 
+                .then( () => Actions.delUserFromChat( this._id, userId ))            
+                .finally( () => Actions.toggleMessagesLoader(false) );
+        }
+        return Promise.reject( 'Удаление пользователя доступно только для групповых чатов' );
     }
     loadMessages ()
     {
@@ -148,10 +173,9 @@ export default class Chat
     }    
     static isUserType (chatFields : ChatFields)
     {
-        // TODO also check ' vs ' substr in title
-        return 2 == chatFields.members.length;
+        return 2 == chatFields.members.length && chatFields.title.includes( ' vs ' );
     }
-    static getUserChatName(user : ChatUser, collocutor : ChatUser)
+    static getUserChatName (user : ChatUser, collocutor : ChatUser)
     {
         return `${user?.nickname} vs ${collocutor.nickname}`;
     }

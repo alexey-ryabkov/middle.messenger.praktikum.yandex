@@ -7,12 +7,14 @@ import {BlockProps} from '@core/block';
 import {BemParams} from '@core/block/bem';
 import ComponentBlock from '@core/block/component';
 import {ChatType} from '@entities/chat';
+import DropdownMenu from '@lib-modules/dropdown_menu';
 import IconButton from '@lib-components/icon_button';
 import Icon, {IconVar} from '@lib-components/icon';
 import Spinner from '@lib-components/spinner';
 import ChatComponent, {ChatProps} from './components/chat';
 import SearchComponent from './components/search';
 import {datePrettify} from '@lib-utils-kit';
+import {getUserError} from '@app-utils-kit';
 import tpl from './tpl.hbs';
 import './style.scss';
 
@@ -35,30 +37,69 @@ class ChatsModule extends ComponentBlock
     {
         const {chats, loader} = ChatsModule._prepareProps(props);
 
-        const buttonAdd = new IconButton({ 
-                icon: new Icon({ variant: IconVar.plus }), 
-                size: 'regular',
-                importance: 'primary'
-            }, 
-            ['click', () => 
+        const buttonAdd = new DropdownMenu(
             {
-                let login = prompt('Введите логин пользователя');
-                if (null !== login)
-                {
-                    login = login.trim();
-                    if (login)
+                button: new IconButton({
+                    icon: new Icon({ variant: IconVar.plus }), 
+                    size: 'regular',
+                    importance: 'primary', 
+                }),
+                options: [
                     {
-                        SurChat.instance.chatsList.createChat( login as string, ChatType.user )
-                            .catch( error => 
+                        title: 'Чат с пользователем',
+                        action: (menu : DropdownMenu | null) => 
+                        {
+                            let login = prompt('Введите логин пользователя');
+                            if (null !== login)
                             {
-                                console.error(error);
-                                alert('При создании чата произошла ошибка') 
-                            });
-                    }
-                    else
-                        alert('Некорректный логин');
-                }
-            }]);
+                                login = login.trim();
+                                if (login)
+                                {
+                                    SurChat.instance.chatsList.createChat( login as string, ChatType.user )
+                                        .catch( error => 
+                                        {
+                                            console.error(error);
+
+                                            let userError = getUserError(error);
+                                            if (!userError)
+                                            {
+                                                userError = 'При создании чата произошла ошибка';
+                                            }
+                                            alert(userError);
+                                        });
+                                }
+                                else
+                                    alert('Некорректный логин');
+                            }
+                            menu?.hideMenu();
+                        }
+                    },
+                    {
+                        title: 'Групповой чат',
+                        action: (menu : DropdownMenu | null) => 
+                        {
+                            let title = prompt('Введите название чата');
+                            if (null !== title)
+                            {
+                                title = title.trim();
+                                if (title)
+                                {
+                                    SurChat.instance.chatsList.createChat( title as string, ChatType.group )
+                                        .catch( error => 
+                                        {
+                                            console.error(error);
+                                            alert('При создании чата произошла ошибка') 
+                                        });
+                                }
+                                else
+                                    alert('Некорректное название');
+                            }
+                            menu?.hideMenu();
+                        }
+                    },
+                ],
+                position: ['bottom', 'Left']
+            });
 
         const search = new SearchComponent(
             {
@@ -166,7 +207,6 @@ class ChatsModule extends ComponentBlock
                     }                              
                 }]
             );
-
         chat.bemMix([ '_chats', 'listItem' ]);
 
         return chat as ChatComponent;

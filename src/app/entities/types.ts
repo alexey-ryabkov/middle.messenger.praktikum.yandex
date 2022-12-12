@@ -115,6 +115,8 @@ export interface ChatsListApi
 export interface ChatApi
 {
     getUsers (chatId : number) : Promise< ChatUserFields[] >;
+    addUser (chatId : number, userId : number) : Promise< void >;
+    delUser (chatId : number, userId : number) : Promise< void >;
     getNewMsgCnt (chatId : number) : Promise< number >;
 }
 
@@ -145,6 +147,6 @@ export type AppError = Error &
     cause: {
         code : AppErrorCode, 
         msg : string,
-        additional?: string
+        additional? : string
     }
 }

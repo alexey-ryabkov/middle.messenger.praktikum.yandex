@@ -55,13 +55,12 @@ export default class Http
             headers = {}, 
             timeout = 5000, 
             responseType = '',
-            credentials = true,
+            credentials = false,
         } = options;
 
         const isGetMethod = HTTPMethods.GET == method;
 
         url = this.BASE_URL + url;
-        console.log('RestApi request', url, options);
 
         return new Promise< XMLHttpRequest >((resolve, reject) => 
         {

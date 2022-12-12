@@ -39,13 +39,13 @@ export default class DropdownMenu extends ComponentBlock
         {
             event.stopPropagation();
 
-            if (event.target && (event.target as HTMLElement).closest('.dropdownMenu__button'))
+            if (event.target && (event.target as HTMLElement).closest( '.dropdownMenu__button' ))
             {
                 event.preventDefault();
 
                 this.toggleMenu();
 
-                document.querySelectorAll('.dropdownMenu').forEach(menuEl =>
+                document.querySelectorAll( '.dropdownMenu' ).forEach( menuEl =>
                 {
                     if (menuEl !== this.element)
                     {
@@ -141,6 +141,19 @@ export default class DropdownMenu extends ComponentBlock
         this.element.classList.remove('dropdownMenu--pos_topRight');
         this.element.classList.remove('dropdownMenu--pos_bottomLeft');
         this.element.classList.remove('dropdownMenu--pos_bottomRight');
+    }
+    static getMenuComponent (element : Element)
+    {
+        let menuComponent : DropdownMenu | null = null;
+
+        Object.values( document.querySelectorAll( '.dropdownMenu' )).some( menuEl =>
+        {
+            if (menuEl === element)
+            {
+                return menuComponent = (menuEl as DropdownMenuElement).component;
+            }
+        });
+        return menuComponent;
     }
     protected _prepareBemParams ()
     {

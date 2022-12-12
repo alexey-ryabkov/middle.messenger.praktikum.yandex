@@ -34,7 +34,6 @@
             "@app-utils/*": ["app/utils/*"],
 
             "@flux/*": ["app/flux/*"],
-            "@data/*": ["app/dummy_data/*"],
             "@pages": ["app/pages"],
             "@api/*": ["app/api/*"],
             "@entities/*": ["app/entities/*"]            

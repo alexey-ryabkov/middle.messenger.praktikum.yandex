@@ -128,7 +128,6 @@ export default class Store extends EventBus
     }
     emit (event : string) 
     {
-        console.log('store emit', event);
         super.emit(event);
     }
     static getEventName4path (path: string, event : StoreEvents = StoreEvents.updated)

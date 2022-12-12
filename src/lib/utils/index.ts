@@ -143,6 +143,7 @@ export function isEqual (a: PlainObject, b: PlainObject)
 
         if (isArrayOrObject(value) && isArrayOrObject(bValue)) 
         {
+            // @ts-ignore
             if (isEqual( value, bValue )) 
             {
                 continue;
@@ -181,9 +182,11 @@ export function cloneDeep (obj : [] | PlainObject = {})
         {
             if (isArrayOrObject(value)) 
             {
+                // @ts-ignore
                 cloned[key] = cloneDeep(value);
             }
             else
+                // @ts-ignore
                 cloned[key] = value;
         });
     }

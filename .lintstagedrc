@@ -1,0 +1,4 @@
+{
+    "./src/**/*.ts": "eslint",
+    "./src/**/*.scss": "npx stylelint"
+}

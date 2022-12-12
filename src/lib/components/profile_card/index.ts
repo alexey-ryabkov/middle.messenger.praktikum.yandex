@@ -12,26 +12,18 @@ export type ProfileCardProps = BlockProps &
 {
     image? : string,
     name : string,
-    menu : DropdownMenu
+    menu? : DropdownMenu
 };
 export default class ProfileCard extends ComponentBlock 
 {
     constructor (props : ProfileCardProps)
     {   
-        const {avatar, caption, menu} = ProfileCard._prepareProps(props);
-
-        if (menu)
-        {
-            menu.bemMix(['profileCard', 'dropdownMenu']);
-        }
-        super({ avatar, caption, menu });
+        super( ProfileCard._prepareProps(props) );
         this._processAvatarProps();
     }    
     setProps (nextProps: Partial< ProfileCardProps >)
     {
-        ProfileCard._prepareProps(nextProps);
-
-        super.setProps(nextProps);  
+        super.setProps( ProfileCard._prepareProps(nextProps) );  
         this._processAvatarProps();
     }  
     protected static _prepareProps (props : Partial< ProfileCardProps >)
@@ -57,6 +49,10 @@ export default class ProfileCard extends ComponentBlock
             }
             else
                 props.caption = '';
+        }
+        if (props.menu)
+        {
+            props.menu.bemMix(['profileCard', 'dropdownMenu']);        
         }
         return props;
     } 

@@ -18,11 +18,7 @@ class ChatsApi implements ChatsListApi, ChatApi
     addGroupChat (name : string)
     {
         return restChatsApi.post('', {title: name}).then( result => result.id as number );
-    }
-    deleteChat (id : number)
-    {
-        return restChatsApi.delete('', {chatId: id}).then(() => {return});
-    }
+    }    
     getChatsList ()
     {
         return restChatsApi.get() 
@@ -39,6 +35,11 @@ class ChatsApi implements ChatsListApi, ChatApi
                 return this._processChatsData(chatsData);
             }); 
     }
+    deleteChat (id : number)
+    {
+        return restChatsApi.delete('', {chatId: id}).then(() => {return});
+    }
+
     getUsers (chatId : number)
     {
         return restChatsApi.get(`/${chatId}/users`) 
@@ -47,10 +48,19 @@ class ChatsApi implements ChatsListApi, ChatApi
                         return ( userDataArr as PlainObject[] ).map( userData => UserApi.processUserData(userData) );
                     }); 
     }    
+    addUser (chatId : number, userId : number)
+    {
+        return restChatsApi.put('/users', {users: [userId], chatId}).then(() => {return});
+    }
+    delUser (chatId : number, userId : number)
+    {
+        return restChatsApi.delete('/users', {users: [userId], chatId}).then(() => {return});
+    }    
     getNewMsgCnt (chatId : number)
     {
         return restChatsApi.get(`/new/${chatId}`).then( result => result.unread_count as number ); 
     }
+    
     // TODO divide this method (too many request is price for universality), mb refuse to use interfaces implementing (ChatsListApi, ChatApi, etc)
     protected _processChatsData (chatsData : PlainObject[])
     {

@@ -13,7 +13,8 @@ export type MessageProps = BlockProps &
 {
     msg : string,
     datetime : string,
-    time? : string,    
+    time? : string,
+    author? : string | null,
     of : 'you' | 'chat',
     type? : MessageTypes,
     tag? : string

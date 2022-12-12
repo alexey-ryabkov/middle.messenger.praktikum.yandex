@@ -16,11 +16,12 @@
     "clean": "rm -rf node_modules/",
     "reinstall": "npm run clean && npm install",
     "lint": "npm-run-all --parallel lint:scss lint:ts",
+    "lint-staged": "lint-staged",
     "lint:ts": "node_modules/.bin/eslint --ext .ts ./src",
     "lint:scss": "npx stylelint './src/**/*.scss'",
     "lint:scss-fix": "npx stylelint './src/**/*.scss' --fix",
     "test": "ts-mocha -p src/test/tsconfig.json src/**/*.spec.ts --require src/test/mock.ts --require ignore-styles --paths",
-    "checker": "npm-run-all test lint",
+    "checker": "npm-run-all test lint-staged",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -41,6 +42,7 @@
     "husky": "8.0.2",
     "ignore-styles": "5.0.1",
     "jsdom": "20.0.3",
+    "lint-staged": "13.1.0",
     "mini-css-extract-plugin": "2.7.2",
     "npm-run-all": "4.1.5",
     "parcel": "2.7.0",

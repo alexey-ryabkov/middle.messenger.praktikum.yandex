@@ -17,15 +17,15 @@ import {datePrettify} from '@lib-utils-kit';
 import mount from '@lib-utils/mount';
 import tpl from './tpl.hbs';
 import './style.scss';
+import { ChatType } from '@entities/chat';
 
 type MessagePropsExt = MessageProps &
 {
     messageId : number
 }
 type MessagesData = PlainObject< MessagePropsExt > | MessagePropsExt;
-// type MessageGroups = PlainObject< MessageComponent[] >;
 
-// TODO complete rework msgGroups
+// TODO complete rework msgGroups for messages date grouping
 
 export type MessagesModuleProps = BlockProps & 
 {
@@ -266,13 +266,24 @@ class MessagesModule extends ComponentBlock
     }
     static processChatMessage2props (chatMessage : ChatMessage)
     {
+        const app = SurChat.instance;
+        const {activeChat} = app.chatsList;
+        const {userId} = chatMessage;
+
+        const isYourMessage = userId == app.user.data?.id;
+
+        const author = !isYourMessage && activeChat && !activeChat.isUserChat
+            ? activeChat.members.find(chatUser => chatUser.id == userId)?.nickname
+            : null;
+
         const datetime = datePrettify(chatMessage.datetime, true);        
         return {
+            author, 
+            datetime,
             messageId: chatMessage.id,
-            msg: chatMessage.content,
-            datetime : datetime,
-            time: datetime.split(' ')?.[1] || datetime,    
-            of: chatMessage.userId == SurChat.instance.user.data?.id ? 'you' : 'chat',
+            msg: chatMessage.content,            
+            time: datetime.split(' ')?.[1] || datetime,
+            of: isYourMessage ? 'you' : 'chat',
             type: MessageTypes.text,
             tag: 'li',
         } as MessagePropsExt;

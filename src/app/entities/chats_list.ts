@@ -29,7 +29,7 @@ export default class ChatsList
             console.log('store.oneTime fired, ChatsList.constructor', Store.getEventName4path('chats'));
 
             this._openNextChat()
-                .then( () => Actions.toggleMessagesLoader(false) );
+                .finally( () => Actions.toggleMessagesLoader(false) );
         });
     }    
     get chats ()
@@ -62,12 +62,12 @@ export default class ChatsList
                 if (ChatType.user == type)
                 {
                     const login = loginOrTitle;
-                    return Actions.createUserChat(login);
+                    return Actions.createUserChat( login );
                 }
                 else
                 {
                     const title = loginOrTitle;
-                    return Actions.createGroupChat(title);
+                    return Actions.createGroupChat( title );
                 }
             })
             .then(chatId => 

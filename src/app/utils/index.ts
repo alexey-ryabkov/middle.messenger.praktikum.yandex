@@ -20,13 +20,18 @@ export function apiErrorHandler (error : Error) : never
 {
     if (!('cause' in error))
     {
-        // dev (no api) error
+        // dev (no api?) error
         throw createAppError(error.message, AppErrorCode.unknown, 'actions');
     }
-
     const {code, msg, additional} = (error as AppError).cause;
 
-    if (AppErrorCode.restApiRequest == code)
+    if (AppErrorCode.userInput == code)
+    {
+        // TODO can api/actions define user type error ?
+        // just pass it through
+        throw error;
+    }
+    else if (AppErrorCode.restApiRequest == code)
     {
         // wrong data input from user  
         throw createAppError(msg, AppErrorCode.userInput);

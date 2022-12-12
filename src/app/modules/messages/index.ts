@@ -17,7 +17,6 @@ import {datePrettify} from '@lib-utils-kit';
 import mount from '@lib-utils/mount';
 import tpl from './tpl.hbs';
 import './style.scss';
-import { ChatType } from '@entities/chat';
 
 type MessagePropsExt = MessageProps &
 {

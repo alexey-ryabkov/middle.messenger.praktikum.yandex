@@ -1,4 +1,3 @@
-import {Handler} from '@core/types';
 import Templator from '@core/templator';
 import {BlockEvents, BlockProps} from '@core/block';
 import DropdownMenu from '@lib-modules/dropdown_menu';

@@ -79,8 +79,6 @@ form.bemMix(['_centeredFormLayout', 'form']);
 const app = SurChat.instance;
 app.store.on( Store.getEventName4path('currentUser'), () =>
 {
-    console.log(`store.on fired, profile page`, Store.getEventName4path('openedChat'));
-
     const curUser = app.user.data;
 
     form.setProps({

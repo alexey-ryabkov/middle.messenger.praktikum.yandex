@@ -59,8 +59,6 @@ export default class SurChat implements ContainarableApp
 
         this._store.oneTime(Store.getEventName4path('currentUser'), () => 
         {
-            console.log('store.oneTime fired, SurChat.constructor', Store.getEventName4path('currentUser'));
-
             const isUserAuthorized = this.user.isAuthorized;
 
             const isUserBecameAuthorized = !this._isUserDefined && isUserAuthorized;
@@ -176,8 +174,6 @@ export default class SurChat implements ContainarableApp
     {
         this._store.on( Store.getEventName4path('currentUser'), () => 
         {
-            console.log('store.on fired, SurChat._prepareAuthRedirects', Store.getEventName4path('currentUser'));
-
             const isUserAuthorized = this.user.isAuthorized;
 
             const isUserBecameAuthorized = !this._isUserDefined && isUserAuthorized;

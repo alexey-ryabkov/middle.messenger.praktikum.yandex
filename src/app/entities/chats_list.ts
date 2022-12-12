@@ -5,8 +5,6 @@ import Actions from "@flux/actions";
 import {AppErrorCode} from "@entities/types";
 import Chat, { ChatType } from "@entities/chat";
 import {createAppError} from "@app-utils-kit";
-import dummyChats from '@data/chats.json'; 
-import DummyChat from "@entities/dummy_chat";
 
 export default class ChatsList 
 {
@@ -19,17 +17,14 @@ export default class ChatsList
         
         this._app.store.on( Store.getEventName4path('chats'), () => 
         {
-            console.log('store.on fired, ChatsList.constructor', Store.getEventName4path('chats'));
             this._processChats(); 
         });
 
         // open chat at start after got chats in store
         this._app.store.oneTime( Store.getEventName4path('chats'), () => 
         {
-            console.log('store.oneTime fired, ChatsList.constructor', Store.getEventName4path('chats'));
-
             this._openNextChat()
-                .then( () => Actions.toggleMessagesLoader(false) );
+                .finally( () => Actions.toggleMessagesLoader(false) );
         });
     }    
     get chats ()
@@ -62,12 +57,12 @@ export default class ChatsList
                 if (ChatType.user == type)
                 {
                     const login = loginOrTitle;
-                    return Actions.createUserChat(login);
+                    return Actions.createUserChat( login );
                 }
                 else
                 {
                     const title = loginOrTitle;
-                    return Actions.createGroupChat(title);
+                    return Actions.createGroupChat( title );
                 }
             })
             .then(chatId => 
@@ -172,40 +167,5 @@ export default class ChatsList
             this._chats[id].onDelete(); 
             delete this._chats[id];
         });
-    }
-    // TODO below depricated 
-    get dummyList ()
-    {
-        // parcel can ref to image, only if it static string
-        // so we can`t do it dynamically (get image from json)  
-        if (dummyChats['chat1'])
-        {
-            const chat1imageUrl = new URL(
-                '../../../static/images/hatt.jpg',
-                import.meta.url
-            );
-            dummyChats['chat1'].image = chat1imageUrl.pathname;
-        }
-        if (dummyChats['chat2'])
-        {
-            const chat2imageUrl = new URL(
-                '../../../static/images/grimes.jpg',
-                import.meta.url
-            );
-            dummyChats['chat2'].image = chat2imageUrl.pathname;
-        }
-        if (dummyChats['chat3'])
-        {
-            const chat3imageUrl = new URL(
-                '../../../static/images/michael.jpg',
-                import.meta.url
-            );
-            dummyChats['chat3'].image = chat3imageUrl.pathname;
-        }
-        return dummyChats;
-    }
-    get dummyActiveChat ()
-    {
-        return new DummyChat();
     }
 }

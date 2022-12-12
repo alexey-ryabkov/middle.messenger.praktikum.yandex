@@ -148,7 +148,13 @@ $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6
                     }
 
                     &animation {
-                        background: $gray-light;
+                        background: black;
+                        background: url('../../../../static/images/sur_animation.svg') center/contain no-repeat, linear-gradient(45deg, 
+                        rgba(128, 0, 129, 1) 13%, 
+                        rgba(166, 47, 113, 1) 38%, 
+                        rgba(174, 80, 246, 1) 55%, 
+                        rgba(0, 202, 255, 1) 90%, 
+                        rgba(0, 254, 255, 1) 100%);
                     }
                 }
             }
@@ -337,5 +343,9 @@ $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6
 
     ._centeredMsgLayout__content {
         font-weight: map.get($font-weights, 'Thin');
+    }
+
+    &._leftcolWindowLayout .profileCard {
+        border-right: 1px solid $gray-10;
     }
 }

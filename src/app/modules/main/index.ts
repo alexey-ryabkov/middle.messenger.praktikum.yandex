@@ -19,7 +19,7 @@ export default class MainContainer extends ComponentBlock implements AppContaine
             name: '_surApp',
             mods: {
                 elems: {
-                    background: [['bg', 'image']] 
+                    background: [['bg', 'animation']] 
                 }
             }
         };   

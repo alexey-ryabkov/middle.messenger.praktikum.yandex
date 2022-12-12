@@ -23,9 +23,8 @@ type MessagePropsExt = MessageProps &
     messageId : number
 }
 type MessagesData = PlainObject< MessagePropsExt > | MessagePropsExt;
-// type MessageGroups = PlainObject< MessageComponent[] >;
 
-// TODO complete rework msgGroups
+// TODO complete rework msgGroups for messages date grouping
 
 export type MessagesModuleProps = BlockProps & 
 {
@@ -236,16 +235,12 @@ class MessagesModule extends ComponentBlock
                 {
                     const newMessage = { ...message, chatId, isRead: false } as ChatMessage;
 
-                    console.log('_prepareNewMsgHandler', MessagesModule.processChatMessage2props(newMessage));
-
                     this.setProps({ messagesData: MessagesModule.processChatMessage2props(newMessage) });
                 }
             }
         }
         app.store.on( Store.getEventName4path('openedChat'), () =>
         {
-            console.log(`store.on fired, MessagesModule._prepareNewMsgHandler`, Store.getEventName4path('openedChat'));
-
             if (this._openedChat)
             {
                 app.store.off( Store.getEventName4path(`chats.${this._openedChat}`), newMsgHandler );
@@ -256,23 +251,30 @@ class MessagesModule extends ComponentBlock
 
             if (openedChat)
             {
-                app.store.on( Store.getEventName4path(`chats.${openedChat}`), () =>
-                {
-                    console.log(`store.on fired, newMsgHandler (MessagesModule)`, Store.getEventName4path(`chats.${openedChat}`));
-                    newMsgHandler();
-                 });
+                app.store.on( Store.getEventName4path(`chats.${openedChat}`), newMsgHandler );
             }
         });
     }
     static processChatMessage2props (chatMessage : ChatMessage)
     {
+        const app = SurChat.instance;
+        const {activeChat} = app.chatsList;
+        const {userId} = chatMessage;
+
+        const isYourMessage = userId == app.user.data?.id;
+
+        const author = !isYourMessage && activeChat && !activeChat.isUserChat
+            ? activeChat.members.find(chatUser => chatUser.id == userId)?.nickname
+            : null;
+
         const datetime = datePrettify(chatMessage.datetime, true);        
         return {
+            author, 
+            datetime,
             messageId: chatMessage.id,
-            msg: chatMessage.content,
-            datetime : datetime,
-            time: datetime.split(' ')?.[1] || datetime,    
-            of: chatMessage.userId == SurChat.instance.user.data?.id ? 'you' : 'chat',
+            msg: chatMessage.content,            
+            time: datetime.split(' ')?.[1] || datetime,
+            of: isYourMessage ? 'you' : 'chat',
             type: MessageTypes.text,
             tag: 'li',
         } as MessagePropsExt;
@@ -281,8 +283,6 @@ class MessagesModule extends ComponentBlock
     {
         this._app.store.on( Store.getEventName4path('showMessagesLoader'), () => 
         {
-            console.log('store.on fired, MessagesModule._prepareToggleLoaderHandler', Store.getEventName4path('showMessagesLoader'));
-            
             const showLoader = this._app.storeState.showMessagesLoader;            
             this.setProps({ showLoader });
         });

@@ -18,7 +18,7 @@ module.exports = {
         filename: `bundle${!isProdMode ? '-[hash]' : ''}.js`,
     },
     resolve: {
-        extensions: ['.ts'],
+        extensions: [".ts", ".tsx", ".js"],
         alias: {
             'handlebars' : 'handlebars/dist/handlebars.js'
         },

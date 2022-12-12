@@ -10,7 +10,6 @@
     "dev:parcel": "parcel ./src/index-parcel.html --dist-dir ./dist-parcel --no-cache",
     "start": "npm run build && node ./server.js",
     "build": "webpack --mode=production --define-process-env-node-env=production",
-    "build:dev": "webpack --mode=development",
     "dev": "webpack serve --open && npm run watch",
     "watch": "webpack --watch",
     "clean": "rm -rf node_modules/",

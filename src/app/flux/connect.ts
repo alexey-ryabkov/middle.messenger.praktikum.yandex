@@ -51,12 +51,8 @@ export default function componentConnected2store< CompProps extends BlockProps =
 				() => {	
 					const compNextState = mapStateToProps( app.storeState );
 
-					console.log(`componentConnector store.on fired with event, cur comp props`, storeEvent, compState);
-					
 					if (!isEqual(compState, compNextState))
 					{
-						console.log(`componentConnector store.on will set props`, compNextState);
-
 						this.setProps({ ...compNextState });
 
 						compState = compNextState;

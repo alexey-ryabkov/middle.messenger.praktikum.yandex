@@ -61,12 +61,10 @@ module.exports = {
                     'css-loader',   
                     'sass-loader',                                    
                 ],
-                exclude: '/static/layout/',
             },
             {
                 test: /\.(?:woff(2)?|eot|ttf|otf|svg|ico|gif|png|jpg|jpeg)$/i,
                 type: 'asset',
-                exclude: '/static/layout/',
             },
         ]
     }

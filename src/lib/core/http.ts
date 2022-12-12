@@ -61,7 +61,6 @@ export default class Http
         const isGetMethod = HTTPMethods.GET == method;
 
         url = this.BASE_URL + url;
-        console.log('RestApi request', url, options);
 
         return new Promise< XMLHttpRequest >((resolve, reject) => 
         {

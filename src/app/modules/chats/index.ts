@@ -238,8 +238,6 @@ class ChatsModule extends ComponentBlock
 
         this._app.store.on( Store.getEventName4path('openedChat'), () =>
         {
-            console.log(`store.on fired, ChatsModule._prepareOpenChatHandler`, Store.getEventName4path('openedChat'));
-
             if (this._openedChat)
             {
                 this.props.chats?.[this._openedChat]?.setProps({ isActive: false });
@@ -262,8 +260,6 @@ class ChatsModule extends ComponentBlock
     {
         this._app.store.on( Store.getEventName4path('showChatsLoader'), () => 
         {
-            console.log('store.on fired, ChatsModule._prepareToggleLoaderHandler', Store.getEventName4path('showChatsLoader'));
-            
             const showLoader = this._app.storeState.showChatsLoader;            
             this.setProps({ showLoader });
         });

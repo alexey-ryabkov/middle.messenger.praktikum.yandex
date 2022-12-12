@@ -236,16 +236,12 @@ class MessagesModule extends ComponentBlock
                 {
                     const newMessage = { ...message, chatId, isRead: false } as ChatMessage;
 
-                    console.log('_prepareNewMsgHandler', MessagesModule.processChatMessage2props(newMessage));
-
                     this.setProps({ messagesData: MessagesModule.processChatMessage2props(newMessage) });
                 }
             }
         }
         app.store.on( Store.getEventName4path('openedChat'), () =>
         {
-            console.log(`store.on fired, MessagesModule._prepareNewMsgHandler`, Store.getEventName4path('openedChat'));
-
             if (this._openedChat)
             {
                 app.store.off( Store.getEventName4path(`chats.${this._openedChat}`), newMsgHandler );
@@ -256,11 +252,7 @@ class MessagesModule extends ComponentBlock
 
             if (openedChat)
             {
-                app.store.on( Store.getEventName4path(`chats.${openedChat}`), () =>
-                {
-                    console.log(`store.on fired, newMsgHandler (MessagesModule)`, Store.getEventName4path(`chats.${openedChat}`));
-                    newMsgHandler();
-                 });
+                app.store.on( Store.getEventName4path(`chats.${openedChat}`), newMsgHandler );
             }
         });
     }
@@ -292,8 +284,6 @@ class MessagesModule extends ComponentBlock
     {
         this._app.store.on( Store.getEventName4path('showMessagesLoader'), () => 
         {
-            console.log('store.on fired, MessagesModule._prepareToggleLoaderHandler', Store.getEventName4path('showMessagesLoader'));
-            
             const showLoader = this._app.storeState.showMessagesLoader;            
             this.setProps({ showLoader });
         });

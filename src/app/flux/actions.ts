@@ -14,7 +14,6 @@ export default class Actions
 {
     static defineUser ()
     {
-        console.log('Actions.defineUser fired');
         return userApi.getProfile()
             .then( profile => 
             {
@@ -23,7 +22,6 @@ export default class Actions
 
                 if (!curProfile || !isEqual( profile, curProfile ))
                 {
-                    console.log('Actions.defineUser store.set currentUser', profile);
                     app.store.set( 'currentUser', profile ); 
                 }
             })
@@ -31,35 +29,30 @@ export default class Actions
     }
     static createUser (data : RegistrateData)
     {
-        console.log('Actions.createUser fired');
         return userApi.registrate( data )
             .then( () => Actions.defineUser() ) 
             .catch( error => apiErrorHandler( error ));
     }
     static authorizeUser (data : AuthorizeData)
     {
-        console.log('Actions.authorizeUser fired');
         return userApi.authorize( data )
             .then( () => Actions.defineUser() )
             .catch( error => apiErrorHandler( error ));
     }
     static changeUserProfile (data : ProfileData)
     {
-        console.log('Actions.changeUserProfile fired');
         return userApi.setProfile( data )
             .then( () => Actions.defineUser() )
             .catch( error => apiErrorHandler( error ));
     }
     static changeUserAuthData (data : ChangeAuthData)
     {
-        console.log('Actions.changeUserAuthData fired');
         return userApi.changeAuthData( data )
             .then( () => Actions.defineUser() )
             .catch( error => apiErrorHandler( error ));
     }
     static logoutUser ()
     {
-        console.log('Actions.logoutUser fired');
         return userApi.logout()
             .then( () => Actions.defineUser() )
             .catch( error => apiErrorHandler( error ));
@@ -67,7 +60,6 @@ export default class Actions
 
     static getChatsList ()
     {   
-        console.log('Actions.getChatsList fired');
         const app = SurChat.instance;
 
         return chatsApi.getChatsList()
@@ -101,7 +93,6 @@ export default class Actions
 
                     if (!isEqual(chats, app.storeState.chats))
                     {
-                        console.log('Actions.getChatsList store.set chats', chats, StoreSetStateType.replace);
                         app.store.set('chats', chats, StoreSetStateType.replace);
                     }
                 })();
@@ -110,7 +101,6 @@ export default class Actions
     } 
     static createUserChat (login : string)
     {
-        console.log('Actions.createUserChat fired');
         const curUser = SurChat.instance.user.data;
 
         if (!curUser)
@@ -134,43 +124,35 @@ export default class Actions
     }
     static createGroupChat (name : string)
     {
-        console.log('Actions.createGroupChat fired');
         return chatsApi.addGroupChat( name )
             .then( chatId => Actions.getChatsList().then( () => chatId ) )
             .catch( error => apiErrorHandler( error ));
     }    
     static openChat (chatId : number) 
     {
-        console.log('Actions.openChat fired');
         const id = String(chatId);
         const app = SurChat.instance;
 
         return Actions.getChatUsers(chatId)
             .finally(() => 
             {                    
-                console.log('Actions.openChat store.set openedChat', id);
                 app.store.set( 'openedChat', id );
             });
     }
     static closeChat (chatId : number) 
     {
-        console.log('Actions.closeChat fired');
         const app = SurChat.instance;
 
         const id = String(chatId);
         if (id == app.storeState.openedChat)
         {
-            console.log('Actions.closeChat store.set openedChat', null);
             app.store.set( 'openedChat', null );
-            //
-            console.log('Actions.closeChat store.set chatUsers', {}, StoreSetStateType.replace);
             app.store.set( 'chatUsers', {}, StoreSetStateType.replace );
         }
         return Promise.resolve();
     }
     static deleteChat (chatId : number) 
     {
-        console.log('Actions.deleteChat fired');
         return chatsApi.deleteChat( chatId )
             .then( () => Actions.getChatsList() )
             .catch( error => apiErrorHandler( error ));
@@ -178,7 +160,6 @@ export default class Actions
 
     static getChatUsers (chatId : number)
     {
-        console.log('Actions.getChatUsers fired');
         const app = SurChat.instance;
 
         return chatsApi.getUsers( chatId )
@@ -195,7 +176,6 @@ export default class Actions
 
                 if (!isEqual(chatUsers, app.storeState.chatUsers))
                 {
-                    console.log('Actions.openChat store.set chatUsers', chatUsers, StoreSetStateType.replace);
                     app.store.set( 'chatUsers', chatUsers, StoreSetStateType.replace );
                 }
             })
@@ -203,8 +183,6 @@ export default class Actions
     }
     static addUser2chat (chatId : number, login : string)
     {
-        console.log('Actions.addUser2chat fired');
-
         return userApi.search( login )
             .then( users =>
             {
@@ -221,14 +199,12 @@ export default class Actions
     }
     static delUserFromChat (chatId : number, userId : number)
     {
-        console.log('Actions.addUser2chat fired');
         return chatsApi.delUser( chatId, userId )
             .then( () => Actions.getChatUsers( chatId ))
             .catch( error => apiErrorHandler( error ));
     }
     static recieveLastMessage (chatId : number, msg : Message)
     {
-        console.log('Actions.recieveLastMessage fired');
         const app = SurChat.instance;
 
         const chat = app.storeState.chats?.[chatId];
@@ -237,7 +213,6 @@ export default class Actions
             chat.lastMessage = msg;
             chat.unreadCnt++;
 
-            console.log(`Actions.recieveLastMessage store.set chats.${chatId}`, chat, StoreSetStateType.merge, false);
             app.store.set( `chats.${chatId}`, chat, StoreSetStateType.merge, false );
         }
         return Promise.resolve();
@@ -245,15 +220,11 @@ export default class Actions
 
     static toggleChatsLoader (flag : boolean) 
     {
-        console.log('Actions.toggleChatsLoader store.set toggleChatsLoader', flag);
-
         SurChat.instance.store.set( 'showChatsLoader', flag );
         return Promise.resolve();
     } 
     static toggleMessagesLoader (flag : boolean) 
     {
-        console.log('Actions.toggleMessagesLoader store.set toggleMessagesLoader', flag);
-        
         SurChat.instance.store.set( 'showMessagesLoader', flag );
         return Promise.resolve();
     }

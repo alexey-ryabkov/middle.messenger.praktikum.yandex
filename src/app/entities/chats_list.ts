@@ -17,15 +17,12 @@ export default class ChatsList
         
         this._app.store.on( Store.getEventName4path('chats'), () => 
         {
-            console.log('store.on fired, ChatsList.constructor', Store.getEventName4path('chats'));
             this._processChats(); 
         });
 
         // open chat at start after got chats in store
         this._app.store.oneTime( Store.getEventName4path('chats'), () => 
         {
-            console.log('store.oneTime fired, ChatsList.constructor', Store.getEventName4path('chats'));
-
             this._openNextChat()
                 .finally( () => Actions.toggleMessagesLoader(false) );
         });

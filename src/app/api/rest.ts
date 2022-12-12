@@ -1,6 +1,6 @@
 import {PlainObject} from "@core/types";
 import Http, {HttpOptsFull, HTTPMethods, HttpOpts} from "@core/http";
-import {AppErrorCode} from "@entities/types"; // AppError, 
+import {AppErrorCode} from "@entities/types";
 import {createAppError} from "@app-utils-kit"
 
 const API_HOST = 'https://ya-praktikum.tech';

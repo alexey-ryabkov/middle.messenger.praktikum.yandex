@@ -1,21 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
+const {merge} = require('webpack-merge');
+
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const HTMLWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const mode = process.env.NODE_ENV;
-const isProdMode = process.env.NODE_ENV == 'production';
-
-const stylesHandler = MiniCssExtractPlugin.loader;
-
-module.exports = {
-    mode: mode || 'development',
+const commonConfig = {
     entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: `bundle${!isProdMode ? '-[hash]' : ''}.js`,
     },
     resolve: {
         extensions: [".ts", ".tsx", ".js"],
@@ -26,27 +19,6 @@ module.exports = {
             new TsconfigPathsPlugin(),
         ],
     },
-    devtool: !isProdMode ? 'source-map' : false,
-    devServer: {
-        port: 1234,
-        hot: !isProdMode,
-    },
-    plugins: [
-        new CleanWebpackPlugin(),
-        new HTMLWebpackPlugin(
-        {
-            template: './src/index.html',
-            minify: {
-                removeComments: isProdMode,
-                collapseWhitespace: isProdMode
-            },
-            inject: 'body'
-        }),
-        new MiniCssExtractPlugin(
-        {
-            filename: `bundle${!isProdMode ? '-[hash]' : ''}.css`,
-        }),
-    ],
     module: {
         rules: [
             {
@@ -57,7 +29,7 @@ module.exports = {
             {
                 test: /\.scss$/i,
                 use: [
-                    stylesHandler,
+                    MiniCssExtractPlugin.loader,
                     'css-loader',   
                     'sass-loader',                                    
                 ],
@@ -69,3 +41,9 @@ module.exports = {
         ]
     }
 }; 
+module.exports = (env, argv) => 
+{
+    const config = require(`./config/webpack.${ env.WEBPACK_SERVE ? 'development' : argv.mode }`);
+
+    return merge(commonConfig, config); 
+};

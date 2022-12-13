@@ -43,7 +43,7 @@ const commonConfig = {
 }; 
 module.exports = (env, argv) => 
 {
-    const config = require(`./config/webpack.${ env.WEBPACK_SERVE ? 'development' : argv.mode }`);
+    const config = require(`./configs/webpack.${ env.WEBPACK_SERVE ? 'development' : argv.mode }`);
 
     return merge(commonConfig, config); 
 };

@@ -2,36 +2,36 @@
 
 ## О проекте
 
-Проект по созданию мессенджера (клиентское веб-приложение) без использования фреймворков (за исключением ExpressJs для раздачи статики), на базе flux-архитектуры.
+Проект по созданию мессенджера (клиентское веб-приложение) без использования фреймворков (за исключением Express`а для раздачи статики), на базе flux-архитектуры.
 
 [Прототипы дизайна страниц](https://www.figma.com/file/ko0yhDeNEP1BOH26fyuIvl/Sur-Chat?node-id=0%3A1)
 
-Приложение развернуто на сервисах [netlify](https://glistening-cactus-b24c7b.netlify.app/) (сборка с помощью parcel) и на [render-com](https://sur-chat.onrender.com/messenger) (сборка с помощью webpack).
+Приложение развернуто на сервисах [netlify](https://glistening-cactus-b24c7b.netlify.app/) (сборка статики с помощью parcel) и на [render-com](https://sur-chat.onrender.com/messenger) (docker-сборка с помощью webpack).
 
-Верстка проверялась только в актуальном хроме, неадаптивна.
+Верстка проверялась только в актуальном хроме (~108), неадаптивна.
 
 ## Команды
 
 #### Команды сборки webpack`ом:
 ```
-npm run start — запуск
-npm run build — сборка
-npm run dev — запуск в режиме разработки
+npm run start — сборка и запуск в production-режиме
+npm run build — сборка в production-режиме
+npm run dev — сборка в режиме разработки и запуск dev-сервера, hot-reload
 ```
 
 #### Команды сборки parcel`ом:
 ```
-npm run start:parcel — запуск
-npm run build:parcel — сборка
-npm run dev:parcel — запуск в режиме разработки
+npm run start:parcel — сборка и запуск в продакшн-режиме
+npm run build:parcel — сборка в продакшн-режиме
+npm run dev:parcel — сборка в режиме разработки и запуск dev-сервера, hot-reload 
 ```
 
 #### Команды линтинга и тестирования:
 ```
 npm run lint — запуск линтинга ts- и scss-кода
 npm run lint:scss-fix — запуск линтинга scss-кода с автоматическим исправлением ошибок
-npm run test — запуск тестов с использованием библиотек mocha и chai
-npm run checker — запуск всех проверок (линтинг и тестирование); эта команда настроена на прекоммит с помощью husky
+npm run test — запуск тестов; тесты написаны с использованием библиотек Mocha и Chai
+npm run checker — запуск всех проверок (линтинг измененных файлов и тестирование); изменения для линтинга отслеживает lint-staged; команда checker настроена на прекоммит с помощью husky;
 ```
 
 #### Прочие команды

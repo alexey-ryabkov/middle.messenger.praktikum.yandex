@@ -7,7 +7,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 module.exports = {
     mode: 'production',
     output: {
-        filename: `bundle-[hash].js`,
+        filename: 'bundle-[hash].js',
     },
     devtool: false,
     optimization: {
@@ -26,6 +26,6 @@ module.exports = {
             },
             inject: 'body'
         }),
-        new MiniCssExtractPlugin({ filename: `bundle.css` }),
+        new MiniCssExtractPlugin({ filename: 'bundle-[hash].css' }),
     ],
 }; 

@@ -1,0 +1,25 @@
+._pageGame {
+    &__content.icontainer {
+        background: #fcfcfc;
+    }
+
+    &__picture {
+        margin: 0 auto;
+        display: block;
+        max-width: 100%;
+
+        &--doofusPicture {
+            object-position: -3px 2px;
+        }        
+    }
+
+    &__backLinkBox {
+        text-align: center;
+        padding-top: 20px;
+    }
+
+    .text {
+        font-size: 16px;
+        line-height: 1.2em;
+    }
+}

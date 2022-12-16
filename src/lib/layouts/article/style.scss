@@ -1,0 +1,29 @@
+._articleLayout {
+    min-width: 520px;
+
+    &__ {
+        &content {
+            width: 760px;
+        }
+
+        &caption {
+            text-align: center;
+
+            &.caption { 
+                padding: 15px 0 10px;
+            }
+        }
+    }
+}
+
+.caption._articleLayout__caption { 
+    padding: 15px 0 10px;
+}
+
+._articleLayout._surApp {
+    position: static;
+
+    ._surApp__workarea {
+        margin: 42px auto;
+    }
+}

@@ -39,6 +39,11 @@ class UserProfileCard extends ProfileCard
                         action: () => app.go2page('access'),
                     },
                     {
+                        title: 'Концепт игры',
+                        icon: IconVar.circle_smile,
+                        action: () => app.go2page('game'),
+                    },
+                    {
                         title: 'Выйти',
                         icon: IconVar.circle_cross,
                         action: () => Actions.logoutUser(),

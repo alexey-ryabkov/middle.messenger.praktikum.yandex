@@ -118,6 +118,26 @@
     vertical-align: middle;
 }
 
+.article {
+    &__section {
+        margin-bottom: 30px;
+    }
+}
+
+.list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    
+    &__item {
+        margin-bottom: 10px;
+
+        &::before {
+            content: '— ';
+        }
+    }
+}
+
 $caption-sizes: ('h1': 26px, 'h2': 18px, 'h3': 16px, 'h4': 13px, 'h5': 12px, 'h6': 11px);
 
 ._surApp {  

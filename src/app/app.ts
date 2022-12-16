@@ -210,7 +210,13 @@ export default class SurChat implements ContainarableApp
                 const url = element.getAttribute('href');
                 if (url)
                 {
-                    this.go2url(url);
+                    if (!url.startsWith('http'))
+                    {
+                        this.go2url(url);
+                    }
+                    else
+                        // external link
+                        window.open(url, '_blank');
                 }        
             }
         });

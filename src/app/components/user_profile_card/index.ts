@@ -39,7 +39,7 @@ class UserProfileCard extends ProfileCard
                         action: () => app.go2page('access'),
                     },
                     {
-                        title: 'Концепт игры Doofus Rick',
+                        title: 'Концепт игры',
                         icon: IconVar.circle_smile,
                         action: () => app.go2page('game'),
                     },
